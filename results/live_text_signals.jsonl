@@ -1,0 +1,4 @@
+{"type": "TextSignal", "coin": "BTC", "ts": 1791260541933, "published_ts": 1791257098000, "post_id": "hn-49973798", "source": "hackernews", "relevance": 0.01, "bullish": 0.0, "bearish": 0.0, "novelty": 0.71, "scorer": "jev"}
+{"type": "TextSignal", "coin": "ETH", "ts": 1791260541933, "published_ts": 1791257098000, "post_id": "hn-49973798", "source": "hackernews", "relevance": 0.02, "bullish": 0.0, "bearish": 0.0, "novelty": 0.71, "scorer": "jev"}
+{"type": "TextSignal", "coin": "BTC", "ts": 1791260542080, "published_ts": 1791258629000, "post_id": "hn-49973935", "source": "hackernews", "relevance": 0.02, "bullish": 0.0, "bearish": 0.0, "novelty": 0.53, "scorer": "jev"}
+{"type": "TextSignal", "coin": "ETH", "ts": 1791260542080, "published_ts": 1791258629000, "post_id": "hn-49973935", "source": "hackernews", "relevance": 0.03, "bullish": 0.0, "bearish": 0.0, "novelty": 0.53, "scorer": "jev"}

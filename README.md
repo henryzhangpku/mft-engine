@@ -1,24 +1,61 @@
 # mft-engine
 
-A small Rust engine for mid-frequency trading, where decisions are made on
-minute bars and positions last minutes to hours: live market data in, one
-signal, a risk layer that fails closed, paper execution, and a backtester that
-runs the same code path, so research and production cannot disagree. The
-first venue is crypto perpetuals on Hyperliquid; nothing in the engine core is
-specific to that instrument.
+Reasoning signals from social and prediction-market data, gated by code, at
+mid frequency. A small Rust engine takes live crypto prices (Hyperliquid),
+prediction-market strike ladders (Kalshi) and social posts scored by a
+reasoning classifier (TypeSafe's Jev, on Hacker News), turns them into one
+stream of events, and runs one strategy and one risk layer over that stream.
+The same code runs in replay and live on paper, so research and production
+cannot disagree.
 
-**Paper only.** There is no order router, no signing code and no key handling
-anywhere in the crate. A test (`there_is_no_order_path_in_the_source`) fails
-the build if the source ever mentions Hyperliquid's order endpoint or signing.
+**Demo:** [henryzhangpku.github.io/mft-engine](https://henryzhangpku.github.io/mft-engine/)
+(a replay of the recorded data below; paper only).
 
-**The honest result:** the pre-registered signal loses money after costs on
-the committed sample, in both halves of it. That is reported below exactly as
-the program printed it.
+**Paper only.** There is no order router, no request signing and no exchange
+key handling anywhere in the crate. A test fails the build if the source ever
+mentions an order endpoint or signing code for Hyperliquid or Kalshi, and
+another fails if anything secret-shaped appears in `data/`, `results/`,
+`docs/` or `experiments/`.
 
-## The signal, stated before any backtest was run
+**The honest result:** both strategies lose money after costs on the
+committed sample, in both halves of it. The reasoning-gated version (v2)
+loses less than plain momentum (v1), mostly by trading less. The sample is
+3.5 days, which is far too short to call that an edge.
 
-Volatility-normalised short-horizon momentum on 1-minute bars, per coin (BTC
-and ETH perpetuals on Hyperliquid):
+## What it does, in one picture
+
+```
+ Hyperliquid ws        Kalshi REST (KXBTCD, KXETHD)      Hacker News (Algolia)
+ trades, book tops     hourly "above strike K" ladders   stories + comments
+       |                         |                              |
+   feed.rs                  kalshi.rs                  sidecar/ (Python)
+   reconnect, gaps          bid/ask mid per strike      Jev: about BTC? about ETH?
+       |                         |                      bullish/bearish/neither?
+   bars.rs                  prediction.rs               new or repost?
+   trades -> 1m bars        clean ladder -> P(close>K)        |
+       |                         |                      TextSignal JSONL
+       +------------+------------+------------+---------------+
+                    |   one Event enum, one channel, time order
+                    v
+          event_loop::run  (the same loop in backtest and paper)
+                    |
+   engine.rs  1. market state
+              2. strategy.rs: momentum target
+              3. gates: Kalshi agreement, social caution  (can only shrink)
+              4. target - position = order intent
+              5. risk.rs: every rule must allow; an error blocks
+              6. execution.rs: paper fill, fees, slippage, PnL
+                    |
+              Decision (filled, or blocked with a reason)
+
+   Clock: event time in replay, wall time live. Nothing else differs.
+   Research: experiment.rs + ledger.rs (hash-chained results), demo.rs (web export)
+```
+
+## The two strategies
+
+**v1, momentum (fixed before the first backtest, never tuned).**
+Volatility-normalised 5-minute momentum on 1-minute bars, per coin:
 
 | parameter | value |
 |---|---|
@@ -27,268 +64,307 @@ and ETH perpetuals on Hyperliquid):
 | score | `z = r5 / (sigma * sqrt(5))` |
 | entry | long if `z >= 2.0`, short if `z <= -2.0` |
 | exit | when `z` changes sign against the position, or after 15 bars |
-| flip | directly, if `z` crosses the entry threshold the other way |
-| size | fixed target of $1,000 notional per coin |
-| minimum trade | target minus position under $50 is not traded |
+| size | $1,000 target per coin; differences under $50 are not traded |
 
-Nothing was tuned. The parameters are the defaults in `src/strategy.rs` and
-were fixed before the first run. The data is split at its midpoint in time and
-both halves are reported, so a reader can see whether the result is stable.
+**v2, reasoning-gated.** The same v1 targets, then two gates that can only
+reduce exposure:
 
-## Architecture
+1. **Prediction-market agreement.** Kalshi's hourly KXBTCD and KXETHD events
+   are ladders of binary contracts, "price above strike K at the top of the
+   hour". The yes mid of each contract is the market's P(close > K). After
+   cleaning (quotes with a spread over 20 cents dropped, probabilities forced
+   non-increasing in K) the engine reads P(close > current spot) off the
+   ladder by linear interpolation. **A new long is taken only if that
+   probability is above 0.5; a new short only if it is below 0.5.** A
+   missing, stale (over 3 minutes) or out-of-range ladder means no entry: the
+   gate fails closed. Held positions are not re-gated (see the note below).
+2. **Social caution.** For each Jev-scored post judged relevant to the coin
+   (relevance at least 0.5) in the last 30 minutes, the probability that
+   *opposes* the position, times relevance and novelty, scales the target by
+   `1 - strength`, and vetoes it at 0.6. A bullish post never adds to a long.
 
-```
-   Hyperliquid websocket                     data/*.jsonl (bars, recorded feed,
-   (trades, l2Book, public)                   scored text signals)
-            |                                          |
-        feed.rs  (reconnect, backoff,           backtest.rs (load, add bar
-         gap detection)                          gaps, build bars, sort)
-            |                                          |
-        bars.rs  BarBuilder (trades -> 1m bars) -------+  (same builder)
-            |                                          |
-            v                                          v
-       mpsc channel of Envelope { Event, received }   mpsc channel
-            \                                         /
-             \_______  event_loop::run  ____________/      <- one loop
-                        |  clock.observe(event)
-                        |  engine.on_event(event, clock)
-                        v
-   engine.rs:  market state -> strategy.rs (target)
-                            -> text.rs (may only shrink the target)
-                            -> risk.rs (every rule must allow; errors block)
-                            -> execution.rs (paper fill, portfolio)
-                        |
-                        v
-                     Decision  (Filled or Blocked with a reason)
+Both gates are a `Caution`, a multiplier that can only hold a value in [0, 1],
+and a separate check blocks any order whose target the gates made larger or
+flipped. Text and prediction markets can make a decision more cautious, never
+less.
 
-   Clock: ReplayClock (event time) in backtest, WallClock in paper.
-   Event: Trade | BookTop | Bar | TextSignal | Gap   (event.rs)
+**How preregistered is v2, exactly.** v2's rules were written in code and in
+`experiments/ideas.toml` before its first run. That first run re-checked the
+Kalshi gate on every bar while a position was open, and the target flickered
+between $1,000 and flat as P(up) wobbled around 0.5, which churned fees (323
+fills against v1's 294). I then changed the gate to apply to entries only.
+That change was made after seeing a result, so it is disclosed here and the
+original version is on the experiment ledger as `v2_gate_every_bar`, with its
+numbers. Nothing else was changed after a run. This README was written after
+the runs.
 
-   sidecar/ (Python): posts -> Jev or keyword mock -> data/text_signals.jsonl
-```
+## Results (replay of recorded data)
 
-The strategy, text rule, risk rules, fill model and portfolio are identical in
-both modes. Only the event source and the clock differ. `Engine::on_event`
-does no I/O and never reads the system clock, which is what makes a replay
-deterministic.
+Data, all committed under `data/`:
 
-## Modules
+| source | what | real or not |
+|---|---|---|
+| `bars_1m.jsonl` | Hyperliquid 1-minute candles, BTC and ETH, 2026-10-02 14:47 to 10-06 03:17 UTC, 10,139 bars | real (all the 1m history the endpoint keeps) |
+| `kalshi_ladders.jsonl` | 9,222 one-minute ladder snapshots from 80 hourly BTC events and 80 hourly ETH events over the same window, backfilled from Kalshi's public 1-minute candlesticks (bid/ask at each minute's close, 10 strikes either side of spot) | real |
+| `hn_posts.jsonl` | 259 Hacker News items in the window (20 stories, 239 comments) matching bitcoin, ethereum, crypto, stablecoin or coinbase | real |
+| `text_signals.jsonl` | those 259 posts scored by Jev (518 signals, one per coin per post) | real model output |
+| `tests/fixtures/synthetic_*` | 60 invented posts, mock-scored | synthetic, tests only |
 
-| file | what it does |
-|---|---|
-| `src/event.rs` | the one `Event` enum and replay ordering |
-| `src/clock.rs` | `Clock` trait, replay and wall clocks, a UTC formatter |
-| `src/engine.rs` | the shared code path: one event in, at most one decision out |
-| `src/strategy.rs` | the momentum signal and its position state machine |
-| `src/text.rs` | text caution: a multiplier in [0, 1] and the check that it added no risk |
-| `src/risk.rs` | risk rules as trait objects; the fail-closed `RiskEngine` |
-| `src/execution.rs` | paper fill model, cash-based PnL, round-trip accounting |
-| `src/event_loop.rs` | the single loop both modes run, with latency measurement |
-| `src/feed.rs` | live websocket: subscribe, ping, reconnect with backoff, gaps |
-| `src/gap.rs` | silence and backwards-time detection per stream |
-| `src/bars.rs` | trades to 1m bars, missing-bar detection, JSONL I/O |
-| `src/hyperliquid.rs` | wire formats for the public websocket and candle endpoint |
-| `src/backtest.rs`, `src/paper.rs`, `src/record.rs`, `src/fetch.rs` | the subcommands |
-| `sidecar/` | Python text scorer (Jev or offline mock) |
+Point in time: a bar is stamped with its close; a Kalshi snapshot with the end
+of its minute; a post becomes usable at publication plus a 60 s poll delay
+plus the measured Jev latency. Only the post's text is scored; HN points and
+comment counts, which accrue later, are not stored.
 
-## Running it
-
-Built and tested with Rust 1.93 on Windows. Everything below works offline except `record`, `paper`
-and `fetch-bars`.
+Output of `mft-engine backtest` (costs: 4.5 bp taker fee plus 1 bp slippage
+per fill, about 11 bp per round trip):
 
 ```
-cargo build --release
-cargo test
-
-# Replay the committed bars (and Jev-scored text signals) through the engine.
-./target/release/mft-engine backtest
-./target/release/mft-engine backtest --no-text
-./target/release/mft-engine backtest --text data/text_signals_mock.jsonl
-./target/release/mft-engine backtest --data data/sample_recorded_feed.jsonl --no-text   # a recorded live feed
-
-# Live, public data, no key needed.
-./target/release/mft-engine record --duration-secs 120          # -> data/recorded_feed.jsonl
-./target/release/mft-engine paper  --duration-secs 240          # -> results/paper.json
-./target/release/mft-engine fetch-bars --days 4                 # -> data/bars_1m.jsonl
+strategy                   window        fills     hit    pnl_net  pnl_gross     costs   turn_x   max_dd  vetoes
+v1_momentum                full            294    2.0%    -197.78     -34.97    162.81    296.0   198.00       0
+v1_momentum                first_half      179    2.2%    -115.89     -16.89     99.00    180.0   115.89       0
+v1_momentum                second_half     175    5.7%    -110.95     -14.14     96.81    176.0   111.18       0
+v2_reasoning_gated         full            267    5.2%    -152.97      -5.80    147.17    267.6   153.20     823
+v2_reasoning_gated         first_half      133    1.5%     -76.52      -4.07     72.45    131.7    76.52     413
+v2_reasoning_gated         second_half     127    9.4%     -71.23      -0.90     70.32    127.9    71.45     393
 ```
 
-`backtest` writes `results/backtest.json` (config and every window) and
-`results/backtest_decisions.jsonl` (every fill and every block, in order).
+Columns: fills; share of round trips with positive PnL after costs; PnL after
+costs (USD); PnL before fees and slippage; fees plus slippage; traded notional
+over the $1,000 target; max drawdown on the per-bar equity curve; bars where
+the Kalshi gate vetoed an entry.
 
-`paper` prints one human-readable line per decision, for example from the run
-below:
+What this says, plainly:
+
+* **Neither strategy makes money.** v1 loses before costs too. v2's gross PnL
+  is close to zero (-$5.80) and costs then make it clearly negative.
+* **v2 loses $44.81 less than v1**, in both halves. Most of the difference is
+  fewer trades and therefore lower costs ($147 against $163), plus a gross
+  loss that is $29 smaller. With 267 fills over 3.5 days, that difference is
+  well within what noise could produce. It is a reason to collect more data,
+  not a finding.
+* **The social feature barely matters here.** Of 259 real posts, Jev judged 11
+  relevant to BTC (one with bearish probability over 0.5) and 1 relevant to
+  ETH. The social gate changed a target 51 times and moved PnL by about 30
+  cents either way: $0.34 (v2 against `v2_kalshi_only`) and $0.29
+  (`v2_social_only` against v1), on the ledger.
+  Hacker News is a thin source for crypto. Reddit (below) would be thicker.
+* v1 hit its $50 daily loss limit on every full UTC day (695 blocks, all
+  `max_daily_loss`). v2 never did.
+* A caveat on the Kalshi feature: P(up) compares Kalshi's settlement index
+  with Hyperliquid's perpetual price, so the basis between the two tilts it.
+  On this sample it leaned slightly above 0.5 more often than below.
+* Determinism: decision fingerprints `afb924fee4ed2223` (v1) and
+  `86f02dbcc8fa2493` (v2) repeat on every run; the tests check that two
+  replays give identical decisions, reports and equity curves.
+
+## Experiment ledger ("idea to live experiment fast")
+
+`mft-engine experiment` runs every variant in `experiments/ideas.toml` (a base
+strategy, a hypothesis written first, optional config overrides by dotted
+path) through the same backtester and appends each result to
+`results/ledger.jsonl`. Each entry stores the SHA-256 of the entry before it
+and of its own contents, plus the SHA-256 of the experiment file and of the
+input data. Editing a past verdict, or quietly dropping a bad idea, breaks the
+chain, and `mft-engine experiment --verify` says where. The verdict rule is
+fixed in code: kept only if the second-half (holdout) PnL after costs is
+positive and beats the baseline's.
+
+| # | variant | verdict | PnL | holdout PnL | fills |
+|---|---|---|---|---|---|
+| 0 | v1_momentum | baseline | -197.78 | -110.95 | 294 |
+| 1 | v2_reasoning_gated | killed | -152.97 | -71.23 | 267 |
+| 2 | v2_gate_every_bar | killed | -175.63 | -91.07 | 323 |
+| 3 | v2_kalshi_only | killed | -153.31 | -71.34 | 266 |
+| 4 | v2_social_only | killed | -197.49 | -110.73 | 294 |
+| 5 | v2_kalshi_strict_0p6 | killed | -38.85 | -7.24 | 77 |
+| 6 | v1_entry_z_3 | killed | -66.37 | -30.65 | 94 |
+
+All seven were killed: nothing has a positive holdout. The two that lose least
+(strict Kalshi agreement, and a higher momentum threshold) do so by trading a
+quarter to a third as often; neither is positive before costs in its holdout.
+
+## Live paper run
+
+`mft-engine paper --duration-secs 600 --text-feed results/live_text_signals.jsonl`
+(strategy v2), started 2026-10-06 04:22:20 UTC, with `sidecar/live_social.py`
+running alongside it against real Jev. All three live sources ran:
+
+* Hyperliquid websocket: 1,421 trades, 226 book tops, 22 one-minute bars.
+* Kalshi, polled every minute: 20 ladder snapshots (BTC and ETH). A typical
+  line: `KXBTCD-26OCT0601 7 strikes, implied median 85598, P(close > spot 85595.0) = 0.509`.
+* Hacker News plus Jev: 2 new posts in the window, scored live (p50 111 ms,
+  530 input tokens per post), 4 `TextSignal` events tailed by the engine.
+  Neither post was about crypto (relevance under 0.5), so neither mattered.
+
+**No decisions were made.** The momentum signal never reached |z| >= 2 in
+those ten minutes. A v1 control run started at the same moment also made no
+decisions, and the v2 run logged 0 Kalshi vetoes, so the quiet run was the
+market, not the gate. Two earlier 5- and 10-minute v2 runs (04:05 and 04:11
+UTC) were also quiet. The SIGNAL line format, from an earlier v1 session of
+this engine:
 
 ```
 SIGNAL 2026-10-06T03:33:02Z ETH-PERP SHORT target -1000 USD (order -0.37124 ETH) | reason: 5m momentum z=-3.17 | risk: PASSED, paper fill -0.37124 @ 2693.43 fee 0.4500
 ```
 
-A blocked decision prints `risk: BLOCKED (<rule>: <reason>)`. Anyone acting
-on a line does so by hand, outside this program.
+v2 lines add the gate inputs to `reason`; the first v2 decision in the backtest trail (an ETH exit) reads
+`5m momentum z=-0.80; kalshi P(up)=0.50 median=2694 gate x1; social x1.00`.
 
-## Costs and fill model
+Latency in the 04:22 run (`results/paper.json`):
 
-* Every order is a taker order and fills in full immediately.
-* Reference price: the touch (ask for buys, bid for sells) when the book top
-  is at most 12 s old, otherwise the last bar close. The backtest has bars
-  only, so it always uses the bar close.
-* Slippage: a further **1 bp** against us on top of the reference.
-* Fee: **4.5 bps** of filled notional, Hyperliquid's base taker tier.
-* A round trip therefore costs about 11 bps of notional, about $1.10 on $1,000.
-* PnL is cash-based and includes open positions marked at the last close.
+| from websocket frame read to decision | samples | p50 | p99 |
+|---|---|---|---|
+| all events | 1,693 | 418 us | 1,775 us |
+| bar events (the ones that can trade) | 22 | 353 us | 1,713 us |
+| inside `Engine::on_event` only | 1,693 | 1.8 us | 47.3 us |
 
-## Backtest result
+The engine itself takes a couple of microseconds; the rest is channel hops and
+queueing behind other trades in the same websocket frame. 22 bar samples are
+too few for a stable p99. Exchange-to-receive was 312 ms at p50; its p99
+(17.8 s) is the batch of recent trades Hyperliquid replays on subscribe.
 
-Data: Hyperliquid 1-minute candles for BTC and ETH, 2026-10-02 14:47 UTC to
-2026-10-06 03:17 UTC (10,139 bars, about 3.5 days, which is all the 1m history
-the endpoint keeps). No missing bars. Output of `mft-engine backtest`:
+Every event the live engine saw is in `results/paper_events.jsonl`, and the
+live Jev output in `results/live_text_signals.jsonl`, so the session can be
+replayed through `backtest --data results/paper_events.jsonl`. The 90 bars of
+REST history used to warm the strategy up are not in that file, so a replay
+starts cold.
+
+## Running it
+
+Built and tested with Rust 1.93 on Windows. `backtest`, `experiment`,
+`export-demo` and `cargo test` run offline from the committed data.
 
 ```
-window                  fills  trips       hit    pnl_net  pnl_gross     costs   turn_x   max_dd
-full                      296    148      2.0%    -194.49     -33.23    161.25    293.2   194.71
-full_without_text         294    148      2.0%    -197.78     -34.97    162.81    296.0   198.00
-first_half                181     90      2.2%    -113.81     -15.76     98.06    178.3   113.81
-second_half_holdout       172     86      5.8%    -107.00     -13.00     94.00    170.9   107.23
+cargo build --release
+cargo test
+
+./target/release/mft-engine backtest                 # v1 and v2 side by side -> results/backtest.json
+./target/release/mft-engine experiment               # experiments/ideas.toml -> results/ledger.jsonl
+./target/release/mft-engine experiment --verify      # check the hash chain
+./target/release/mft-engine export-demo              # -> docs/data/demo.json
+
+# Live, public data, no keys needed except Jev's.
+./target/release/mft-engine record --duration-secs 120
+./target/release/mft-engine fetch-bars --days 4
+./target/release/mft-engine fetch-kalshi             # backfill ladders over the bar window
+./target/release/mft-engine paper --duration-secs 600 --text-feed results/live_text_signals.jsonl
 ```
 
-Columns: fills; completed round trips; share of round trips with positive PnL
-after costs; PnL after costs (USD); PnL before fees and slippage; fees plus
-slippage; traded notional divided by the $1,000 target; maximum drawdown of
-the equity curve sampled on every bar.
+The demo is static: `cd docs && python -m http.server`, then open
+`http://localhost:8000`. GitHub Pages serves the same folder.
 
-What this says, plainly:
+### Social data and Jev
 
-* **The signal loses money after costs, and loses before costs too.** Gross
-  PnL is negative in both halves. At this horizon, 1-minute crypto momentum
-  measured this way has no edge in this sample, and 11 bps per round trip
-  turns a small negative into a large one: costs are about 80% of the loss.
-* The hit rate after costs is 2 to 6%. Positions exit as soon as the
-  5-minute move turns against them, so most round trips capture less than the
-  11 bps they cost.
-* The two halves agree. There is no sign of a good half hiding a bad one.
-* **The daily loss limit ($50) tripped on every full UTC day** (Oct 3, 4 and
-  5, each around midday), after which only reducing orders were allowed. The
-  657 blocks are all `max_daily_loss`. So these numbers are the signal *with*
-  the risk layer; without the limit the engine would have kept trading a
-  signal whose gross edge here was negative.
-* Text signals: 120 Jev-scored signals from 60 synthetic posts reduced or
-  vetoed a target 95 times and changed the result by $3.29. The posts are
-  invented, so this shows the mechanism works, not that text helps.
-* Determinism: the decision fingerprint for the full run is
-  `30a14fb49ff230bb` on every run, and the tests check that two replays give
-  identical decisions and reports.
+The sidecar is Python, because that is where the Jev SDK is. Use a virtual
+environment (the build machine's global Python hit a TLS `RecursionError`
+inside `truststore` with `typesafe-sdk`):
 
-## Paper run (live feed, paper fills)
+```
+python -m venv .venv
+.venv/Scripts/pip install -r sidecar/requirements.txt     # .venv/bin/pip off Windows
+export TYPESAFE_API_KEY=...                                 # in your shell only
 
-`mft-engine paper --duration-secs 240`, started 2026-10-06 03:31:54 UTC, BTC
-and ETH. 1,285 trades, 92 book tops and 8 bars processed; 2 decisions, both
-filled on paper (`results/paper.json`, `results/paper_session.log`).
+python sidecar/fetch_hn.py                                  # real HN posts over the bar window
+.venv/Scripts/python sidecar/score_posts.py                 # Jev scores -> data/text_signals.jsonl
+.venv/Scripts/python sidecar/live_social.py --minutes 11    # live: poll, score, append; paper tails it
+```
 
-| latency (from websocket frame read to decision) | samples | p50 | p99 |
-|---|---|---|---|
-| all events | 1,385 | 436 us | 2,061 us |
-| bar events (the ones that can trade) | 8 | 263 us | 590 us |
-| inside `Engine::on_event` only | 1,385 | 1.4 us | 24.9 us |
+The SDK reads `TYPESAFE_API_KEY` from the environment; nothing in this
+repository reads, prints or stores it, and every file the sidecar and engine
+write is checked for it (and for token-shaped strings) before it is written.
+Without a key, scoring falls back to a deterministic keyword mock labelled
+`mock-keyword-v1`.
 
-The engine itself takes about a microsecond. The rest of the end-to-end time
-is two channel hops (feed task, bar-builder task, engine) and queueing: a
-single websocket frame can carry dozens of trades, and the last one waits for
-the others. Eight bar samples are too few for a meaningful p99; it is printed
-because it was measured, not because it is stable.
+One Jev `system_one` call per post asks five typed questions: is it about BTC
+(`Noul`), is it about ETH (`Noul`), the implied direction for each over the
+next hour (`Choice`: bullish, bearish, neither), and is it new information
+(`Noul`). Measured on the 259 backfilled posts
+(`sidecar/scoring_stats_jev.json`): **p50 118 ms, p99 230 ms (first call
+397 ms), 546 input tokens per post.**
 
-Exchange-to-receive time (local receive clock minus exchange timestamp) was
-360 ms at p50. Its p99 (12.7 s) is the snapshot of recent trades Hyperliquid
-sends on subscribe, not network delay. That figure also includes any offset
-between this machine's clock and the exchange's.
+**Reddit** is supported only through Reddit's official OAuth API
+(`sidecar/fetch_reddit.py`), because the anonymous JSON endpoints are blocked
+for scripts. It runs when `REDDIT_CLIENT_ID` and `REDDIT_CLIENT_SECRET` are
+set (a "script" app at reddit.com/prefs/apps). No Reddit credentials were
+available, so it has not been run and no Reddit data is committed.
 
-An earlier 4-minute run (03:27 UTC) gave all-event p50 639 us and p99 5.9 ms,
-with one paper fill. Latency varies run to run; these are single runs on a
-Windows laptop, not a benchmark.
+## Risk, in code, failing closed
 
-## Recording
+Every order passes every rule; a rule returns allow, block, or an error, and
+an error blocks. An engine with no rules blocks everything.
 
-`mft-engine record --duration-secs 120` at 03:27 UTC wrote 406 trades and 46
-book tops with no gaps. `data/sample_recorded_feed.jsonl` is that file; it
-replays through `backtest`, which builds bars from its trades with the same
-`BarBuilder` the paper engine uses.
+| rule | default |
+|---|---|
+| sane inputs | non-finite or non-positive price or quantity is an error |
+| stale data | no market data newer than 90 s by its exchange timestamp blocks |
+| max order | $2,500 notional |
+| max position | $1,500 notional per coin (reductions always allowed) |
+| max daily loss | $50 per UTC day, fees included; then only reducing orders |
+| gate check | any order whose target the reasoning gates enlarged or flipped |
 
-The first recording found something worth knowing: the public `l2Book`
-channel pushed a snapshot only every ~5.4 s (not sub-second), so the original
-5 s silence threshold flagged 42 false gaps in two minutes. The threshold is
-now 20 s, and a quiet book stream no longer resets the strategy (bars come
-from trades; a stale book only stops being used as a fill reference).
+Every block becomes a `Decision::Blocked` with the rule and reason, in the
+decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo.
 
-## Text signal (sidecar)
+## Modules
 
-`sidecar/score_posts.py` scores each post with TypeSafe's Jev (one
-`system_one` call per post: two `Noul` relevance questions, two `Choice`
-direction questions, one `Noul` novelty question) when `TYPESAFE_API_KEY` is
-set, or with a deterministic keyword mock (`mock-keyword-v1`) otherwise. The
-key is read by the SDK from the environment and is never printed or stored.
-
-Measured on the 60 committed posts (`sidecar/scoring_stats_jev.json`):
-
-| scorer | latency p50 | latency p99 | input tokens per post |
-|---|---|---|---|
-| Jev | 144 ms | 402 ms (the first call) | 506 |
-| keyword mock | none (offline; a fixed 1 s delay is assumed) | | 0 |
-
-Each `TextSignal` is stamped with publication time plus scoring latency, so a
-backtest cannot act on a score before it existed. A plain-LLM comparison on
-the same posts was not run.
-
-The rule: text may make a decision more cautious, never less. The engine
-scales the strategy's target by a `Caution` multiplier that can only hold a
-value in [0, 1] (the field is private; the constructor clamps; NaN becomes 0).
-Only the probability *opposing* the intended direction counts, weighted by
-relevance and novelty: a bullish post never adds to a long; a bearish one
-shrinks it, and vetoes it at 0.6. Afterwards `check_not_riskier` compares the
-target before and after, and blocks the order if it grew or flipped. Text can
-never open a position.
+| file | what it does |
+|---|---|
+| `src/event.rs` | the one `Event` enum: Trade, BookTop, Bar, TextSignal, PredictionMarket, Gap |
+| `src/engine.rs` | the shared decision path: one event in, at most one decision out |
+| `src/strategy.rs` | v1 momentum and its position state machine |
+| `src/prediction.rs` | ladder cleaning, P(close > x), implied quantiles, the v2 gate |
+| `src/text.rs` | the social gate: a [0, 1] multiplier and the "never riskier" check |
+| `src/risk.rs` | risk rules as trait objects; the fail-closed `RiskEngine` |
+| `src/execution.rs` | paper fill model, cash-based PnL, round trips |
+| `src/event_loop.rs` | the single loop both modes run, with latency measurement |
+| `src/kalshi.rs` | Kalshi public markets and candlesticks; live ladder and backfill |
+| `src/feed.rs`, `src/gap.rs`, `src/hyperliquid.rs`, `src/bars.rs` | live feed, reconnects, gaps, bars |
+| `src/experiment.rs`, `src/ledger.rs` | TOML variants, hash-chained ledger |
+| `src/artifacts.rs` | every file write; refuses anything secret-shaped |
+| `src/demo.rs` | `export-demo` |
+| `src/backtest.rs`, `src/paper.rs`, `src/record.rs`, `src/fetch.rs` | the subcommands |
+| `sidecar/` | HN and Reddit fetchers, Jev scorer, live social feed, secret guard |
+| `docs/` | the static demo (index.html, app.js, style.css) |
 
 ## What is not done
 
-* **No real orders.** No exchange order endpoint, no signing, no keys. Paper
-  fills only.
-* **One venue.** Hyperliquid public data (BTC and ETH perpetuals). No second
-  venue.
-* **The posts are synthetic**, generated from templates with a fixed seed
-  (`sidecar/make_posts.py`). Real news ingestion is not built.
-* **Short history.** About 3.5 days of 1-minute bars, because that is all the
-  candle endpoint keeps. Long recordings are possible with `record` but none
-  is committed.
-* Gap detection is heuristic: Hyperliquid's public feed has no sequence
-  numbers, so we detect silences, backwards timestamps and reconnects, not
-  individual missed messages.
-* The fill model ignores queue position, partial fills, funding payments and
-  market impact beyond the fixed 1 bp.
-* No Jev-versus-plain-LLM latency and cost comparison yet.
-* Money is `f64`. Fine for a paper engine; a production engine would use
-  integer ticks.
+* **No real orders.** No order endpoint, no signing, no exchange keys. Paper
+  fills only. Anyone acting on a paper SIGNAL line does so by hand.
+* **Venues:** Hyperliquid (BTC and ETH perpetuals) for prices; Kalshi hourly
+  KXBTCD and KXETHD ladders for prediction markets. Kalshi's KXBTC range
+  series and Polymarket are not used: the threshold ladder already gives the
+  distribution directly.
+* **Social data is thin.** 259 Hacker News items, 12 judged relevant. Reddit
+  is implemented but unrun (no credentials). No X/Twitter.
+* **Short history.** 3.5 days of 1-minute bars, the most Hyperliquid keeps.
+  Kalshi history goes back further; a longer test needs a longer price
+  history (recorded with `record`, or another source).
+* **No Jev-versus-plain-LLM comparison** on cost and latency yet.
+* Gap detection on Hyperliquid is heuristic (no sequence numbers).
+* The fill model ignores queue position, partial fills, funding and impact
+  beyond 1 bp. Money is `f64`; production would use integer ticks.
+* The backfilled Kalshi ladder uses the bid/ask at each minute's close from
+  1-minute candles, not the full order book.
 
 ## Design choices
 
-* **One code path.** `Engine::on_event` is the only place decisions are made,
-  and both modes call it through the same `event_loop::run`. A test replays
-  the same data through the async loop and through a plain `for` loop and
-  checks the decisions are identical.
-* **Fail closed.** Each risk rule returns allow, block, or an error; an error
-  blocks. A risk engine with no rules blocks everything. Non-finite numbers
-  are errors. Stale data (no market data newer than 90 s by its *exchange*
-  timestamp) blocks, so a lagging feed counts as stale even while messages
-  arrive. After the daily loss limit, reducing orders are still allowed.
-  Every block is returned as a `Decision::Blocked` with the rule and reason.
-* **Deterministic replay.** Event time drives the clock; maps are `BTreeMap`
-  so iteration order is fixed; events are sorted by time, coin and kind; the
-  decisions of a run are fingerprinted with FNV-1a.
-* **Bars stamped when known.** A bar's timestamp is its close (or the trade
-  that closed it), never its open, so a replay cannot use a close before it
-  happened.
-* **Gaps are events.** A detected gap travels through the same stream as the
-  data, so a replay of a recorded file reacts to it exactly as the live run
-  did. A gap in trades, bars or the connection resets the strategy's price
-  history; no return is computed across a hole.
+* **One code path.** `Engine::on_event` is the only place decisions are made;
+  both modes reach it through `event_loop::run`. A test replays the same data
+  through the async loop and through a plain loop and requires identical
+  decisions, for v1 and v2.
+* **Reasoning features gate, code decides.** Jev and the prediction market
+  supply probabilities; deterministic code turns them into a multiplier that
+  can only shrink a position, and a check enforces that.
+* **Fail closed.** Missing or stale prediction-market data means no entry; a
+  risk rule that errors blocks; non-finite numbers are errors.
+* **Deterministic replay.** Event time drives the clock, maps are `BTreeMap`,
+  events are sorted by time, coin and kind, and decisions are fingerprinted.
+* **Point in time everywhere.** Bars stamped at close, Kalshi snapshots at
+  minute end, posts at publication plus poll delay plus scoring latency.
+* **Research is recorded, not remembered.** The ledger keeps killed ideas next
+  to kept ones and cannot be edited quietly.
 * **Minimal dependencies:** tokio, tokio-tungstenite, futures-util, serde,
-  serde_json, ureq, native-tls, anyhow, clap. Dates are formatted by hand.
+  serde_json, ureq, native-tls, anyhow, clap, sha2, toml.
 
 ## License
 

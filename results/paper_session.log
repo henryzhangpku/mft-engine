@@ -1,43 +1,66 @@
 [paper] warm-up: 90 historical bars for BTC
 [paper] warm-up: 90 historical bars for ETH
-[paper] running for 240s on ["BTC", "ETH"]; paper fills only, no orders are sent anywhere
+[paper] running for 600s on ["BTC", "ETH"]; paper fills only, no orders are sent anywhere
 [feed] connected to wss://api.hyperliquid.xyz/ws, subscribed trades + l2Book for ["BTC", "ETH"]
-SIGNAL 2026-10-06T03:32:00Z BTC-PERP SHORT target -1000 USD (order -0.01171 BTC) | reason: 5m momentum z=-2.51 | risk: PASSED, paper fill -0.01171 @ 85374.46 fee 0.4499
-SIGNAL 2026-10-06T03:33:02Z ETH-PERP SHORT target -1000 USD (order -0.37124 ETH) | reason: 5m momentum z=-3.17 | risk: PASSED, paper fill -0.37124 @ 2693.43 fee 0.4500
+[kalshi] BTC KXBTCD-26OCT0601 7 strikes, implied median 85612, P(close > spot NaN) = n/a
+[kalshi] ETH KXETHD-26OCT0601 26 strikes, implied median 2703, P(close > spot 2704.5) = 0.386
+[kalshi] BTC KXBTCD-26OCT0601 7 strikes, implied median 85605, P(close > spot 85612.0) = 0.481
+[kalshi] ETH KXETHD-26OCT0601 26 strikes, implied median 2703, P(close > spot 2704.2) = 0.418
+[kalshi] BTC KXBTCD-26OCT0601 7 strikes, implied median 85598, P(close > spot 85595.0) = 0.509
+[kalshi] ETH KXETHD-26OCT0601 26 strikes, implied median 2703, P(close > spot 2704.0) = 0.436
+[kalshi] BTC KXBTCD-26OCT0601 7 strikes, implied median 85593, P(close > spot 85600.0) = 0.480
+[kalshi] ETH KXETHD-26OCT0601 26 strikes, implied median 2703, P(close > spot 2704.0) = 0.432
+[kalshi] BTC KXBTCD-26OCT0601 7 strikes, implied median 85602, P(close > spot 85600.0) = 0.505
+[kalshi] ETH KXETHD-26OCT0601 26 strikes, implied median 2703, P(close > spot 2704.1) = 0.418
+[kalshi] BTC KXBTCD-26OCT0601 7 strikes, implied median 85596, P(close > spot 85605.0) = 0.470
+[kalshi] ETH KXETHD-26OCT0601 26 strikes, implied median 2703, P(close > spot 2704.1) = 0.414
+[kalshi] BTC KXBTCD-26OCT0601 7 strikes, implied median 85590, P(close > spot 85583.0) = 0.524
+[kalshi] ETH KXETHD-26OCT0601 26 strikes, implied median 2703, P(close > spot 2703.8) = 0.415
+[kalshi] BTC KXBTCD-26OCT0601 7 strikes, implied median 85572, P(close > spot 85566.0) = 0.521
+[kalshi] ETH KXETHD-26OCT0601 26 strikes, implied median 2702, P(close > spot 2703.2) = 0.424
+[kalshi] BTC KXBTCD-26OCT0601 7 strikes, implied median 85568, P(close > spot 85590.0) = 0.414
+[kalshi] ETH KXETHD-26OCT0601 26 strikes, implied median 2702, P(close > spot 2703.3) = 0.394
+[kalshi] BTC KXBTCD-26OCT0601 7 strikes, implied median 85567, P(close > spot 85568.0) = 0.497
+[kalshi] ETH KXETHD-26OCT0601 6 strikes, implied median 2701, P(close > spot 2701.9) = 0.449
 {
-  "started": "2026-10-06T03:31:54Z",
-  "duration_secs": 240,
+  "started": "2026-10-06T04:22:20Z",
+  "duration_secs": 600,
   "coins": [
     "BTC",
     "ETH"
   ],
+  "strategy": "v2",
   "events_by_kind": {
-    "Bar": 8,
-    "BookTop": 92,
-    "Trade": 1285
+    "Bar": 22,
+    "BookTop": 226,
+    "PredictionMarket": 20,
+    "TextSignal": 4,
+    "Trade": 1421
   },
-  "decisions": 2,
-  "fills": 2,
+  "decisions": 0,
+  "fills": 0,
+  "pm_vetoes": 0,
+  "text_reductions": 0,
   "event_to_decision_all_events": {
-    "samples": 1385,
-    "p50_us": 436.3,
-    "p99_us": 2061.3,
-    "max_us": 2111.1
+    "samples": 1693,
+    "p50_us": 418.2,
+    "p99_us": 1775.4,
+    "max_us": 1836.6
   },
   "event_to_decision_bar_events": {
-    "samples": 8,
-    "p50_us": 262.5,
-    "p99_us": 589.7,
-    "max_us": 589.7
+    "samples": 22,
+    "p50_us": 352.6,
+    "p99_us": 1712.7,
+    "max_us": 1712.7
   },
   "engine_compute_only": {
-    "samples": 1385,
-    "p50_us": 1.4,
-    "p99_us": 24.9,
-    "max_us": 933.1
+    "samples": 1693,
+    "p50_us": 1.8,
+    "p99_us": 47.3,
+    "max_us": 175.2
   },
-  "exchange_to_receive_ms_p50": 360,
-  "exchange_to_receive_ms_p99": 12707,
-  "paper_pnl_after_costs": -1.8735355844694368
+  "exchange_to_receive_ms_p50": 312,
+  "exchange_to_receive_ms_p99": 17827,
+  "paper_pnl_after_costs": 0.0
 }
-wrote results/paper.json
+wrote results/paper.json and results/paper_events.jsonl

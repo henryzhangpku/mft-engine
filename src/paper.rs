@@ -48,6 +48,8 @@ pub struct PaperReport {
     pub events_by_kind: std::collections::BTreeMap<&'static str, u64>,
     pub decisions: u64,
     pub fills: u64,
+    pub pm_vetoes: u64,
+    pub text_reductions: u64,
     pub event_to_decision_all_events: LatencySummary,
     pub event_to_decision_bar_events: LatencySummary,
     pub engine_compute_only: LatencySummary,
@@ -212,9 +214,23 @@ pub async fn run(opts: PaperOptions) -> Result<PaperReport> {
     let mut clock = WallClock;
     let deadline = Instant::now() + duration;
     let mut seen: Vec<Event> = Vec::new();
+    // A gate veto on a flat book produces no order and so no decision; log
+    // it anyway, so a quiet run can be told apart from a blocked one.
+    let (mut vetoes_seen, mut text_seen) = (0u64, 0u64);
     let stats: LoopStats = event_loop::run(rx, &mut engine, &mut clock, Some(deadline), |event, decision, eng| {
         if let Some(d) = decision {
             println!("{}", signal_line(d));
+        }
+        if let Event::Bar(b) = event {
+            if eng.pm_vetoes > vetoes_seen || eng.text_reductions > text_seen {
+                let z = eng.signal_z(&b.coin).map_or("n/a".into(), |z| format!("{z:+.2}"));
+                println!(
+                    "[gate] {} {} momentum z={z}: Kalshi vetoes {}, social reductions {} (no order if the gated target equals the position)",
+                    format_utc(b.ts), b.coin, eng.pm_vetoes, eng.text_reductions
+                );
+            }
+            vetoes_seen = eng.pm_vetoes;
+            text_seen = eng.text_reductions;
         }
         match event {
             Event::Gap(g) => println!("[paper] GAP {} {} {}", g.coin, g.stream, g.reason),
@@ -251,6 +267,8 @@ pub async fn run(opts: PaperOptions) -> Result<PaperReport> {
         events_by_kind: stats.events_by_kind.clone(),
         decisions: stats.decisions,
         fills: engine.portfolio.fills,
+        pm_vetoes: engine.pm_vetoes,
+        text_reductions: engine.text_reductions,
         event_to_decision_all_events: summarise(&stats.event_latency_ns),
         event_to_decision_bar_events: summarise(&stats.bar_latency_ns),
         engine_compute_only: summarise(&stats.engine_compute_ns),

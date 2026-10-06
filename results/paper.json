@@ -1,36 +1,41 @@
 {
-  "started": "2026-10-06T03:31:54Z",
-  "duration_secs": 240,
+  "started": "2026-10-06T04:22:20Z",
+  "duration_secs": 600,
   "coins": [
     "BTC",
     "ETH"
   ],
+  "strategy": "v2",
   "events_by_kind": {
-    "Bar": 8,
-    "BookTop": 92,
-    "Trade": 1285
+    "Bar": 22,
+    "BookTop": 226,
+    "PredictionMarket": 20,
+    "TextSignal": 4,
+    "Trade": 1421
   },
-  "decisions": 2,
-  "fills": 2,
+  "decisions": 0,
+  "fills": 0,
+  "pm_vetoes": 0,
+  "text_reductions": 0,
   "event_to_decision_all_events": {
-    "samples": 1385,
-    "p50_us": 436.3,
-    "p99_us": 2061.3,
-    "max_us": 2111.1
+    "samples": 1693,
+    "p50_us": 418.2,
+    "p99_us": 1775.4,
+    "max_us": 1836.6
   },
   "event_to_decision_bar_events": {
-    "samples": 8,
-    "p50_us": 262.5,
-    "p99_us": 589.7,
-    "max_us": 589.7
+    "samples": 22,
+    "p50_us": 352.6,
+    "p99_us": 1712.7,
+    "max_us": 1712.7
   },
   "engine_compute_only": {
-    "samples": 1385,
-    "p50_us": 1.4,
-    "p99_us": 24.9,
-    "max_us": 933.1
+    "samples": 1693,
+    "p50_us": 1.8,
+    "p99_us": 47.3,
+    "max_us": 175.2
   },
-  "exchange_to_receive_ms_p50": 360,
-  "exchange_to_receive_ms_p99": 12707,
-  "paper_pnl_after_costs": -1.8735355844694368
+  "exchange_to_receive_ms_p50": 312,
+  "exchange_to_receive_ms_p99": 17827,
+  "paper_pnl_after_costs": 0.0
 }
