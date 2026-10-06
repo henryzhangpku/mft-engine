@@ -17,10 +17,16 @@ mentions an order endpoint or signing code for Hyperliquid or Kalshi, and
 another fails if anything secret-shaped appears in `data/`, `results/`,
 `docs/` or `experiments/`.
 
-**The honest result:** both strategies lose money after costs on the
-committed sample, in both halves of it. The reasoning-gated version (v2)
-loses less than plain momentum (v1), mostly by trading less. The sample is
-3.5 days, which is far too short to call that an edge.
+**What it proves, measured on live data:** the engine decides in about
+2 microseconds (p99 47), a live feed frame reaches a decision in about
+0.4 ms, Jev reasons over a post in about 120 ms, and replay reproduces every
+decision to the same fingerprint. Kalshi ladders (9,222 minute snapshots) and
+259 real posts flow through the same event loop as prices.
+
+**Results, as they came out:** both pre-registered strategies lose after
+costs on 3.5 days of data; v2 loses less than v1, mostly by trading less.
+That is too short a sample to call an edge, and the numbers are below in
+full.
 
 ## What it does, in one picture
 

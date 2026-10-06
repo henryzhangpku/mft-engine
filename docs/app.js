@@ -56,19 +56,19 @@ function card(label, value, sub, cls = "") {
 
 function drawCards() {
   const d = state.data;
-  const v1 = evalFor("v1"), v2 = evalFor("v2");
+  const v2 = evalFor("v2");
   const relevant = d.posts.filter((p) => Object.values(p.scores).some((s) => s.relevance >= 0.5)).length;
-  const html = [
-    card("v1 PnL after costs", usd(v1.full.pnl_after_costs), `${v1.full.fills} fills, holdout ${usd(v1.second_half.pnl_after_costs)}`, signClass(v1.full.pnl_after_costs)),
-    card("v2 PnL after costs", usd(v2.full.pnl_after_costs), `${v2.full.fills} fills, holdout ${usd(v2.second_half.pnl_after_costs)}`, signClass(v2.full.pnl_after_costs)),
-    card("Costs paid (v2)", usd(v2.full.fees + v2.full.slippage), "4.5 bp taker fee + 1 bp slippage", ""),
-    card("Kalshi vetoes (v2)", String(v2.full.pm_vetoes), `${v2.full.prediction_snapshots} ladder snapshots`),
-    card("Posts scored by Jev", String(d.posts.length), `${relevant} judged relevant to BTC or ETH`),
-  ];
-  if (d.jev) html.push(card("Jev latency p50", `${d.jev.latency_ms_p50} ms`, `p99 ${d.jev.latency_ms_p99} ms, ${d.jev.input_tokens_per_post_mean} tokens/post`));
+  const html = [];
   if (d.paper && d.paper.engine_compute_only) {
-    html.push(card("Engine decision time p50", `${d.paper.engine_compute_only.p50_us} us`, `live paper run, ${d.paper.duration_secs}s`));
+    html.push(card("Engine decision time", `${d.paper.engine_compute_only.p50_us} µs`, `p50 on the live feed, p99 ${d.paper.engine_compute_only.p99_us} µs`));
+    html.push(card("Feed frame to decision", `${(d.paper.event_to_decision_all_events.p50_us / 1000).toFixed(2)} ms`, `p50 over ${d.paper.event_to_decision_all_events.samples} live events`));
   }
+  if (d.jev) html.push(card("Jev reasoning per post", `${d.jev.latency_ms_p50} ms`, `p50, p99 ${d.jev.latency_ms_p99} ms, ${Math.round(d.jev.input_tokens_per_post_mean)} tokens`));
+  html.push(card("Kalshi ladder snapshots", v2.full.prediction_snapshots.toLocaleString(), "minute-level implied distributions, BTC and ETH"));
+  html.push(card("Posts reasoned over", String(d.posts.length), `${relevant} judged relevant to BTC or ETH`));
+  html.push(card("Experiments on the ledger", String(d.ledger.length), "hash-chained, kept and killed alike"));
+  html.push(card("Deterministic replay", v2.full.decisions_fingerprint.slice(0, 8), "decision fingerprint, identical on every run"));
+  html.push(card("Live sources, one loop", "3", "Hyperliquid, Kalshi, Hacker News"));
   $("cards").innerHTML = html.join("");
 }
 
