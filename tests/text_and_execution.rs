@@ -40,7 +40,7 @@ fn the_engine_check_catches_a_riskier_target() {
 
 #[test]
 fn only_the_opposing_probability_matters() {
-    let mut s = TextState::new(TextParams::default());
+    let mut s = TextState::new(TextParams { enabled: true, ..TextParams::default() });
     s.on_signal(&text_signal("BTC", 0, 0.99, 0.0)); // very bullish
     assert_eq!(s.caution_for("BTC", 1_000.0, 1), Caution::NONE, "bullish cannot add to a long");
     assert_eq!(s.caution_for("BTC", -1_000.0, 1), Caution::new(0.0), "bullish vetoes a short");
@@ -62,6 +62,7 @@ fn with_text(signal_bull: f64, signal_bear: f64) -> Vec<Event> {
 
 fn config_long_ttl() -> EngineConfig {
     let mut c = EngineConfig::default();
+    c.text.enabled = true;
     c.text.ttl_ms = 24 * 3_600_000;
     c
 }
@@ -83,15 +84,18 @@ fn bullish_text_changes_nothing_for_a_long() {
 
 #[test]
 fn text_never_increases_gross_exposure_on_real_data() {
-    // On the committed sample, every filled target with text is no larger
-    // than the strategy's raw target.
+    // On the committed sample plus the synthetic posts (which are denser in
+    // opinion than the real ones), no decision's target is ever larger than
+    // the strategy's raw target, or on the other side of zero.
     let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let events = mft_engine::backtest::load_events(&[
         root.join("data/bars_1m.jsonl"),
+        root.join("data/kalshi_ladders.jsonl"),
         root.join("data/text_signals.jsonl"),
+        root.join("tests/fixtures/synthetic_text_signals.jsonl"),
     ])
     .unwrap();
-    let decisions = replay(&mut Engine::new(EngineConfig::default()), &events);
+    let decisions = replay(&mut Engine::new(EngineConfig::v2()), &events);
     for d in &decisions {
         let (raw, target) = match d {
             Decision::Filled { raw_target, target, .. } => (*raw_target, *target),
@@ -131,7 +135,20 @@ fn there_is_no_order_path_in_the_source() {
     for entry in std::fs::read_dir(dir).unwrap() {
         let path = entry.unwrap().path();
         let text = std::fs::read_to_string(&path).unwrap().to_lowercase();
-        for banned in ["hyperliquid.xyz/exchange", "\"/exchange\"", "private_key", "secret_key", "eip712", "sign_l1_action"] {
+        let banned = [
+            "hyperliquid.xyz/exchange",
+            "\"/exchange\"",
+            "private_key",
+            "secret_key",
+            "eip712",
+            "sign_l1_action",
+            // Kalshi trading needs signed requests to /portfolio/orders.
+            "/portfolio/orders",
+            "kalshi-access-signature",
+            "kalshi-access-key",
+            "rsa_pss",
+        ];
+        for banned in banned {
             assert!(!text.contains(banned), "{} mentions {banned}", path.display());
         }
     }
@@ -142,7 +159,7 @@ fn paper_signal_line_is_human_readable() {
     let events = bars_from("BTC", &trending_closes(1));
     let mut eng = Engine::new(EngineConfig::default());
     let decisions = replay(&mut eng, &events);
-    let line = mft_engine::paper::signal_line(decisions.last().unwrap(), &eng);
+    let line = mft_engine::paper::signal_line(decisions.last().unwrap());
     println!("{line}");
     assert!(line.starts_with("SIGNAL 2026-"), "{line}");
     for part in ["BTC-PERP LONG", "target +1000 USD", "reason: 5m momentum z=+", "risk: PASSED"] {

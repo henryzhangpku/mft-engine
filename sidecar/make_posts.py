@@ -7,7 +7,7 @@ read as evidence that text helps or hurts.
 Deterministic: a fixed seed and the first/last bar timestamps from the data
 file fully determine the output.
 
-    python sidecar/make_posts.py            # writes sidecar/posts_sample.jsonl
+    python sidecar/make_posts.py            # writes tests/fixtures/synthetic_posts.jsonl
 """
 
 import json
@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 BARS = ROOT / "data" / "bars_1m.jsonl"
-OUT = ROOT / "sidecar" / "posts_sample.jsonl"
+OUT = ROOT / "tests" / "fixtures" / "synthetic_posts.jsonl"
 N_POSTS = 60
 SEED = 20261005
 

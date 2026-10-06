@@ -74,6 +74,10 @@ pub struct TextSignal {
     pub coin: String,
     pub ts: i64,
     pub published_ts: i64,
+    /// Id of the scored post, e.g. `hn-45567890`, so a signal can be traced
+    /// back to its text.
+    #[serde(default)]
+    pub post_id: String,
     pub source: String,
     /// Probability the post is about this coin at all, in [0, 1].
     pub relevance: f64,
@@ -83,6 +87,32 @@ pub struct TextSignal {
     pub novelty: f64,
     /// Which scorer produced it, e.g. "jev" or "mock-keyword-v1".
     pub scorer: String,
+}
+
+/// A prediction-market snapshot: a ladder of "price at close above strike K"
+/// contracts, turned into probabilities.
+///
+/// Kalshi's KXBTCD / KXETHD hourly events are binary contracts that pay $1 if
+/// the index is above a strike at the event's close. The mid price of each
+/// contract is the market's probability that the price ends above that strike,
+/// so the ladder is the market's survival function for the price at
+/// `close_ts`. `prediction.rs` turns it into an implied median and
+/// P(close above current spot).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PredictionMarket {
+    pub coin: String,
+    /// When this snapshot was known (minute end for backfilled candles, poll
+    /// time live).
+    pub ts: i64,
+    pub venue: String,
+    /// Exchange event id, e.g. `KXBTCD-26OCT0600`.
+    pub event: String,
+    /// When the contracts settle: the horizon of the implied distribution.
+    pub close_ts: i64,
+    /// Strikes in ascending order.
+    pub strikes: Vec<f64>,
+    /// P(price at close > strike), one per strike, non-increasing.
+    pub prob_above: Vec<f64>,
 }
 
 /// A hole in the data that we detected and want every consumer to know about.
@@ -112,6 +142,7 @@ pub enum Event {
     BookTop(BookTop),
     Bar(Bar),
     TextSignal(TextSignal),
+    PredictionMarket(PredictionMarket),
     Gap(Gap),
 }
 
@@ -123,6 +154,7 @@ impl Event {
             Event::BookTop(e) => e.ts,
             Event::Bar(e) => e.ts,
             Event::TextSignal(e) => e.ts,
+            Event::PredictionMarket(e) => e.ts,
             Event::Gap(e) => e.ts,
         }
     }
@@ -133,6 +165,7 @@ impl Event {
             Event::BookTop(e) => &e.coin,
             Event::Bar(e) => &e.coin,
             Event::TextSignal(e) => &e.coin,
+            Event::PredictionMarket(e) => &e.coin,
             Event::Gap(e) => &e.coin,
         }
     }
@@ -144,17 +177,20 @@ impl Event {
             Event::BookTop(_) => "BookTop",
             Event::Bar(_) => "Bar",
             Event::TextSignal(_) => "TextSignal",
+            Event::PredictionMarket(_) => "PredictionMarket",
             Event::Gap(_) => "Gap",
         }
     }
 
     /// Tie-break rank for events that share a timestamp, so that sorting a
     /// merged replay is fully deterministic. Gaps first (they invalidate
-    /// state), then text (context), then market data, then bars (decisions).
+    /// state), then text and prediction markets (context), then market data,
+    /// then bars (decisions).
     pub fn sort_rank(&self) -> u8 {
         match self {
             Event::Gap(_) => 0,
             Event::TextSignal(_) => 1,
+            Event::PredictionMarket(_) => 1,
             Event::BookTop(_) => 2,
             Event::Trade(_) => 3,
             Event::Bar(_) => 4,

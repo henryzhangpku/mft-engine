@@ -20,6 +20,7 @@ pub struct BacktestReport {
     pub end: String,
     pub bars: u64,
     pub text_signals: u64,
+    pub prediction_snapshots: u64,
     pub gaps: u64,
     pub fills: u64,
     pub round_trips: usize,
@@ -36,6 +37,7 @@ pub struct BacktestReport {
     pub max_drawdown: f64,
     pub blocked_orders: BTreeMap<String, u64>,
     pub text_reductions: u64,
+    pub pm_vetoes: u64,
     /// FNV-1a of every decision serialised in order. Same input and config
     /// must give the same fingerprint; that is the determinism claim.
     pub decisions_fingerprint: String,
@@ -59,13 +61,18 @@ pub fn load_events(paths: &[PathBuf]) -> Result<Vec<Event>> {
     Ok(events)
 }
 
-/// Replay `events` through a fresh engine. Returns the report and every
-/// decision in order.
-pub async fn run_backtest(
-    window: &str,
-    events: Vec<Event>,
-    config: EngineConfig,
-) -> (BacktestReport, Vec<Decision>) {
+/// Everything one replay produced.
+#[derive(Debug, Clone)]
+pub struct BacktestRun {
+    pub report: BacktestReport,
+    /// Every decision, in order.
+    pub decisions: Vec<Decision>,
+    /// (bar time, equity) after every bar.
+    pub equity: Vec<(i64, f64)>,
+}
+
+/// Replay `events` through a fresh engine.
+pub async fn run_backtest(window: &str, events: Vec<Event>, config: EngineConfig) -> BacktestRun {
     let start_ts = events.first().map_or(0, Event::ts);
     let end_ts = events.last().map_or(0, Event::ts);
     let mut counts: BTreeMap<&'static str, u64> = BTreeMap::new();
@@ -95,15 +102,14 @@ pub async fn run_backtest(
         if let Some(d) = decision {
             decisions.push(d.clone());
         }
-        if matches!(event, Event::Bar(_)) {
-            equity_curve.push(eng.equity());
+        if let Event::Bar(b) = event {
+            equity_curve.push((b.ts, eng.equity()));
         }
     })
     .await;
     // The producer has finished: the loop only ends when the channel closes.
     let _ = producer.await;
 
-    equity_curve.push(engine.equity());
     let p = &engine.portfolio;
     let pnl = engine.equity();
     let mut blocked = BTreeMap::new();
@@ -120,6 +126,7 @@ pub async fn run_backtest(
         end: format_utc(end_ts),
         bars: counts.get("Bar").copied().unwrap_or(0),
         text_signals: counts.get("TextSignal").copied().unwrap_or(0),
+        prediction_snapshots: counts.get("PredictionMarket").copied().unwrap_or(0),
         gaps: counts.get("Gap").copied().unwrap_or(0),
         fills: p.fills,
         round_trips: p.round_trips.len(),
@@ -130,12 +137,67 @@ pub async fn run_backtest(
         slippage: p.slippage_paid,
         traded_notional: p.traded_notional,
         turnover_multiple: p.traded_notional / engine.config().strategy.target_notional,
-        max_drawdown: max_drawdown(&equity_curve),
+        max_drawdown: max_drawdown(&equity_curve.iter().map(|(_, e)| *e).chain([pnl]).collect::<Vec<_>>()),
         blocked_orders: blocked,
         text_reductions: engine.text_reductions,
+        pm_vetoes: engine.pm_vetoes,
         decisions_fingerprint: format!("{fingerprint:016x}"),
     };
-    (report, decisions)
+    BacktestRun {
+        report,
+        decisions,
+        equity: equity_curve,
+    }
+}
+
+/// One strategy evaluated the standard way: the full sample, then each half.
+#[derive(Debug, Clone, Serialize)]
+pub struct Evaluation {
+    pub name: String,
+    pub full: BacktestReport,
+    pub first_half: BacktestReport,
+    pub second_half: BacktestReport,
+}
+
+/// Run `config` over the full sample and both halves. Returns the evaluation
+/// and the full run (for its decisions and equity curve).
+pub async fn evaluate(name: &str, events: &[Event], config: EngineConfig) -> (Evaluation, BacktestRun) {
+    let (early, late) = split_halves(events);
+    let full = run_backtest("full", events.to_vec(), config).await;
+    let first_half = run_backtest("first_half", early, config).await.report;
+    let second_half = run_backtest("second_half", late, config).await.report;
+    let eval = Evaluation {
+        name: name.to_string(),
+        full: full.report.clone(),
+        first_half,
+        second_half,
+    };
+    (eval, full)
+}
+
+/// The comparison table both `backtest` and `experiment` print.
+pub fn print_table(evals: &[Evaluation]) {
+    println!(
+        "{:<26} {:<12} {:>6} {:>7} {:>10} {:>10} {:>9} {:>8} {:>8} {:>7}",
+        "strategy", "window", "fills", "hit", "pnl_net", "pnl_gross", "costs", "turn_x", "max_dd", "vetoes"
+    );
+    for e in evals {
+        for r in [&e.full, &e.first_half, &e.second_half] {
+            println!(
+                "{:<26} {:<12} {:>6} {:>7} {:>10.2} {:>10.2} {:>9.2} {:>8.1} {:>8.2} {:>7}",
+                e.name,
+                r.window,
+                r.fills,
+                r.hit_rate.map_or("n/a".into(), |h| format!("{:.1}%", h * 100.0)),
+                r.pnl_after_costs,
+                r.pnl_before_costs,
+                r.fees + r.slippage,
+                r.turnover_multiple,
+                r.max_drawdown,
+                r.pm_vetoes,
+            );
+        }
+    }
 }
 
 /// Split events at the midpoint in time: the earlier half is the window you

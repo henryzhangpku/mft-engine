@@ -5,7 +5,7 @@ use crate::event::{Bar, Event, Gap, Trade};
 use anyhow::{Context, Result};
 use std::collections::BTreeMap;
 use std::fs::File;
-use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::io::{BufRead, BufReader};
 use std::path::Path;
 
 pub const BAR_MS: i64 = 60_000;
@@ -121,14 +121,5 @@ pub fn read_events(path: &Path) -> Result<Vec<Event>> {
 }
 
 pub fn write_events(path: &Path, events: &[Event]) -> Result<()> {
-    if let Some(dir) = path.parent() {
-        std::fs::create_dir_all(dir)?;
-    }
-    let mut w = BufWriter::new(File::create(path)?);
-    for ev in events {
-        serde_json::to_writer(&mut w, ev)?;
-        w.write_all(b"\n")?;
-    }
-    w.flush()?;
-    Ok(())
+    crate::artifacts::write_jsonl(path, events)
 }

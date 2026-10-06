@@ -8,13 +8,15 @@
 //! The order of operations for a bar is the whole design in six lines:
 //! 1. update market state (last price, data freshness);
 //! 2. the strategy proposes a target notional;
-//! 3. the text signal may scale that target down (never up), and we check it;
+//! 3. the reasoning features (prediction-market gate, scored social posts)
+//!    may scale that target down, never up, and we check that they did not;
 //! 4. target minus current position becomes an order intent;
 //! 5. every risk rule must allow it, or it is blocked with a reason;
 //! 6. the fill model fills it and the portfolio books it.
 
 use crate::clock::Clock;
 use crate::event::{Bar, BookTop, Event};
+use crate::prediction::{PredictionParams, PredictionState};
 use crate::execution::{Fill, FillModel, Portfolio};
 use crate::risk::{OrderIntent, RiskContext, RiskEngine, RiskLimits};
 use crate::strategy::{Momentum, MomentumParams};
@@ -27,6 +29,7 @@ const DAY_MS: i64 = 86_400_000;
 pub struct EngineConfig {
     pub strategy: MomentumParams,
     pub text: TextParams,
+    pub prediction: PredictionParams,
     pub risk: RiskLimits,
     pub fills: FillModel,
     /// Differences between target and position smaller than this (USD) are
@@ -43,6 +46,7 @@ impl Default for EngineConfig {
         Self {
             strategy: MomentumParams::default(),
             text: TextParams::default(),
+            prediction: PredictionParams::default(),
             risk: RiskLimits::default(),
             fills: FillModel::default(),
             min_order_notional: 50.0,
@@ -51,14 +55,32 @@ impl Default for EngineConfig {
     }
 }
 
+impl EngineConfig {
+    /// Strategy v1: momentum alone, under the risk layer. The default.
+    pub fn v1() -> Self {
+        Self::default()
+    }
+
+    /// Strategy v2: the same momentum, taken only when the prediction market
+    /// leans the same way, and shrunk or vetoed by opposing social posts.
+    pub fn v2() -> Self {
+        let mut c = Self::default();
+        c.prediction.enabled = true;
+        c.text.enabled = true;
+        c
+    }
+}
+
 /// What happened to a proposed order.
 #[derive(Debug, Clone, PartialEq, serde::Serialize)]
 pub enum Decision {
     Filled {
         fill: Fill,
-        /// Strategy target before the text rule, and after it.
+        /// Strategy target before the reasoning gates, and after them.
         raw_target: f64,
         target: f64,
+        /// The inputs behind the decision, in words.
+        why: String,
     },
     Blocked {
         coin: String,
@@ -66,8 +88,26 @@ pub enum Decision {
         qty: f64,
         raw_target: f64,
         target: f64,
+        why: String,
+        /// Which rule blocked it, and why.
         reason: String,
     },
+}
+
+impl Decision {
+    pub fn coin(&self) -> &str {
+        match self {
+            Decision::Filled { fill, .. } => &fill.coin,
+            Decision::Blocked { coin, .. } => coin,
+        }
+    }
+
+    pub fn ts(&self) -> i64 {
+        match self {
+            Decision::Filled { fill, .. } => fill.ts,
+            Decision::Blocked { ts, .. } => *ts,
+        }
+    }
 }
 
 /// What the engine knows about one coin's market.
@@ -91,6 +131,7 @@ pub struct Engine {
     config: EngineConfig,
     strategy: Momentum,
     text: TextState,
+    prediction: PredictionState,
     risk: RiskEngine,
     pub portfolio: Portfolio,
     market: BTreeMap<String, MarketState>,
@@ -98,6 +139,8 @@ pub struct Engine {
     day_start_equity: f64,
     /// How many times the text rule reduced or vetoed a target.
     pub text_reductions: u64,
+    /// How many times the prediction-market gate vetoed a target.
+    pub pm_vetoes: u64,
 }
 
 impl Engine {
@@ -111,17 +154,24 @@ impl Engine {
             config,
             strategy: Momentum::new(config.strategy),
             text: TextState::new(config.text),
+            prediction: PredictionState::new(config.prediction),
             risk,
             portfolio: Portfolio::default(),
             market: BTreeMap::new(),
             current_day: None,
             day_start_equity: 0.0,
             text_reductions: 0,
+            pm_vetoes: 0,
         }
     }
 
     pub fn config(&self) -> &EngineConfig {
         &self.config
+    }
+
+    /// The prediction-market view for `coin` at `spot`, for reports.
+    pub fn pm_view(&self, coin: &str, spot: f64, now: i64) -> crate::prediction::PmView {
+        self.prediction.view(coin, spot, now)
     }
 
     /// The strategy's latest z-score for `coin`, for explaining decisions.
@@ -169,6 +219,10 @@ impl Engine {
                 self.text.on_signal(s);
                 None
             }
+            Event::PredictionMarket(p) => {
+                self.prediction.on_snapshot(p);
+                None
+            }
             Event::Gap(g) => {
                 // A hole in trades, bars or the connection means the bar
                 // series may be missing prices: forget the history so no
@@ -195,10 +249,12 @@ impl Engine {
         // 2. Strategy target.
         let raw_target = self.strategy.on_bar(bar);
 
-        // 3. Text caution, then the check that it did not add risk.
-        let caution = self.text.caution_for(&bar.coin, raw_target, now);
-        let target = caution.apply(raw_target);
+        // 3. Reasoning gates, then the check that they did not add risk.
         let position = self.portfolio.position(&bar.coin);
+        let pm = self.prediction.caution_for(&bar.coin, raw_target, position * bar.close, bar.close, now);
+        let text = self.text.caution_for(&bar.coin, raw_target, now);
+        let target = text.apply(pm.apply(raw_target));
+        let why = self.explain(&bar.coin, bar.close, now, pm.value(), text.value());
         if let Err(reason) = check_not_riskier(raw_target, target) {
             return Some(Decision::Blocked {
                 coin: bar.coin.clone(),
@@ -206,10 +262,14 @@ impl Engine {
                 qty: 0.0,
                 raw_target,
                 target,
-                reason: format!("text_rule: {reason}"),
+                why,
+                reason: format!("gate_rule: {reason}"),
             });
         }
-        if target != raw_target {
+        if pm.value() < 1.0 {
+            self.pm_vetoes += 1;
+        }
+        if text.value() < 1.0 {
             self.text_reductions += 1;
         }
 
@@ -240,6 +300,7 @@ impl Engine {
                 qty: delta_qty,
                 raw_target,
                 target,
+                why,
                 reason,
             });
         }
@@ -251,7 +312,23 @@ impl Engine {
             fill,
             raw_target,
             target,
+            why,
         })
+    }
+
+    /// One line of the inputs behind a bar's decision, for logs and the demo.
+    fn explain(&self, coin: &str, spot: f64, now: i64, pm_mult: f64, text_mult: f64) -> String {
+        let fmt = |v: Option<f64>, digits: usize| v.map_or("n/a".to_string(), |x| format!("{x:.digits$}"));
+        let z = self.strategy.last_z(coin).map_or("n/a".to_string(), |z| format!("{z:+.2}"));
+        let mut out = format!("5m momentum z={z}");
+        if self.config.prediction.enabled {
+            let v = self.prediction.view(coin, spot, now);
+            out += &format!("; kalshi P(up)={} median={} gate x{pm_mult:.0}", fmt(v.p_up, 2), fmt(v.median, 0));
+        }
+        if self.config.text.enabled {
+            out += &format!("; social x{text_mult:.2}");
+        }
+        out
     }
 
     /// The touch if the book is fresh, otherwise the last price. A crossed or

@@ -13,17 +13,25 @@ use std::path::PathBuf;
 
 fn committed_data() -> Vec<Event> {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    load_events(&[root.join("data/bars_1m.jsonl"), root.join("data/text_signals.jsonl")]).unwrap()
+    load_events(&[
+        root.join("data/bars_1m.jsonl"),
+        root.join("data/kalshi_ladders.jsonl"),
+        root.join("data/text_signals.jsonl"),
+    ])
+    .unwrap()
 }
 
 #[tokio::test]
 async fn same_input_same_output() {
     let events = committed_data();
-    let (a, da) = run_backtest("a", events.clone(), EngineConfig::default()).await;
-    let (b, db) = run_backtest("a", events, EngineConfig::default()).await;
-    assert!(a.fills > 0, "the sample should produce some trades");
-    assert_eq!(da, db, "decisions differ between two identical replays");
-    assert_eq!(a, b, "reports differ between two identical replays");
+    for config in [EngineConfig::v1(), EngineConfig::v2()] {
+        let a = run_backtest("a", events.clone(), config).await;
+        let b = run_backtest("a", events.clone(), config).await;
+        assert!(a.report.fills > 0, "the sample should produce some trades");
+        assert_eq!(a.decisions, b.decisions, "decisions differ between two identical replays");
+        assert_eq!(a.report, b.report, "reports differ between two identical replays");
+        assert_eq!(a.equity, b.equity);
+    }
 }
 
 #[test]
@@ -32,10 +40,12 @@ fn synchronous_and_async_paths_agree() {
     // engine.on_event must give identical decisions: the loop adds nothing.
     let events = committed_data();
     let rt = tokio::runtime::Runtime::new().unwrap();
-    let (_, via_loop) = rt.block_on(run_backtest("x", events.clone(), EngineConfig::default()));
-    let mut eng = Engine::new(EngineConfig::default());
-    let direct = replay(&mut eng, &events);
-    assert_eq!(via_loop, direct);
+    for config in [EngineConfig::v1(), EngineConfig::v2()] {
+        let via_loop = rt.block_on(run_backtest("x", events.clone(), config)).decisions;
+        let mut eng = Engine::new(config);
+        let direct = replay(&mut eng, &events);
+        assert_eq!(via_loop, direct);
+    }
 }
 
 #[test]

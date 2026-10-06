@@ -4,18 +4,20 @@ version = "0.1.0"
 edition = "2021"
 rust-version = "1.80"
 license = "MIT"
-description = "A small, readable mid-frequency trading engine for crypto perpetuals (paper only)."
+description = "A small, readable mid-frequency trading engine: reasoning signals from social and prediction-market data, gated by code (paper only)."
 
 [dependencies]
 anyhow = "1"
 clap = { version = "4", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+serde_json = { version = "1", features = ["float_roundtrip"] }  # exact f64 parse, so ledger hashes re-verify
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync", "signal"] }
 tokio-tungstenite = { version = "0.24", features = ["native-tls"] }
 futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
 ureq = { version = "2", default-features = false, features = ["json", "native-tls"] }
 native-tls = "0.2"
+sha2 = "0.10"
+toml = "0.8"
 
 [profile.release]
 debug = 1

@@ -16,7 +16,8 @@ use crate::hyperliquid::fetch_candles;
 use crate::metrics::percentile;
 use anyhow::Result;
 use serde::Serialize;
-use std::path::Path;
+use crate::artifacts::{write_json, write_jsonl};
+use std::path::PathBuf;
 use std::time::{Duration, Instant};
 use tokio::sync::mpsc;
 
@@ -43,6 +44,7 @@ pub struct PaperReport {
     pub started: String,
     pub duration_secs: u64,
     pub coins: Vec<String>,
+    pub strategy: String,
     pub events_by_kind: std::collections::BTreeMap<&'static str, u64>,
     pub decisions: u64,
     pub fills: u64,
@@ -55,20 +57,17 @@ pub struct PaperReport {
 }
 
 /// One line a person can read and act on by hand.
-pub fn signal_line(decision: &Decision, engine: &Engine) -> String {
-    let (coin, ts, qty, target, raw, risk) = match decision {
-        Decision::Filled { fill, raw_target, target } => (
-            fill.coin.as_str(),
-            fill.ts,
+pub fn signal_line(decision: &Decision) -> String {
+    let (qty, target, why, risk) = match decision {
+        Decision::Filled { fill, target, why, .. } => (
             fill.qty,
             *target,
-            *raw_target,
+            why.as_str(),
             format!("PASSED, paper fill {:+.5} @ {:.2} fee {:.4}", fill.qty, fill.px, fill.fee),
         ),
-        Decision::Blocked { coin, ts, qty, raw_target, target, reason } => {
-            (coin.as_str(), *ts, *qty, *target, *raw_target, format!("BLOCKED ({reason})"))
-        }
+        Decision::Blocked { qty, target, why, reason, .. } => (*qty, *target, why.as_str(), format!("BLOCKED ({reason})")),
     };
+    let coin = decision.coin();
     let direction = if target > 0.0 {
         "LONG"
     } else if target < 0.0 {
@@ -76,15 +75,9 @@ pub fn signal_line(decision: &Decision, engine: &Engine) -> String {
     } else {
         "FLAT"
     };
-    let z = engine.signal_z(coin).map_or("n/a".to_string(), |z| format!("{z:+.2}"));
-    let text = if target != raw {
-        format!(", text signal cut target from {raw:+.0} to {target:+.0}")
-    } else {
-        String::new()
-    };
     format!(
-        "SIGNAL {} {coin}-PERP {direction} target {target:+.0} USD (order {qty:+.5} {coin}) | reason: 5m momentum z={z}{text} | risk: {risk}",
-        format_utc(ts)
+        "SIGNAL {} {coin}-PERP {direction} target {target:+.0} USD (order {qty:+.5} {coin}) | reason: {why} | risk: {risk}",
+        format_utc(decision.ts())
     )
 }
 
@@ -112,15 +105,88 @@ async fn warm_up(engine: &mut Engine, coins: &[String]) {
     }
 }
 
-pub async fn run(coins: Vec<String>, duration: Duration, config: EngineConfig, out: &Path) -> Result<PaperReport> {
+/// Poll Kalshi for each coin's next-closing ladder every `every`, sending
+/// each snapshot into the engine channel. A failed poll is logged and
+/// skipped; the gate then sees an ageing ladder and closes on its own.
+async fn poll_kalshi(coins: Vec<String>, tx: mpsc::Sender<Envelope>, every: Duration) {
+    let mut tick = tokio::time::interval(every);
+    loop {
+        tick.tick().await;
+        for coin in &coins {
+            if crate::kalshi::series_for(coin).is_none() {
+                continue;
+            }
+            let c = coin.clone();
+            let fetched = tokio::task::spawn_blocking(move || crate::kalshi::fetch_live_ladder(&c, wall_now_ms())).await;
+            match fetched {
+                Ok(Ok(Some(pm))) => {
+                    let event = Event::PredictionMarket(pm);
+                    if tx.send(Envelope { event, received: Some(Instant::now()) }).await.is_err() {
+                        return;
+                    }
+                }
+                Ok(Ok(None)) => eprintln!("[kalshi] no usable ladder for {coin}"),
+                Ok(Err(e)) => eprintln!("[kalshi] poll failed for {coin}: {e:#}"),
+                Err(e) => eprintln!("[kalshi] poll task failed: {e}"),
+            }
+        }
+    }
+}
+
+/// Follow a JSONL file of `TextSignal` events written by the sidecar
+/// (`sidecar/live_social.py`), sending each new complete line into the engine
+/// channel. Reads from the start: old signals expire by their own TTL.
+async fn tail_text_feed(path: PathBuf, tx: mpsc::Sender<Envelope>) {
+    let mut offset = 0usize;
+    let mut tick = tokio::time::interval(Duration::from_secs(1));
+    loop {
+        tick.tick().await;
+        // Small file, read whole; a missing file just means "nothing yet".
+        let Ok(bytes) = std::fs::read(&path) else { continue };
+        let Some(end) = bytes.iter().rposition(|b| *b == b'\n') else { continue };
+        if end < offset {
+            continue;
+        }
+        for line in String::from_utf8_lossy(&bytes[offset..=end]).lines() {
+            match serde_json::from_str::<Event>(line) {
+                Ok(event @ Event::TextSignal(_)) => {
+                    if tx.send(Envelope { event, received: Some(Instant::now()) }).await.is_err() {
+                        return;
+                    }
+                }
+                Ok(other) => eprintln!("[text] ignoring non-text event {}", other.kind()),
+                Err(e) => eprintln!("[text] bad line skipped: {e}"),
+            }
+        }
+        offset = end + 1;
+    }
+}
+
+pub struct PaperOptions {
+    pub coins: Vec<String>,
+    pub duration: Duration,
+    pub config: EngineConfig,
+    pub out: PathBuf,
+    /// Where to write every event the engine saw, for replay.
+    pub events_out: PathBuf,
+    /// The sidecar's live TextSignal file, if any.
+    pub text_feed: Option<PathBuf>,
+    pub kalshi_every: Duration,
+}
+
+pub async fn run(opts: PaperOptions) -> Result<PaperReport> {
+    let PaperOptions { coins, duration, config, out, events_out, text_feed, kalshi_every } = opts;
     let started = wall_now_ms();
     let mut engine = Engine::new(config);
     warm_up(&mut engine, &coins).await;
 
-    // Live source: websocket -> bar builder -> engine channel.
+    // Live sources, all into one engine channel:
+    // websocket -> bar builder; Kalshi poller; sidecar text file.
     let (raw_tx, mut raw_rx) = mpsc::channel::<Envelope>(10_000);
     let (tx, rx) = mpsc::channel::<Envelope>(10_000);
     let feed = tokio::spawn(run_feed(coins.clone(), raw_tx));
+    let kalshi = tokio::spawn(poll_kalshi(coins.clone(), tx.clone(), kalshi_every));
+    let text = text_feed.map(|p| tokio::spawn(tail_text_feed(p, tx.clone())));
     let bars = tokio::spawn(async move {
         let mut builder = BarBuilder::new();
         while let Some(env) = raw_rx.recv().await {
@@ -145,22 +211,43 @@ pub async fn run(coins: Vec<String>, duration: Duration, config: EngineConfig, o
     println!("[paper] running for {duration:?} on {coins:?}; paper fills only, no orders are sent anywhere");
     let mut clock = WallClock;
     let deadline = Instant::now() + duration;
+    let mut seen: Vec<Event> = Vec::new();
     let stats: LoopStats = event_loop::run(rx, &mut engine, &mut clock, Some(deadline), |event, decision, eng| {
         if let Some(d) = decision {
-            println!("{}", signal_line(d, eng));
+            println!("{}", signal_line(d));
         }
-        if let Event::Gap(g) = event {
-            println!("[paper] GAP {} {} {}", g.coin, g.stream, g.reason);
+        match event {
+            Event::Gap(g) => println!("[paper] GAP {} {} {}", g.coin, g.stream, g.reason),
+            Event::PredictionMarket(p) => {
+                let spot = eng.marks().get(&p.coin).copied().unwrap_or(f64::NAN);
+                let v = eng.pm_view(&p.coin, spot, p.ts);
+                let show = |x: Option<f64>, d: usize| x.map_or("n/a".into(), |x| format!("{x:.d$}"));
+                println!(
+                    "[kalshi] {} {} {} strikes, implied median {}, P(close > spot {spot:.1}) = {}",
+                    p.coin, p.event, p.strikes.len(), show(v.median, 0), show(v.p_up, 3)
+                );
+            }
+            Event::TextSignal(t) if t.relevance >= 0.5 => println!(
+                "[social] {} {} relevance {:.2} bullish {:.2} bearish {:.2} ({})",
+                t.coin, t.post_id, t.relevance, t.bullish, t.bearish, t.scorer
+            ),
+            _ => {}
         }
+        seen.push(event.clone());
     })
     .await;
     feed.abort();
     bars.abort();
+    kalshi.abort();
+    if let Some(t) = text {
+        t.abort();
+    }
 
     let report = PaperReport {
         started: format_utc(started),
         duration_secs: duration.as_secs(),
         coins,
+        strategy: if config.prediction.enabled { "v2" } else { "v1" }.into(),
         events_by_kind: stats.events_by_kind.clone(),
         decisions: stats.decisions,
         fills: engine.portfolio.fills,
@@ -171,9 +258,7 @@ pub async fn run(coins: Vec<String>, duration: Duration, config: EngineConfig, o
         exchange_to_receive_ms_p99: percentile(&stats.feed_latency_ms, 99.0),
         paper_pnl_after_costs: engine.equity(),
     };
-    if let Some(dir) = out.parent() {
-        std::fs::create_dir_all(dir)?;
-    }
-    std::fs::write(out, serde_json::to_string_pretty(&report)?)?;
+    write_json(&out, &report)?;
+    write_jsonl(&events_out, &seen)?;
     Ok(report)
 }

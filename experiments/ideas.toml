@@ -1,0 +1,54 @@
+# Ideas to test, each with its hypothesis written before it was run.
+#
+# Run:     mft-engine experiment --file experiments/ideas.toml
+# Verify:  mft-engine experiment --verify
+#
+# Every variant goes through the same backtester (full sample, first half,
+# second half) and is appended to results/ledger.jsonl, a hash-chained log.
+# The verdict rule is fixed in src/experiment.rs: kept only if the second-half
+# (holdout) PnL after costs is positive AND beats the baseline's. The first
+# variant is the baseline. Killed ideas stay on the ledger.
+#
+# `set` overrides engine config fields by dotted path (see EngineConfig).
+
+data = ["data/bars_1m.jsonl", "data/kalshi_ladders.jsonl", "data/text_signals.jsonl"]
+
+[[variant]]
+name = "v1_momentum"
+base = "v1"
+hypothesis = "Baseline. Preregistered 5m vol-normalised momentum, |z| >= 2, under the risk layer. Expected to lose after costs."
+
+[[variant]]
+name = "v2_reasoning_gated"
+base = "v2"
+hypothesis = "Entries only when the Kalshi hourly ladder gives P(close > spot) on our side of 0.5; opposing Jev-scored HN posts shrink or veto. Fewer bad entries, so less cost; still unlikely to be positive."
+
+[[variant]]
+name = "v2_gate_every_bar"
+base = "v2"
+hypothesis = "The first v2 implementation: the prediction-market gate is re-checked on every bar while holding. Recorded because it was run first; it churned."
+set = { "prediction.gate_entries_only" = false }
+
+[[variant]]
+name = "v2_kalshi_only"
+base = "v2"
+hypothesis = "Isolate the prediction-market gate: same as v2 with the social feature off."
+set = { "text.enabled" = false }
+
+[[variant]]
+name = "v2_social_only"
+base = "v2"
+hypothesis = "Isolate the social feature: same as v2 with the prediction-market gate off. Few relevant posts, so expect almost no difference from v1."
+set = { "prediction.enabled" = false }
+
+[[variant]]
+name = "v2_kalshi_strict_0p6"
+base = "v2"
+hypothesis = "Require the market to lean harder (P > 0.6 on our side). Fewer trades; may cut cost more than it cuts edge."
+set = { "prediction.min_agree" = 0.6 }
+
+[[variant]]
+name = "v1_entry_z_3"
+base = "v1"
+hypothesis = "Fewer, stronger momentum entries (|z| >= 3) so each trade has a better chance of clearing 11 bps of cost."
+set = { "strategy.entry_z" = 3.0 }

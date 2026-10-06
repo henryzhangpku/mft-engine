@@ -4,23 +4,25 @@ For each post and each coin it writes one JSONL line in the engine's event
 format:
 
     {"type":"TextSignal","coin":"BTC","ts":...,"published_ts":...,
-     "source":...,"relevance":...,"bullish":...,"bearish":...,
+     "post_id":...,"source":...,"relevance":...,"bullish":...,"bearish":...,
      "novelty":...,"scorer":"jev"}
 
-`ts` is when the score became available: publication time plus the scoring
-latency (measured for Jev, an assumed fixed delay for the mock). Using the
-publication time instead would let the backtest react to a post before it
-could have been scored.
+Point in time. `ts` is when the engine is allowed to see the score:
+publication time, plus how long until our poller would have fetched the post
+(`--poll-delay-ms`, 60 s by default, matching the live sidecar), plus the
+scoring latency (measured for Jev, an assumed 1 s for the mock). A backtest
+therefore never acts on a post before it could have been fetched and scored.
+The scorer sees only the post's text.
 
 Two scorers:
-  jev   TypeSafe's Jev via typesafe-sdk. Used when TYPESAFE_API_KEY is set.
-        The key is read by the SDK from the environment; this script never
-        reads, prints or stores it.
-  mock  A deterministic keyword scorer, clearly labelled "mock-keyword-v1".
-        Used when there is no key, or with --scorer mock.
+  jev   TypeSafe's Jev via typesafe-sdk, used when TYPESAFE_API_KEY is set.
+        The SDK reads the key from the environment; this script never reads,
+        prints or stores it.
+  mock  A deterministic keyword scorer, labelled "mock-keyword-v1". Used when
+        there is no key, or with --scorer mock.
 
-    python sidecar/score_posts.py                     # jev if a key is set, else mock
-    python sidecar/score_posts.py --scorer mock --out data/text_signals_mock.jsonl
+    python sidecar/score_posts.py --posts data/hn_posts.jsonl --out data/text_signals.jsonl
+    python sidecar/score_posts.py --scorer mock --posts sidecar/posts_sample.jsonl --poll-delay-ms 0
 """
 
 import argparse
@@ -31,6 +33,8 @@ import os
 import statistics
 import time
 from pathlib import Path
+
+from secrets_guard import write_lines
 
 ROOT = Path(__file__).resolve().parent.parent
 COINS = {"BTC": "bitcoin (BTC)", "ETH": "ether / Ethereum (ETH)"}
@@ -68,7 +72,8 @@ class JevScorer:
         from typesafe_sdk import AsyncTypeSafeClient
         self.client = AsyncTypeSafeClient()  # reads TYPESAFE_API_KEY itself
 
-    def questions(self):
+    @staticmethod
+    def questions():
         from typesafe_sdk import Choice, Noul
         q = {"novelty": Noul(instructions="Is this post new information, rather than a repost or a rehash of older news?")}
         for coin, name in COINS.items():
@@ -84,6 +89,7 @@ class JevScorer:
         return q
 
     async def score(self, text):
+        """Returns (scores per coin, latency ms, input tokens)."""
         t0 = time.perf_counter()
         resp = await self.client.system_one(state=f"Post: {text}", questions=self.questions())
         latency_ms = (time.perf_counter() - t0) * 1000.0
@@ -101,50 +107,46 @@ class JevScorer:
         return out, latency_ms, tokens
 
 
+class MockScorer:
+    name = "mock-keyword-v1"
+
+    async def score(self, text):
+        return mock_score(text), float(MOCK_DELAY_MS), 0
+
+
+def make_scorer(choice):
+    """jev, mock, or auto (jev if TYPESAFE_API_KEY is set)."""
+    if choice == "jev" or (choice == "auto" and os.environ.get("TYPESAFE_API_KEY")):
+        return JevScorer()
+    return MockScorer()
+
+
+def signal_lines(post, scores, scorer_name, ts):
+    """One TextSignal event (as a dict) per coin for a scored post."""
+    return [{
+        "type": "TextSignal",
+        "coin": coin,
+        "ts": ts,
+        "published_ts": post["published_ts"],
+        "post_id": post["id"],
+        "source": post["source"],
+        "relevance": round(s["relevance"], 6),
+        "bullish": round(s["bullish"], 6),
+        "bearish": round(s["bearish"], 6),
+        "novelty": round(s["novelty"], 6),
+        "scorer": scorer_name,
+    } for coin, s in scores.items()]
+
+
 def pct(values, p):
     """Nearest-rank percentile, matching the Rust engine's definition."""
     v = sorted(values)
     return v[max(1, math.ceil(p / 100 * len(v))) - 1] if v else None
 
 
-async def run(args):
-    posts = [json.loads(l) for l in Path(args.posts).read_text().splitlines() if l.strip()]
-    use_jev = args.scorer == "jev" or (args.scorer == "auto" and os.environ.get("TYPESAFE_API_KEY"))
-    scorer = JevScorer() if use_jev else None
-    name = "jev" if use_jev else "mock-keyword-v1"
-    print(f"scorer: {name} ({'TYPESAFE_API_KEY present' if use_jev else 'offline mock, no key used'})")
-
-    lines, latencies, tokens = [], [], []
-    for p in posts:
-        if scorer:
-            scores, latency_ms, tok = await scorer.score(p["text"])
-            latencies.append(latency_ms)
-            tokens.append(tok)
-            delay = math.ceil(latency_ms)
-        else:
-            scores, delay = mock_score(p["text"]), MOCK_DELAY_MS
-        for coin, s in scores.items():
-            lines.append({
-                "type": "TextSignal",
-                "coin": coin,
-                "ts": p["published_ts"] + delay,
-                "published_ts": p["published_ts"],
-                "source": p["source"],
-                "relevance": round(s["relevance"], 6),
-                "bullish": round(s["bullish"], 6),
-                "bearish": round(s["bearish"], 6),
-                "novelty": round(s["novelty"], 6),
-                "scorer": name,
-            })
-    lines.sort(key=lambda l: (l["ts"], l["coin"]))
-    out = Path(args.out)
-    with out.open("w", newline="\n") as f:
-        for l in lines:
-            f.write(json.dumps(l) + "\n")
-    print(f"wrote {len(lines)} TextSignal events for {len(posts)} posts to {out}")
-
-    stats = {"scorer": name, "posts": len(posts)}
-    if latencies:
+def summary(name, n_posts, latencies, tokens):
+    stats = {"scorer": name, "posts": n_posts}
+    if name == "jev" and latencies:
         stats.update({
             "latency_ms_p50": round(pct(latencies, 50), 1),
             "latency_ms_p99": round(pct(latencies, 99), 1),
@@ -155,16 +157,38 @@ async def run(args):
         })
     else:
         stats["note"] = f"mock: no network, assumed scoring delay {MOCK_DELAY_MS} ms"
+    return stats
+
+
+async def run(args):
+    posts = [json.loads(l) for l in Path(args.posts).read_text(encoding="utf-8").splitlines() if l.strip()]
+    scorer = make_scorer(args.scorer)
+    print(f"scorer: {scorer.name} ({'TYPESAFE_API_KEY present' if scorer.name == 'jev' else 'offline mock, no key used'})")
+
+    lines, latencies, tokens = [], [], []
+    for p in posts:
+        scores, latency_ms, tok = await scorer.score(p["text"])
+        latencies.append(latency_ms)
+        tokens.append(tok)
+        ts = p["published_ts"] + args.poll_delay_ms + math.ceil(latency_ms)
+        lines.extend(signal_lines(p, scores, scorer.name, ts))
+    lines.sort(key=lambda l: (l["ts"], l["coin"], l["post_id"]))
+    write_lines(args.out, [json.dumps(l) for l in lines])
+    print(f"wrote {len(lines)} TextSignal events for {len(posts)} posts to {args.out}")
+
+    stats = summary(scorer.name, len(posts), latencies, tokens)
     print(json.dumps(stats, indent=2))
     if args.stats:
-        Path(args.stats).write_text(json.dumps(stats, indent=2) + "\n", newline="\n")
+        write_lines(args.stats, [json.dumps(stats, indent=2)])
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--posts", default=str(ROOT / "sidecar" / "posts_sample.jsonl"))
+    ap.add_argument("--posts", default=str(ROOT / "data" / "hn_posts.jsonl"))
     ap.add_argument("--out", default=str(ROOT / "data" / "text_signals.jsonl"))
     ap.add_argument("--scorer", choices=["auto", "jev", "mock"], default="auto")
+    ap.add_argument("--poll-delay-ms", type=int, default=60_000,
+                    help="assumed delay between publication and our poller fetching the post")
     ap.add_argument("--stats", default=None, help="optional path for a JSON summary of latency and tokens")
     asyncio.run(run(ap.parse_args()))
 

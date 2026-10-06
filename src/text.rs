@@ -18,6 +18,8 @@ use std::collections::BTreeMap;
 
 #[derive(Debug, Clone, Copy, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct TextParams {
+    /// Off in strategy v1, on in v2.
+    pub enabled: bool,
     /// How long a scored post stays in force after it becomes available.
     pub ttl_ms: i64,
     /// Posts less relevant than this are ignored.
@@ -30,6 +32,7 @@ pub struct TextParams {
 impl Default for TextParams {
     fn default() -> Self {
         Self {
+            enabled: false,
             ttl_ms: 30 * 60_000,
             min_relevance: 0.5,
             veto_at: 0.6,
@@ -115,7 +118,7 @@ impl TextState {
     /// The opposing probability is weighted by relevance and novelty, so a
     /// repost of old news brakes less than fresh news.
     pub fn caution_for(&self, coin: &str, target_notional: f64, now_ms: i64) -> Caution {
-        if target_notional == 0.0 {
+        if !self.params.enabled || target_notional == 0.0 {
             return Caution::NONE;
         }
         let Some(sig) = self.latest.get(coin) else {

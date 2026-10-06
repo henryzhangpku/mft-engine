@@ -70,6 +70,7 @@ pub fn text_signal(coin: &str, ts: i64, bullish: f64, bearish: f64) -> TextSigna
         coin: coin.into(),
         ts,
         published_ts: ts,
+        post_id: "test".into(),
         source: "test".into(),
         relevance: 1.0,
         bullish,

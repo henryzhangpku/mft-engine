@@ -88,3 +88,36 @@ pub fn format_utc(ms: i64) -> String {
     let year = yoe + era * 400 + i64::from(month <= 2);
     format!("{year:04}-{month:02}-{day:02}T{h:02}:{m:02}:{s:02}Z")
 }
+
+/// Parse an RFC 3339 UTC timestamp such as `2026-10-06T04:00:00Z` or
+/// `2026-10-05T09:00:33.381895Z` into Unix milliseconds. Only the `Z` form is
+/// accepted, which is what Kalshi returns; anything else is an error rather
+/// than a guess about the offset.
+pub fn parse_utc(s: &str) -> Option<i64> {
+    let s = s.strip_suffix('Z')?;
+    let (date, time) = s.split_once('T')?;
+    let mut d = date.split('-').map(|p| p.parse::<i64>().ok());
+    let (y, mo, da) = (d.next()??, d.next()??, d.next()??);
+    let (hms, frac) = time.split_once('.').unwrap_or((time, ""));
+    let mut t = hms.split(':').map(|p| p.parse::<i64>().ok());
+    let (h, mi, se) = (t.next()??, t.next()??, t.next()??);
+    if !(1..=12).contains(&mo) || !(1..=31).contains(&da) || h > 23 || mi > 59 || se > 60 {
+        return None;
+    }
+    // Milliseconds from the first three fractional digits, if any.
+    let ms = if frac.is_empty() {
+        0
+    } else {
+        let digits: String = frac.chars().take(3).collect();
+        format!("{digits:0<3}").parse::<i64>().ok()?
+    };
+    // Howard Hinnant's days_from_civil, the inverse of format_utc's step.
+    let y2 = if mo <= 2 { y - 1 } else { y };
+    let era = y2.div_euclid(400);
+    let yoe = y2.rem_euclid(400);
+    let mp = if mo > 2 { mo - 3 } else { mo + 9 };
+    let doy = (153 * mp + 2) / 5 + da - 1;
+    let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    let days = era * 146_097 + doe - 719_468;
+    Some(((days * 86_400 + h * 3600 + mi * 60 + se) * 1000) + ms)
+}

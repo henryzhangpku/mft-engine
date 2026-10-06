@@ -8,19 +8,25 @@
 //! (the shared path), `risk`, `text`, `strategy`, `execution`, then
 //! `event_loop` and the two drivers `backtest` and `paper`.
 
+pub mod artifacts;
 pub mod backtest;
 pub mod bars;
 pub mod clock;
+pub mod demo;
 pub mod engine;
 pub mod event;
 pub mod event_loop;
 pub mod execution;
+pub mod experiment;
 pub mod feed;
 pub mod fetch;
 pub mod gap;
 pub mod hyperliquid;
+pub mod kalshi;
+pub mod ledger;
 pub mod metrics;
 pub mod paper;
+pub mod prediction;
 pub mod record;
 pub mod risk;
 pub mod strategy;

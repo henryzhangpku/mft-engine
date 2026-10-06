@@ -62,3 +62,34 @@ pub fn run(coins: &[String], days: f64, out: &Path) -> Result<()> {
     println!("wrote {} bars to {}", events.len(), out.display());
     Ok(())
 }
+
+/// `fetch-kalshi`: backfill Kalshi hourly ladders over the window covered by
+/// a bar file, one `PredictionMarket` event per minute. The bars supply the
+/// spot price used to pick which strikes to download; they are not mixed
+/// into the output.
+pub fn run_kalshi(coins: &[String], bars_path: &Path, strikes_each_side: usize, out: &Path) -> Result<()> {
+    let bars = crate::bars::read_events(bars_path)?;
+    let mut events: Vec<Event> = Vec::new();
+    for coin in coins {
+        let opens: BTreeMap<i64, f64> = bars
+            .iter()
+            .filter_map(|e| match e {
+                Event::Bar(b) if &b.coin == coin => Some((b.open_ts, b.open)),
+                _ => None,
+            })
+            .collect();
+        let (Some(&start), Some(&end)) = (opens.keys().next(), opens.keys().next_back()) else {
+            println!("{coin}: no bars, skipped");
+            continue;
+        };
+        let spot_at = |t: i64| opens.range(..=t).next_back().map(|(_, px)| *px);
+        let ladders = crate::kalshi::backfill(coin, start, end + BAR_MS, strikes_each_side, &spot_at)?;
+        let hours: std::collections::BTreeSet<&str> = ladders.iter().map(|p| p.event.as_str()).collect();
+        println!("{coin}: {} minute snapshots from {} hourly events", ladders.len(), hours.len());
+        events.extend(ladders.into_iter().map(Event::PredictionMarket));
+    }
+    sort_for_replay(&mut events);
+    write_events(out, &events)?;
+    println!("wrote {} prediction-market events to {}", events.len(), out.display());
+    Ok(())
+}
