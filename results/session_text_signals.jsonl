@@ -1,0 +1,6 @@
+{"type": "TextSignal", "coin": "BTC", "ts": 1791263585686, "published_ts": 1791262057000, "post_id": "hn-49974311", "source": "hackernews", "relevance": 0.01, "bullish": 0.0, "bearish": 0.0, "novelty": 0.54, "scorer": "jev"}
+{"type": "TextSignal", "coin": "ETH", "ts": 1791263585686, "published_ts": 1791262057000, "post_id": "hn-49974311", "source": "hackernews", "relevance": 0.01, "bullish": 0.0, "bearish": 0.0, "novelty": 0.54, "scorer": "jev"}
+{"type": "TextSignal", "coin": "BTC", "ts": 1791263585794, "published_ts": 1791263085000, "post_id": "hn-49974402", "source": "hackernews", "relevance": 0.01, "bullish": 0.0, "bearish": 0.0, "novelty": 0.58, "scorer": "jev"}
+{"type": "TextSignal", "coin": "ETH", "ts": 1791263585794, "published_ts": 1791263085000, "post_id": "hn-49974402", "source": "hackernews", "relevance": 0.04, "bullish": 0.0, "bearish": 0.0, "novelty": 0.58, "scorer": "jev"}
+{"type": "TextSignal", "coin": "BTC", "ts": 1791265312701, "published_ts": 1791265254000, "post_id": "hn-49974637", "source": "hackernews", "relevance": 0.01, "bullish": 0.0, "bearish": 0.0, "novelty": 0.24, "scorer": "jev"}
+{"type": "TextSignal", "coin": "ETH", "ts": 1791265312701, "published_ts": 1791265254000, "post_id": "hn-49974637", "source": "hackernews", "relevance": 0.01, "bullish": 0.0, "bearish": 0.0, "novelty": 0.24, "scorer": "jev"}

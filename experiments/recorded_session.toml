@@ -1,0 +1,41 @@
+# The live-recorded session: the only data with top-wallet positioning.
+# Hypotheses written before the session was replayed.
+#
+# Run:  mft-engine experiment --file experiments/recorded_session.toml
+#
+# Inputs:
+#   data/live_session.jsonl        recorded live: Hyperliquid trades and book
+#                                  tops (bars are built from the trades),
+#                                  Kalshi ladders every 60 s, positioning
+#                                  every 180 s, Jev-scored HN posts
+#   data/live_session_warmup.jsonl the 90 one-minute REST bars just before
+#                                  the session, so momentum is warm at the
+#                                  start. Nothing else exists in that span,
+#                                  so v2 and v3 cannot trade in it; v1 can.
+#
+# The sample is about 85 minutes. Its halves are each about 40 minutes and
+# the second half starts cold, so the holdout verdict is close to
+# meaningless here and is reported only because the rule is fixed.
+
+data = ["data/live_session_warmup.jsonl", "data/live_session.jsonl"]
+
+[[variant]]
+name = "session_v1_momentum"
+base = "v1"
+hypothesis = "Baseline on the recorded session. Expect a handful of trades at most in 85 minutes."
+
+[[variant]]
+name = "session_v2_reasoning_gated"
+base = "v2"
+hypothesis = "Kalshi and social gates on live-recorded inputs. Expect fewer trades than v1."
+
+[[variant]]
+name = "session_v3_positioning_gated"
+base = "v3"
+hypothesis = "Top-wallet positioning gate. The crowd was over 90% long BTC and ETH at the start, so expect only long entries to pass."
+
+[[variant]]
+name = "session_v2_plus_positioning"
+base = "v2"
+hypothesis = "All three reasoning gates together: the strictest; expect the fewest trades."
+set = { "positioning.enabled" = true }

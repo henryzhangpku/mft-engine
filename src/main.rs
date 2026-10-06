@@ -73,6 +73,11 @@ enum Command {
         /// How many days back from now. Hyperliquid keeps about 3.5 days of 1m bars.
         #[arg(long, default_value_t = 4.0)]
         days: f64,
+        /// Explicit window start, RFC 3339 UTC (with --end), instead of --days.
+        #[arg(long)]
+        start: Option<String>,
+        #[arg(long)]
+        end: Option<String>,
         #[arg(long, default_value = "data/bars_1m.jsonl")]
         out: PathBuf,
     },
@@ -139,6 +144,12 @@ enum Command {
         paper: PathBuf,
         #[arg(long, default_value = "sidecar/scoring_stats_jev.json")]
         jev_stats: PathBuf,
+        #[arg(long, default_value = "data/live_session.jsonl")]
+        session: PathBuf,
+        #[arg(long, default_value = "data/live_session_warmup.jsonl")]
+        session_warmup: PathBuf,
+        #[arg(long, default_value = "data/universe.json")]
+        universe: PathBuf,
         #[arg(long, default_value = "docs/data/demo.json")]
         out: PathBuf,
     },
@@ -169,9 +180,17 @@ async fn main() -> Result<()> {
         Command::Positioning { coins, wallets, min_account_value, out } => {
             tokio::task::spawn_blocking(move || positioning::run(&coins, wallets, min_account_value, &out)).await?
         }
-        Command::FetchBars { coins, days, out } => {
+        Command::FetchBars { coins, days, start, end, out } => {
+            let window = match (start, end) {
+                (Some(s), Some(e)) => {
+                    let parse = |t: &str| mft_engine::clock::parse_utc(t).ok_or_else(|| anyhow::anyhow!("bad UTC time {t:?}"));
+                    Some((parse(&s)?, parse(&e)?))
+                }
+                (None, None) => None,
+                _ => anyhow::bail!("--start and --end go together"),
+            };
             // Blocking HTTP; run it off the async workers.
-            tokio::task::spawn_blocking(move || fetch::run(&coins, days, &out)).await?
+            tokio::task::spawn_blocking(move || fetch::run(&coins, days, window, &out)).await?
         }
         Command::FetchKalshi { coins, bars, strikes_each_side, out } => {
             tokio::task::spawn_blocking(move || fetch::run_kalshi(&coins, &bars, strikes_each_side, &out)).await?
@@ -201,8 +220,8 @@ async fn main() -> Result<()> {
             println!("wrote {} and {}", out.display(), events_out.display());
             Ok(())
         }
-        Command::ExportDemo { data, posts, ledger, paper, jev_stats, out } => {
-            demo::run(demo::DemoInputs { data, posts, ledger, paper, jev_stats, out }).await
+        Command::ExportDemo { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, out } => {
+            demo::run(demo::DemoInputs { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, out }).await
         }
     }
 }

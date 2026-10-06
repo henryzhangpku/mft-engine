@@ -37,9 +37,12 @@ pub fn fetch_coin(coin: &str, start_ms: i64, end_ms: i64) -> Result<Vec<Bar>> {
     Ok(by_open.into_values().filter(|b| b.ts <= now && b.open_ts < end_ms).collect())
 }
 
-pub fn run(coins: &[String], days: f64, out: &Path) -> Result<()> {
-    let end = wall_now_ms().div_euclid(BAR_MS) * BAR_MS;
-    let start = end - (days * 86_400_000.0) as i64;
+/// `window`: an explicit [start, end) in Unix ms; otherwise the last `days`.
+pub fn run(coins: &[String], days: f64, window: Option<(i64, i64)>, out: &Path) -> Result<()> {
+    let (start, end) = window.unwrap_or_else(|| {
+        let end = wall_now_ms().div_euclid(BAR_MS) * BAR_MS;
+        (end - (days * 86_400_000.0) as i64, end)
+    });
     let mut events: Vec<Event> = Vec::new();
     for coin in coins {
         let bars = fetch_coin(coin, start, end)?;

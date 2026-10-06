@@ -40,9 +40,11 @@ async function main() {
   drawDecisions();
   drawLedger();
   drawLatency();
+  drawCrowd();
+  drawUniverse();
 
   // Redraw charts when the colour scheme changes so they pick up new tokens.
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { drawPriceChart(); drawEquity(); drawPosts(); });
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { drawPriceChart(); drawEquity(); drawPosts(); drawCrowd(); });
   window.addEventListener("resize", () => drawPosts());
 }
 
@@ -247,3 +249,48 @@ function drawLatency() {
 }
 
 main();
+
+function drawCrowd() {
+  const session = state.data.session;
+  const el = $("crowd");
+  if (!session || !session.positioning || Object.keys(session.positioning).length === 0) {
+    el.outerHTML = '<p class="muted small">No live session with positioning was exported.</p>';
+    return;
+  }
+  $("session-window").textContent = `Recorded session ${session.window.start} to ${session.window.end}` +
+    (session.window.warmup_bars ? ", replayed after the 90 one-minute bars before it so momentum starts warm." : ".");
+  if (state.crowd) state.crowd.remove();
+  const chart = LightweightCharts.createChart(el, chartOptions(el));
+  state.crowd = chart;
+  const colors = [css("--v2"), css("--median"), css("--warn")];
+  const legend = [];
+  Object.entries(session.positioning).forEach(([coin, rows], i) => {
+    const s = chart.addLineSeries({ color: colors[i % colors.length], lineWidth: 2, priceLineVisible: false });
+    s.setData(uniqueByTime(rows.map(([t, share]) => ({ time: t, value: +(share * 100).toFixed(1) }))));
+    legend.push(`<span><i class="sw" style="background:${colors[i % colors.length]}"></i>${esc(coin)} % long by value</span>`);
+  });
+  const sixty = chart.addLineSeries({ color: css("--border"), lineWidth: 1, lineStyle: 2, priceLineVisible: false, lastValueVisible: false });
+  const anyRows = Object.values(session.positioning)[0];
+  sixty.setData(uniqueByTime(anyRows.map(([t]) => ({ time: t, value: 60 }))));
+  legend.push('<span><i class="sw" style="background:var(--border)"></i>60% threshold</span>');
+  $("crowd-legend").innerHTML = legend.join("");
+  chart.timeScale().fitContent();
+
+  const rows = (session.evaluations || []).map((r, i) => `<tr><td>${["v1", "v2", "v3"][i]}</td><td class="num">${r.bars}</td>` +
+    `<td class="num">${r.positioning_snapshots}</td><td class="num">${r.prediction_snapshots}</td><td class="num">${r.fills}</td>` +
+    `<td class="num ${signClass(r.pnl_after_costs)}">${usd(r.pnl_after_costs)}</td><td class="num">${r.pm_vetoes + r.crowd_vetoes}</td></tr>`);
+  table($("session-evals"), [["strategy on the recorded session"], ["bars", "num"], ["positioning snapshots", "num"], ["Kalshi snapshots", "num"], ["fills", "num"], ["PnL after costs", "num"], ["gate vetoes", "num"]], rows);
+}
+
+function drawUniverse() {
+  const u = state.data.universe;
+  if (!u) { $("universe-summary").textContent = "Universe not exported."; return; }
+  const dexes = Object.entries(u.per_dex).map(([d, n]) => `${d}: ${n}`).join(", ");
+  $("universe-summary").textContent = `${u.live_contracts} live perps on ${Object.keys(u.per_dex).length} of ${u.dexes_listed} listed dexes (${dexes}), ` +
+    `fetched ${u.fetched_at}. Builder (HIP-3) dexes such as xyz list equities, indices and commodities. Funding is hourly, annualised here. Top 20 by 24h volume:`;
+  const n = (x, d) => (x == null ? "n/a" : Number(x).toFixed(d));
+  const rows = u.top_by_volume.map((c) => `<tr><td>${esc(c.coin)}</td><td>${esc(c.dex)}</td><td class="num">${n(c.mark, 2)}</td>` +
+    `<td class="num">${n(c.volume_musd, 1)}</td><td class="num">${n(c.oi_musd, 1)}</td><td class="num">${n(c.funding_pct_year, 1)}</td>` +
+    `<td>${esc(c.zone)}</td><td class="num">${c.max_leverage}x</td></tr>`);
+  table($("universe"), [["coin"], ["dex"], ["mark", "num"], ["24h vol $M", "num"], ["OI $M", "num"], ["funding %/yr", "num"], ["zone"], ["max lev", "num"]], rows);
+}

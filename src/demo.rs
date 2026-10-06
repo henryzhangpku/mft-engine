@@ -24,6 +24,12 @@ pub struct DemoInputs {
     pub ledger: PathBuf,
     pub paper: PathBuf,
     pub jev_stats: PathBuf,
+    /// A live-recorded session (feed + Kalshi + positioning + social), if any.
+    pub session: PathBuf,
+    /// REST bars just before the session, so momentum starts warm (the same
+    /// inputs as experiments/recorded_session.toml).
+    pub session_warmup: PathBuf,
+    pub universe: PathBuf,
     pub out: PathBuf,
 }
 
@@ -116,6 +122,68 @@ pub async fn run(inputs: DemoInputs) -> Result<()> {
         evaluations.push(eval);
     }
 
+    // The live-recorded session: positioning over time, and the three
+    // strategies replayed on it (the only data where v3 can act).
+    let mut positioning: BTreeMap<String, Vec<Value>> = BTreeMap::new();
+    let mut session_evals = Vec::new();
+    let mut session_window = Value::Null;
+    if inputs.session.exists() {
+        let mut files = vec![inputs.session.clone()];
+        if inputs.session_warmup.exists() {
+            files.insert(0, inputs.session_warmup.clone());
+        }
+        let session = load_events(&files)?;
+        for e in &session {
+            if let Event::Positioning(p) = e {
+                positioning.entry(p.coin.clone()).or_default().push(json!([
+                    p.ts / 1000, round(p.long_share, 4), p.wallets_holding, round(p.long_value, 0), round(p.short_value, 0)
+                ]));
+            }
+        }
+        // The recorded span only, not the warm-up bars before it.
+        let recorded = crate::bars::read_events(&inputs.session)?;
+        session_window = json!({
+            "start": format_utc(recorded.iter().map(Event::ts).min().unwrap_or(0)),
+            "end": format_utc(recorded.iter().map(Event::ts).max().unwrap_or(0)),
+            "warmup_bars": inputs.session_warmup.exists(),
+        });
+        for (name, config) in [("v1", EngineConfig::v1()), ("v2", EngineConfig::v2()), ("v3", EngineConfig::v3())] {
+            session_evals.push(evaluate(name, &session, config).await.0.full);
+        }
+    }
+
+    // Universe summary: contracts per dex and the most traded perps.
+    let mut universe = Value::Null;
+    if let Ok(text) = std::fs::read_to_string(&inputs.universe) {
+        let doc: Value = serde_json::from_str(&text)?;
+        let contracts: Vec<crate::universe::Contract> = serde_json::from_value(doc["contracts"].clone())?;
+        let live: Vec<&crate::universe::Contract> = contracts.iter().filter(|c| !c.delisted).collect();
+        let mut per_dex: BTreeMap<String, usize> = BTreeMap::new();
+        for c in &live {
+            *per_dex.entry(if c.dex.is_empty() { "main".into() } else { c.dex.clone() }).or_default() += 1;
+        }
+        let mut top = live.clone();
+        top.sort_by(|a, b| b.day_volume_usd.unwrap_or(0.0).total_cmp(&a.day_volume_usd.unwrap_or(0.0)));
+        let rows: Vec<Value> = top
+            .iter()
+            .take(20)
+            .map(|c| {
+                json!({
+                    "coin": c.coin, "dex": if c.dex.is_empty() { "main" } else { &c.dex },
+                    "mark": c.mark_px, "volume_musd": c.day_volume_usd.map(|v| round(v / 1e6, 1)),
+                    "oi_musd": c.open_interest_usd.map(|v| round(v / 1e6, 1)),
+                    "funding_pct_year": c.funding_annualized_pct.map(|v| round(v, 1)),
+                    "zone": c.funding_annualized_pct.map(crate::universe::funding_zone),
+                    "max_leverage": c.max_leverage,
+                })
+            })
+            .collect();
+        universe = json!({
+            "fetched_at": doc["fetched_at"], "dexes_listed": doc["dexes"].as_array().map_or(0, |d| d.len()),
+            "live_contracts": live.len(), "per_dex": per_dex, "top_by_volume": rows,
+        });
+    }
+
     let ledger_rows: Vec<Value> = ledger::read(&inputs.ledger)?
         .iter()
         .map(|e| {
@@ -142,6 +210,8 @@ pub async fn run(inputs: DemoInputs) -> Result<()> {
         "ledger": ledger_rows,
         "paper": read_json_or_null(&inputs.paper),
         "jev": read_json_or_null(&inputs.jev_stats),
+        "session": { "window": session_window, "positioning": positioning, "evaluations": session_evals },
+        "universe": universe,
     });
     write_json(&inputs.out, &doc)?;
     let size = std::fs::metadata(&inputs.out).map(|m| m.len()).unwrap_or(0);

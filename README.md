@@ -2,8 +2,9 @@
 
 Reasoning signals from social and prediction-market data, gated by code, at
 mid frequency. A small Rust engine takes live crypto prices (Hyperliquid),
-prediction-market strike ladders (Kalshi) and social posts scored by a
-reasoning classifier (TypeSafe's Jev, on Hacker News), turns them into one
+prediction-market strike ladders (Kalshi), social posts scored by a
+reasoning classifier (TypeSafe's Jev, on Hacker News) and the positioning of
+the top wallets on Hyperliquid's public leaderboard, turns them into one
 stream of events, and runs one strategy and one risk layer over that stream.
 The same code runs in replay and live on paper, so research and production
 cannot disagree.
@@ -25,8 +26,10 @@ decision to the same fingerprint. Kalshi ladders (9,222 minute snapshots) and
 
 **Results, as they came out:** both pre-registered strategies lose after
 costs on 3.5 days of data; v2 loses less than v1, mostly by trading less.
-That is too short a sample to call an edge, and the numbers are below in
-full.
+v3, gated by what the top Hyperliquid wallets hold, can only be tested on
+data recorded live (positioning has no history); on one 85-minute session it
+took 4 fills and lost $3.06, against v1's 12 fills and $9.79. All of that is
+far too short a sample to call an edge, and the numbers are below in full.
 
 ## What it does, in one picture
 
@@ -54,11 +57,16 @@ full.
                     |
               Decision (filled, or blocked with a reason)
 
+   Also from Hyperliquid's public info API (pollers.rs, every few minutes):
+   positioning.rs: top-100 leaderboard wallets -> clearinghouseState -> per-coin
+   long/short totals -> Positioning events -> the v3 gate (can only shrink)
+   universe.rs: every perp on every dex (main + HIP-3 builder dexes)
+
    Clock: event time in replay, wall time live. Nothing else differs.
    Research: experiment.rs + ledger.rs (hash-chained results), demo.rs (web export)
 ```
 
-## The two strategies
+## The strategies
 
 **v1, momentum (fixed before the first backtest, never tuned).**
 Volatility-normalised 5-minute momentum on 1-minute bars, per coin:
@@ -93,6 +101,16 @@ Both gates are a `Caution`, a multiplier that can only hold a value in [0, 1],
 and a separate check blocks any order whose target the gates made larger or
 flipped. Text and prediction markets can make a decision more cautious, never
 less.
+
+**v3, positioning-gated.** The same v1 targets, entered only when the crowd
+of top Hyperliquid traders leans the same way: in the latest positioning
+snapshot (under 15 minutes old), the top 100 leaderboard wallets by 30-day
+PnL (account value at least $100k) must hold **more than 60% of their gross
+position value in this coin on our side**, and at least 5 of them must hold
+it. Missing, stale or thin positioning means no entry. Held positions are not
+re-gated. The 60% line is the old Python analyser's "bullish/bearish" rule,
+kept as it was. v3 was written down (in code and in
+`experiments/positioning.toml`) before any run.
 
 **How preregistered is v2, exactly.** v2's rules were written in code and in
 `experiments/ideas.toml` before its first run. That first run re-checked the
@@ -159,9 +177,95 @@ What this says, plainly:
 * A caveat on the Kalshi feature: P(up) compares Kalshi's settlement index
   with Hyperliquid's perpetual price, so the basis between the two tilts it.
   On this sample it leaned slightly above 0.5 more often than below.
-* Determinism: decision fingerprints `afb924fee4ed2223` (v1) and
-  `86f02dbcc8fa2493` (v2) repeat on every run; the tests check that two
+* Determinism: decision fingerprints `5ccac06aa73491d6` (v1) and
+  `ce040be98f47646d` (v2) repeat on every run; the tests check that two
   replays give identical decisions, reports and equity curves.
+
+## Hyperliquid universe and crowd positioning
+
+Ported, read-only, from the owner's older Python tools (a perp universe
+scanner, a leaderboard analyser, wallet and contract sentiment). Only the
+public market-data side was ported; nothing that signs, holds a key or
+places an order came across, and no address from the old code is used. All
+wallet addresses are fetched from the public leaderboard at runtime and never
+written to disk.
+
+**Universe** (`mft-engine universe`, `src/universe.rs`). `perpDexs` lists the
+dexes and `metaAndAssetCtxs` (with a `dex` field) returns each one's contracts
+and live context. At 2026-10-06 05:17 UTC, 11 dexes were listed and 5 had live contracts:
+331 live perps (main 178, xyz 110, para 29, io 9, mkts 5) plus 203 delisted. Builder (HIP-3)
+dexes carry equities, indices and commodities: `xyz:SP500`, `xyz:NVDA`,
+`xyz:CL`, `xyz:SILVER` and so on. Saved to `data/universe.json` with size
+decimals, max leverage, mark, open interest, volume and funding.
+
+**Positioning** (`mft-engine positioning`, `src/positioning.rs`). The wallet
+set is fixed once per run: the top 100 leaderboard accounts by 30-day PnL with
+at least $100k account value. Each snapshot reads every wallet's public
+`clearinghouseState` (about 25 s for 100 wallets) and sums long and short
+position value per coin; a snapshot is dropped if more than a fifth of the
+reads fail. `Positioning` events carry only the totals (holders, long and
+short counts and value, long share, the change since the last snapshot,
+average leverage). One snapshot from this run:
+
+```
+$ mft-engine positioning --coins BTC,ETH,SOL,HYPE,XRP      (2026-10-06 05:18 UTC)
+coin           holders  longs shorts      long $M     short $M  long %   lev L   lev S  crowd
+ETH                  9      7      2        349.7          4.1   98.8%    13.7    17.5  bullish
+BTC                 10      6      4        278.5         29.8   90.3%    18.8    17.8  bullish
+HYPE                 9      7      2        192.1         19.1   91.0%     8.6     6.5  bullish
+SOL                  7      4      3         89.8         14.6   86.0%    12.5    16.7  bullish
+XRP                  3      1      2          3.0          9.7   24.0%    20.0    15.0  bearish
+```
+
+Two bugs in the old Python, found while porting and fixed here:
+
+* **Funding was understated eightfold.** The old scanner annualised funding as
+  `rate * 3 * 365`, as if Hyperliquid paid every 8 hours. It pays hourly; the
+  baseline 0.00125% per hour is 10.95% a year, not 1.4%. `universe` uses
+  `rate * 24 * 365`.
+* **The leaderboard's daily, weekly and monthly figures were always empty.**
+  The old parser looked up windows named `daily`, `weekly` and `monthly`; the
+  API names them `day`, `week` and `month`.
+
+**There is no positioning history.** Hyperliquid returns current wallet
+state only, so positioning cannot be backfilled over the 3.5-day bar window,
+and v3 makes no trades there (its gate fails closed on every bar; ledger
+entries 8 and 9 record exactly that). It can only be evaluated on data
+recorded live, which is what the next part is.
+
+### The recorded session: v1, v2 and v3 on the same live data
+
+`mft-engine record` ran for 85 minutes, 2026-10-06 05:12 to 06:38 UTC, with
+every live source on: Hyperliquid trades and book tops (16,991 and 1,896),
+Kalshi ladders every minute (170), top-wallet positioning every 3 minutes (58
+snapshots, BTC and ETH), and the Jev-scored Hacker News feed tailed from the
+sidecar (6 signals from 3 posts, none about crypto). It is committed as
+`data/live_session.jsonl` (2.3 MB), with the 90 one-minute REST bars before
+it (`data/live_session_warmup.jsonl`) so momentum is warm at the start.
+
+The crowd did not move. All 29 snapshots read the same: BTC held by 10 of
+the 100 wallets, 90.3% long by value; ETH by 9, 98.8% long. So for this hour
+and a half v3 meant "longs only".
+
+Output of `mft-engine experiment --file experiments/recorded_session.toml`
+(full window; the halves are not meaningful at this length):
+
+| strategy | fills | PnL after costs | before costs | gate vetoes |
+|---|---|---|---|---|
+| v1 momentum | 12 | -$9.79 | -$3.19 | 0 |
+| v2 Kalshi + social | 8 | -$6.86 | -$2.45 | 17 |
+| v3 positioning | 4 | -$3.06 | -$0.86 | 18 |
+| v2 + positioning | 4 | -$2.88 | -$0.68 | 35 |
+
+v1's 12 fills include 2 at 05:13 that closed positions it had opened during
+the warm-up history (the first live minute repeated the last REST minute,
+which correctly reset the signal). In the session itself momentum fired in
+one burst between 06:15 and 06:24 UTC: a short, then a long, then flat. v3
+skipped the short (the crowd was long) and took only the long round trip,
+which lost 86 cents before costs and $3.06 after. Every variant lost; the
+gates lost less by trading less. **This is 85 minutes and one momentum
+burst: it shows the positioning gate working end to end on live data, and
+says nothing about whether it helps.**
 
 ## Experiment ledger ("idea to live experiment fast")
 
@@ -184,10 +288,23 @@ positive and beats the baseline's.
 | 4 | v2_social_only | killed | -197.49 | -110.73 | 294 |
 | 5 | v2_kalshi_strict_0p6 | killed | -38.85 | -7.24 | 77 |
 | 6 | v1_entry_z_3 | killed | -66.37 | -30.65 | 94 |
+| 7 | v1_momentum_baseline | baseline | -197.78 | -110.95 | 294 |
+| 8 | v3_positioning_gated_backfill | killed | 0.00 | 0.00 | 0 |
+| 9 | v2_plus_positioning_backfill | killed | 0.00 | 0.00 | 0 |
+| 10 | session_v1_momentum | baseline | -9.79 | -7.41 | 12 |
+| 11 | session_v2_reasoning_gated | killed | -6.86 | -6.86 | 8 |
+| 12 | session_v3_positioning_gated | killed | -3.06 | -3.06 | 4 |
+| 13 | session_v2_plus_positioning | killed | -2.88 | -2.88 | 4 |
 
-All seven were killed: nothing has a positive holdout. The two that lose least
-(strict Kalshi agreement, and a higher momentum threshold) do so by trading a
-quarter to a third as often; neither is positive before costs in its holdout.
+Entries 7 to 9 (`experiments/positioning.toml`) are v3 on the backfilled
+window, where no positioning exists: zero trades, as predicted, recorded
+anyway. Entries 10 to 13 (`experiments/recorded_session.toml`) are the live
+session; each file's first variant is its own baseline.
+
+Every non-baseline entry was killed: nothing has a positive holdout. On the
+backfilled window the two that lose least (strict Kalshi agreement, and a
+higher momentum threshold) do so by trading a quarter to a third as often;
+neither is positive before costs in its holdout.
 
 ## Live paper run
 
@@ -244,13 +361,15 @@ Built and tested with Rust 1.93 on Windows. `backtest`, `experiment`,
 cargo build --release
 cargo test
 
-./target/release/mft-engine backtest                 # v1 and v2 side by side -> results/backtest.json
+./target/release/mft-engine backtest                 # v1, v2, v3 side by side -> results/backtest.json
 ./target/release/mft-engine experiment               # experiments/ideas.toml -> results/ledger.jsonl
 ./target/release/mft-engine experiment --verify      # check the hash chain
 ./target/release/mft-engine export-demo              # -> docs/data/demo.json
 
 # Live, public data, no keys needed except Jev's.
-./target/release/mft-engine record --duration-secs 120
+./target/release/mft-engine universe                 # every perp on every dex -> data/universe.json
+./target/release/mft-engine positioning --coins BTC,ETH,SOL
+./target/release/mft-engine record --duration-secs 120   # feed + Kalshi + positioning (+ --text-feed)
 ./target/release/mft-engine fetch-bars --days 4
 ./target/release/mft-engine fetch-kalshi             # backfill ladders over the bar window
 ./target/release/mft-engine paper --duration-secs 600 --text-feed results/live_text_signals.jsonl
@@ -315,7 +434,7 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
 
 | file | what it does |
 |---|---|
-| `src/event.rs` | the one `Event` enum: Trade, BookTop, Bar, TextSignal, PredictionMarket, Gap |
+| `src/event.rs` | the one `Event` enum: Trade, BookTop, Bar, TextSignal, PredictionMarket, Positioning, Gap |
 | `src/engine.rs` | the shared decision path: one event in, at most one decision out |
 | `src/strategy.rs` | v1 momentum and its position state machine |
 | `src/prediction.rs` | ladder cleaning, P(close > x), implied quantiles, the v2 gate |
@@ -324,6 +443,9 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
 | `src/execution.rs` | paper fill model, cash-based PnL, round trips |
 | `src/event_loop.rs` | the single loop both modes run, with latency measurement |
 | `src/kalshi.rs` | Kalshi public markets and candlesticks; live ladder and backfill |
+| `src/positioning.rs` | leaderboard wallet set, public wallet reads, per-coin aggregates, the v3 gate |
+| `src/universe.rs` | every Hyperliquid perp on every dex, with funding, OI and mark |
+| `src/pollers.rs` | the slow live sources (Kalshi, positioning, social file) for `record` and `paper` |
 | `src/feed.rs`, `src/gap.rs`, `src/hyperliquid.rs`, `src/bars.rs` | live feed, reconnects, gaps, bars |
 | `src/experiment.rs`, `src/ledger.rs` | TOML variants, hash-chained ledger |
 | `src/artifacts.rs` | every file write; refuses anything secret-shaped |
@@ -340,6 +462,12 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
   KXBTCD and KXETHD ladders for prediction markets. Kalshi's KXBTC range
   series and Polymarket are not used: the threshold ladder already gives the
   distribution directly.
+* **Positioning has no history** and only what was recorded live (one
+  session here) can test v3. It reads the main dex only, not builder-dex
+  positions. Choosing wallets by 30-day PnL favours whoever was on the right
+  side of the last month, so "the crowd" may simply be last month's trend.
+* **No universe-wide strategy.** `universe` lists every perp, including HIP-3
+  equities, but the strategies trade BTC and ETH only.
 * **Social data is thin.** 259 Hacker News items, 12 judged relevant. Reddit
   is implemented but unrun (no credentials). No X/Twitter.
 * **Short history.** 3.5 days of 1-minute bars, the most Hyperliquid keeps.

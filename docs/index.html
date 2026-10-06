@@ -52,6 +52,22 @@
       <div id="post-detail" class="post-detail small"></div>
     </section>
 
+    <section aria-labelledby="h-crowd">
+      <h2 id="h-crowd">Crowd positioning on Hyperliquid (recorded live)</h2>
+      <p class="muted small">What the 100 best recent traders on Hyperliquid's public leaderboard (by 30-day PnL, account value at least $100k)
+        hold in each coin, read from public wallet state and aggregated: the share of their gross position value that is long.
+        Hyperliquid only exposes current positions, so this exists only where it was recorded live; there is no backfill.
+        Strategy v3 enters only when more than 60% of that value is on its side. No addresses are stored.</p>
+      <p class="muted small" id="session-window"></p>
+      <div class="legend" id="crowd-legend"></div>
+      <div id="crowd" class="chart short" role="img" aria-label="Long share of top wallets over the recorded session"></div>
+      <div class="table-wrap"><table id="session-evals"></table></div>
+
+      <h3>The Hyperliquid universe</h3>
+      <p class="muted small" id="universe-summary"></p>
+      <div class="table-wrap"><table id="universe"></table></div>
+    </section>
+
     <section aria-labelledby="h-equity">
       <h2 id="h-equity">Results after costs, reported as they came out</h2>
       <p class="muted">Both strategies were written down before any run. On three and a half days of data both lose after costs; the reasoning-gated version loses less, mostly by trading less. That sample is too small to call an edge either way. The engine's job is to find that out fast and safely, and to keep the result whatever it says.</p>
@@ -85,12 +101,13 @@
     <section aria-labelledby="h-how">
       <h2 id="h-how">How it works</h2>
       <ol class="how">
-        <li><b>One event type.</b> Trades, book tops, 1-minute bars, Kalshi ladders, scored posts and detected gaps all become one Rust enum, in time order.</li>
+        <li><b>One event type.</b> Trades, book tops, 1-minute bars, Kalshi ladders, scored posts, top-wallet positioning and detected gaps all become one Rust enum, in time order.</li>
         <li><b>One code path.</b> The same <code>Engine::on_event</code> runs in this replay and live on paper. Only the event source and the clock differ.</li>
         <li><b>The signal.</b> v1 is preregistered 5-minute momentum on 1-minute bars (enter at 2 standard deviations, $1,000 per coin).
           v2 takes the same entries only when the Kalshi hourly ladder says the price is more likely to close above spot (for a long) or below it (for a short),
-          and lets opposing Jev-scored posts shrink or veto a position.</li>
-        <li><b>Reasoning features can only brake.</b> Both gates are multipliers between 0 and 1, and a check blocks any order the gates made larger or flipped.</li>
+          and lets opposing Jev-scored posts shrink or veto a position.
+          v3 takes the same entries only when the top Hyperliquid wallets hold more than 60% of their position value on the same side.</li>
+        <li><b>Reasoning features can only brake.</b> All gates are multipliers between 0 and 1, and a check blocks any order the gates made larger or flipped.</li>
         <li><b>Risk fails closed.</b> Max position, max order, max daily loss, stale data. A rule that errors blocks the order. Every block is logged with its reason.</li>
         <li><b>Honest results.</b> Both strategies lose money after costs on this sample. The sample is a few days, so none of this is evidence of an edge.</li>
       </ol>

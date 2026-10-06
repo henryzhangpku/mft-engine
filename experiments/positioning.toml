@@ -1,0 +1,33 @@
+# Strategy v3: top-wallet positioning as a gate, written before it was run.
+#
+# Run:  mft-engine experiment --file experiments/positioning.toml
+#
+# v3 = v1 momentum, but a new position is opened only when the top 100
+# Hyperliquid leaderboard wallets (by 30-day PnL, account value >= $100k)
+# hold more than 60% of their gross position value in this coin on our
+# side, with at least 5 of them holding it, in a snapshot under 15 minutes
+# old. Missing or stale positioning means no entry (fail closed).
+#
+# Hyperliquid exposes only current wallet state, so the backfilled 3.5-day
+# window below has NO positioning data: v3 is expected to make no trades
+# here. It is run anyway so that the ledger records that, rather than the
+# variant silently appearing only where it has data. The live-recorded
+# session is evaluated in experiments/recorded_session.toml.
+
+data = ["data/bars_1m.jsonl", "data/kalshi_ladders.jsonl", "data/text_signals.jsonl"]
+
+[[variant]]
+name = "v1_momentum_baseline"
+base = "v1"
+hypothesis = "Baseline for this file: preregistered momentum, same as ledger entry 0."
+
+[[variant]]
+name = "v3_positioning_gated_backfill"
+base = "v3"
+hypothesis = "No positioning history exists for this window, so v3 must fail closed and make no trades."
+
+[[variant]]
+name = "v2_plus_positioning_backfill"
+base = "v2"
+hypothesis = "All three gates (Kalshi, social, positioning) on the backfilled window: also no trades, for the same reason."
+set = { "positioning.enabled" = true }

@@ -40569,6 +40569,13 @@
         "taker_fee_bps": 4.5
       },
       "min_order_notional": 50.0,
+      "positioning": {
+        "enabled": false,
+        "gate_entries_only": true,
+        "max_age_ms": 900000,
+        "min_holders": 5,
+        "min_share": 0.6
+      },
       "prediction": {
         "enabled": false,
         "gate_entries_only": true,
@@ -40602,6 +40609,13 @@
         "taker_fee_bps": 4.5
       },
       "min_order_notional": 50.0,
+      "positioning": {
+        "enabled": false,
+        "gate_entries_only": true,
+        "max_age_ms": 900000,
+        "min_holders": 5,
+        "min_share": 0.6
+      },
       "prediction": {
         "enabled": true,
         "gate_entries_only": true,
@@ -70554,6 +70568,7 @@
         "blocked_orders": {
           "max_daily_loss": 248
         },
+        "crowd_vetoes": 0,
         "decisions_fingerprint": "6e6b8ed98c6c978e",
         "end": "2026-10-04T09:01:00Z",
         "fees": 81.00147298651214,
@@ -70564,6 +70579,7 @@
         "pm_vetoes": 0,
         "pnl_after_costs": -115.88826751613726,
         "pnl_before_costs": -16.886467368154474,
+        "positioning_snapshots": 0,
         "prediction_snapshots": 4570,
         "round_trips": 90,
         "slippage": 18.000327161470647,
@@ -70579,6 +70595,7 @@
         "blocked_orders": {
           "max_daily_loss": 695
         },
+        "crowd_vetoes": 0,
         "decisions_fingerprint": "5ccac06aa73491d6",
         "end": "2026-10-06T03:17:00Z",
         "fees": 133.20645442677298,
@@ -70589,6 +70606,7 @@
         "pm_vetoes": 0,
         "pnl_after_costs": -197.77652380391578,
         "pnl_before_costs": -34.96863540976999,
+        "positioning_snapshots": 0,
         "prediction_snapshots": 9222,
         "round_trips": 148,
         "slippage": 29.601433967372817,
@@ -70605,6 +70623,7 @@
         "blocked_orders": {
           "max_daily_loss": 204
         },
+        "crowd_vetoes": 0,
         "decisions_fingerprint": "d5aaf5ce759ce414",
         "end": "2026-10-06T03:17:00Z",
         "fees": 79.21014913964054,
@@ -70615,6 +70634,7 @@
         "pm_vetoes": 0,
         "pnl_after_costs": -110.95024175873027,
         "pnl_before_costs": -14.137837396104565,
+        "positioning_snapshots": 0,
         "prediction_snapshots": 4652,
         "round_trips": 88,
         "slippage": 17.60225522298517,
@@ -70630,6 +70650,7 @@
       "first_half": {
         "bars": 5067,
         "blocked_orders": {},
+        "crowd_vetoes": 0,
         "decisions_fingerprint": "17eb41c3bfd17d6d",
         "end": "2026-10-04T09:01:00Z",
         "fees": 59.27732071039364,
@@ -70640,6 +70661,7 @@
         "pm_vetoes": 413,
         "pnl_after_costs": -76.51939218038365,
         "pnl_before_costs": -4.069333575041604,
+        "positioning_snapshots": 0,
         "prediction_snapshots": 4570,
         "round_trips": 66,
         "slippage": 13.172737894948405,
@@ -70653,6 +70675,7 @@
       "full": {
         "bars": 10139,
         "blocked_orders": {},
+        "crowd_vetoes": 0,
         "decisions_fingerprint": "ce040be98f47646d",
         "end": "2026-10-06T03:17:00Z",
         "fees": 120.41481947592594,
@@ -70663,6 +70686,7 @@
         "pm_vetoes": 823,
         "pnl_after_costs": -152.97491312553223,
         "pnl_before_costs": -5.801244935193001,
+        "positioning_snapshots": 0,
         "prediction_snapshots": 9222,
         "round_trips": 134,
         "slippage": 26.758848714413286,
@@ -70677,6 +70701,7 @@
       "second_half": {
         "bars": 5072,
         "blocked_orders": {},
+        "crowd_vetoes": 0,
         "decisions_fingerprint": "feec984b35edf09e",
         "end": "2026-10-06T03:17:00Z",
         "fees": 57.53717183683789,
@@ -70687,6 +70712,7 @@
         "pm_vetoes": 393,
         "pnl_after_costs": -71.22599111477678,
         "pnl_before_costs": -0.9027811010037343,
+        "positioning_snapshots": 0,
         "prediction_snapshots": 4652,
         "round_trips": 64,
         "slippage": 12.786038176935149,
@@ -70699,7 +70725,7 @@
       }
     }
   ],
-  "generated_at": "2026-10-06T04:33:18Z",
+  "generated_at": "2026-10-06T06:41:00Z",
   "jev": {
     "input_tokens_per_post_mean": 545.7,
     "input_tokens_total": 141333,
@@ -70793,6 +70819,90 @@
       "recorded_at": "2026-10-06T04:11:28Z",
       "seq": 6,
       "variant": "v1_entry_z_3",
+      "verdict": "killed"
+    },
+    {
+      "fills": 294,
+      "full_pnl": -197.77652380391578,
+      "hash": "f15137a8cba8",
+      "holdout_pnl": -110.95024175873027,
+      "hypothesis": "Baseline for this file: preregistered momentum, same as ledger entry 0.",
+      "prev": "5e7023dbc879",
+      "recorded_at": "2026-10-06T05:15:41Z",
+      "seq": 7,
+      "variant": "v1_momentum_baseline",
+      "verdict": "baseline"
+    },
+    {
+      "fills": 0,
+      "full_pnl": 0.0,
+      "hash": "8862a4953587",
+      "holdout_pnl": 0.0,
+      "hypothesis": "No positioning history exists for this window, so v3 must fail closed and make no trades.",
+      "prev": "f15137a8cba8",
+      "recorded_at": "2026-10-06T05:15:41Z",
+      "seq": 8,
+      "variant": "v3_positioning_gated_backfill",
+      "verdict": "killed"
+    },
+    {
+      "fills": 0,
+      "full_pnl": 0.0,
+      "hash": "a94525b4f68f",
+      "holdout_pnl": 0.0,
+      "hypothesis": "All three gates (Kalshi, social, positioning) on the backfilled window: also no trades, for the same reason.",
+      "prev": "8862a4953587",
+      "recorded_at": "2026-10-06T05:15:41Z",
+      "seq": 9,
+      "variant": "v2_plus_positioning_backfill",
+      "verdict": "killed"
+    },
+    {
+      "fills": 12,
+      "full_pnl": -9.789964836490753,
+      "hash": "49a25710ea46",
+      "holdout_pnl": -7.41490308736752,
+      "hypothesis": "Baseline on the recorded session. Expect a handful of trades at most in 85 minutes.",
+      "prev": "a94525b4f68f",
+      "recorded_at": "2026-10-06T06:38:38Z",
+      "seq": 10,
+      "variant": "session_v1_momentum",
+      "verdict": "baseline"
+    },
+    {
+      "fills": 8,
+      "full_pnl": -6.855245776563265,
+      "hash": "9f6b6320a208",
+      "holdout_pnl": -6.855245776563265,
+      "hypothesis": "Kalshi and social gates on live-recorded inputs. Expect fewer trades than v1.",
+      "prev": "49a25710ea46",
+      "recorded_at": "2026-10-06T06:38:38Z",
+      "seq": 11,
+      "variant": "session_v2_reasoning_gated",
+      "verdict": "killed"
+    },
+    {
+      "fills": 4,
+      "full_pnl": -3.055403781529776,
+      "hash": "8154b675d9f7",
+      "holdout_pnl": -3.055403781529776,
+      "hypothesis": "Top-wallet positioning gate. The crowd was over 90% long BTC and ETH at the start, so expect only long entries to pass.",
+      "prev": "9f6b6320a208",
+      "recorded_at": "2026-10-06T06:38:38Z",
+      "seq": 12,
+      "variant": "session_v3_positioning_gated",
+      "verdict": "killed"
+    },
+    {
+      "fills": 4,
+      "full_pnl": -2.878202107077982,
+      "hash": "69473baa4317",
+      "holdout_pnl": -2.878202107077982,
+      "hypothesis": "All three reasoning gates together: the strictest; expect the fewest trades.",
+      "prev": "8154b675d9f7",
+      "recorded_at": "2026-10-06T06:38:38Z",
+      "seq": 13,
+      "variant": "session_v2_plus_positioning",
       "verdict": "killed"
     }
   ],
@@ -150838,6 +150948,716 @@
       "url": "https://news.ycombinator.com/item?id=49973433"
     }
   ],
+  "session": {
+    "evaluations": [
+      {
+        "bars": 352,
+        "blocked_orders": {},
+        "crowd_vetoes": 0,
+        "decisions_fingerprint": "de739bb062fe66c0",
+        "end": "2026-10-06T06:38:03Z",
+        "fees": 5.400496853824137,
+        "fills": 12,
+        "gaps": 0,
+        "hit_rate": 0.0,
+        "max_drawdown": 9.789964836490753,
+        "pm_vetoes": 0,
+        "pnl_after_costs": -9.789964836490753,
+        "pnl_before_costs": -3.1893576025994177,
+        "positioning_snapshots": 58,
+        "prediction_snapshots": 170,
+        "round_trips": 6,
+        "slippage": 1.2001103800671988,
+        "start": "2026-10-06T03:44:00Z",
+        "text_reductions": 0,
+        "text_signals": 6,
+        "traded_notional": 12001.104119609192,
+        "turnover_multiple": 12.001104119609192,
+        "window": "full"
+      },
+      {
+        "bars": 352,
+        "blocked_orders": {},
+        "crowd_vetoes": 0,
+        "decisions_fingerprint": "98cf8abac8d3ae7b",
+        "end": "2026-10-06T06:38:03Z",
+        "fees": 3.6005961431632576,
+        "fills": 8,
+        "gaps": 0,
+        "hit_rate": 0.0,
+        "max_drawdown": 6.855245776563265,
+        "pm_vetoes": 17,
+        "pnl_after_costs": -6.855245776563265,
+        "pnl_before_costs": -2.4545171816868785,
+        "positioning_snapshots": 58,
+        "prediction_snapshots": 170,
+        "round_trips": 4,
+        "slippage": 0.8001324517131291,
+        "start": "2026-10-06T03:44:00Z",
+        "text_reductions": 0,
+        "text_signals": 6,
+        "traded_notional": 8001.324762585018,
+        "turnover_multiple": 8.001324762585018,
+        "window": "full"
+      },
+      {
+        "bars": 352,
+        "blocked_orders": {},
+        "crowd_vetoes": 18,
+        "decisions_fingerprint": "b9d5ec6d15af2db7",
+        "end": "2026-10-06T06:38:03Z",
+        "fees": 1.799614895001062,
+        "fills": 4,
+        "gaps": 0,
+        "hit_rate": 0.0,
+        "max_drawdown": 3.055403781529776,
+        "pm_vetoes": 0,
+        "pnl_after_costs": -3.055403781529776,
+        "pnl_before_costs": -0.8558744739761405,
+        "positioning_snapshots": 58,
+        "prediction_snapshots": 170,
+        "round_trips": 2,
+        "slippage": 0.39991441255257365,
+        "start": "2026-10-06T03:44:00Z",
+        "text_reductions": 0,
+        "text_signals": 6,
+        "traded_notional": 3999.144211113471,
+        "turnover_multiple": 3.999144211113471,
+        "window": "full"
+      }
+    ],
+    "positioning": {
+      "BTC": [
+        [
+          1791263609,
+          0.9032,
+          10,
+          278600141.0,
+          29848869.0
+        ],
+        [
+          1791263788,
+          0.9032,
+          10,
+          278529676.0,
+          29836291.0
+        ],
+        [
+          1791263969,
+          0.9032,
+          10,
+          278440667.0,
+          29831604.0
+        ],
+        [
+          1791264150,
+          0.9032,
+          10,
+          278412813.0,
+          29829106.0
+        ],
+        [
+          1791264333,
+          0.9032,
+          10,
+          278506277.0,
+          29835230.0
+        ],
+        [
+          1791264510,
+          0.9032,
+          10,
+          278381507.0,
+          29824562.0
+        ],
+        [
+          1791264691,
+          0.9032,
+          10,
+          278385688.0,
+          29825614.0
+        ],
+        [
+          1791264870,
+          0.9032,
+          10,
+          278409162.0,
+          29828346.0
+        ],
+        [
+          1791265050,
+          0.9032,
+          10,
+          278428362.0,
+          29828350.0
+        ],
+        [
+          1791265230,
+          0.9032,
+          10,
+          278252813.0,
+          29811738.0
+        ],
+        [
+          1791265410,
+          0.9032,
+          10,
+          278154623.0,
+          29800793.0
+        ],
+        [
+          1791265590,
+          0.9032,
+          10,
+          278013302.0,
+          29786784.0
+        ],
+        [
+          1791265769,
+          0.9032,
+          10,
+          278072911.0,
+          29792079.0
+        ],
+        [
+          1791265950,
+          0.9032,
+          10,
+          277944212.0,
+          29779016.0
+        ],
+        [
+          1791266132,
+          0.9032,
+          10,
+          278001800.0,
+          29784502.0
+        ],
+        [
+          1791266310,
+          0.9032,
+          10,
+          278016752.0,
+          29786159.0
+        ],
+        [
+          1791266491,
+          0.9032,
+          10,
+          277647547.0,
+          29747630.0
+        ],
+        [
+          1791266670,
+          0.9032,
+          10,
+          277544330.0,
+          29735377.0
+        ],
+        [
+          1791266851,
+          0.9032,
+          10,
+          277233383.0,
+          29702128.0
+        ],
+        [
+          1791267031,
+          0.9032,
+          10,
+          277314392.0,
+          29716978.0
+        ],
+        [
+          1791267210,
+          0.9032,
+          10,
+          276914484.0,
+          29668813.0
+        ],
+        [
+          1791267391,
+          0.9032,
+          10,
+          276690201.0,
+          29644208.0
+        ],
+        [
+          1791267571,
+          0.9032,
+          10,
+          277139268.0,
+          29691720.0
+        ],
+        [
+          1791267750,
+          0.9032,
+          10,
+          277095512.0,
+          29687549.0
+        ],
+        [
+          1791267930,
+          0.9032,
+          10,
+          277089310.0,
+          29686190.0
+        ],
+        [
+          1791268110,
+          0.9032,
+          10,
+          277143469.0,
+          29693172.0
+        ],
+        [
+          1791268290,
+          0.9032,
+          10,
+          277100462.0,
+          29687791.0
+        ],
+        [
+          1791268470,
+          0.9032,
+          10,
+          277258736.0,
+          29704606.0
+        ],
+        [
+          1791268650,
+          0.9032,
+          10,
+          277196857.0,
+          29698214.0
+        ]
+      ],
+      "ETH": [
+        [
+          1791263609,
+          0.9883,
+          9,
+          349799224.0,
+          4129122.0
+        ],
+        [
+          1791263788,
+          0.9883,
+          9,
+          349686894.0,
+          4128072.0
+        ],
+        [
+          1791263969,
+          0.9883,
+          9,
+          349644000.0,
+          4127057.0
+        ],
+        [
+          1791264150,
+          0.9883,
+          9,
+          349618448.0,
+          4126592.0
+        ],
+        [
+          1791264333,
+          0.9883,
+          9,
+          349699097.0,
+          4127799.0
+        ],
+        [
+          1791264510,
+          0.9883,
+          9,
+          349399014.0,
+          4124439.0
+        ],
+        [
+          1791264691,
+          0.9883,
+          9,
+          349493283.0,
+          4125494.0
+        ],
+        [
+          1791264870,
+          0.9883,
+          9,
+          349566387.0,
+          4126453.0
+        ],
+        [
+          1791265050,
+          0.9883,
+          9,
+          349656935.0,
+          4127588.0
+        ],
+        [
+          1791265230,
+          0.9883,
+          9,
+          349481525.0,
+          4125784.0
+        ],
+        [
+          1791265410,
+          0.9883,
+          9,
+          349438596.0,
+          4124919.0
+        ],
+        [
+          1791265590,
+          0.9883,
+          9,
+          349398227.0,
+          4124170.0
+        ],
+        [
+          1791265769,
+          0.9883,
+          9,
+          349501710.0,
+          4124461.0
+        ],
+        [
+          1791265950,
+          0.9883,
+          9,
+          349281808.0,
+          4123014.0
+        ],
+        [
+          1791266132,
+          0.9883,
+          9,
+          349287494.0,
+          4123116.0
+        ],
+        [
+          1791266310,
+          0.9883,
+          9,
+          349232439.0,
+          4122483.0
+        ],
+        [
+          1791266491,
+          0.9883,
+          9,
+          348776051.0,
+          4116710.0
+        ],
+        [
+          1791266670,
+          0.9883,
+          9,
+          348576602.0,
+          4114630.0
+        ],
+        [
+          1791266851,
+          0.9883,
+          9,
+          348402201.0,
+          4112776.0
+        ],
+        [
+          1791267031,
+          0.9883,
+          9,
+          348513895.0,
+          4114063.0
+        ],
+        [
+          1791267210,
+          0.9883,
+          9,
+          348290035.0,
+          4111133.0
+        ],
+        [
+          1791267391,
+          0.9883,
+          9,
+          348052945.0,
+          4108457.0
+        ],
+        [
+          1791267571,
+          0.9883,
+          9,
+          348470225.0,
+          4113765.0
+        ],
+        [
+          1791267750,
+          0.9883,
+          9,
+          348393388.0,
+          4112616.0
+        ],
+        [
+          1791267930,
+          0.9883,
+          9,
+          348389265.0,
+          4112631.0
+        ],
+        [
+          1791268110,
+          0.9883,
+          9,
+          348350459.0,
+          4112340.0
+        ],
+        [
+          1791268290,
+          0.9883,
+          9,
+          348246976.0,
+          4110951.0
+        ],
+        [
+          1791268470,
+          0.9883,
+          9,
+          348534233.0,
+          4114303.0
+        ],
+        [
+          1791268650,
+          0.9883,
+          9,
+          348491299.0,
+          4113925.0
+        ]
+      ]
+    },
+    "window": {
+      "end": "2026-10-06T06:38:03Z",
+      "start": "2026-10-06T05:12:29Z",
+      "warmup_bars": true
+    }
+  },
+  "universe": {
+    "dexes_listed": 11,
+    "fetched_at": "2026-10-06T05:17:56Z",
+    "live_contracts": 331,
+    "per_dex": {
+      "io": 9,
+      "main": 178,
+      "mkts": 5,
+      "para": 29,
+      "xyz": 110
+    },
+    "top_by_volume": [
+      {
+        "coin": "BTC",
+        "dex": "main",
+        "funding_pct_year": 11.0,
+        "mark": 85693.0,
+        "max_leverage": 40,
+        "oi_musd": 3343.1,
+        "volume_musd": 2060.9,
+        "zone": "mild long"
+      },
+      {
+        "coin": "ETH",
+        "dex": "main",
+        "funding_pct_year": 11.0,
+        "mark": 2703.1,
+        "max_leverage": 25,
+        "oi_musd": 3210.4,
+        "volume_musd": 970.3,
+        "zone": "mild long"
+      },
+      {
+        "coin": "HYPE",
+        "dex": "main",
+        "funding_pct_year": 11.0,
+        "mark": 93.2361,
+        "max_leverage": 10,
+        "oi_musd": 1914.0,
+        "volume_musd": 556.0,
+        "zone": "mild long"
+      },
+      {
+        "coin": "xyz:XYZ100",
+        "dex": "xyz",
+        "funding_pct_year": 5.5,
+        "mark": 31113.0,
+        "max_leverage": 30,
+        "oi_musd": 219.7,
+        "volume_musd": 284.1,
+        "zone": "mild long"
+      },
+      {
+        "coin": "ZEC",
+        "dex": "main",
+        "funding_pct_year": 11.0,
+        "mark": 1336.6,
+        "max_leverage": 10,
+        "oi_musd": 678.5,
+        "volume_musd": 269.4,
+        "zone": "mild long"
+      },
+      {
+        "coin": "NEAR",
+        "dex": "main",
+        "funding_pct_year": 11.0,
+        "mark": 5.2519,
+        "max_leverage": 10,
+        "oi_musd": 377.0,
+        "volume_musd": 252.6,
+        "zone": "mild long"
+      },
+      {
+        "coin": "SOL",
+        "dex": "main",
+        "funding_pct_year": 11.0,
+        "mark": 120.07,
+        "max_leverage": 20,
+        "oi_musd": 671.3,
+        "volume_musd": 191.2,
+        "zone": "mild long"
+      },
+      {
+        "coin": "xyz:SP500",
+        "dex": "xyz",
+        "funding_pct_year": -5.0,
+        "mark": 7779.5,
+        "max_leverage": 50,
+        "oi_musd": 367.5,
+        "volume_musd": 187.4,
+        "zone": "neutral"
+      },
+      {
+        "coin": "xyz:CL",
+        "dex": "xyz",
+        "funding_pct_year": -27.7,
+        "mark": 89.792,
+        "max_leverage": 20,
+        "oi_musd": 131.1,
+        "volume_musd": 162.3,
+        "zone": "mild short"
+      },
+      {
+        "coin": "xyz:SKHX",
+        "dex": "xyz",
+        "funding_pct_year": 50.3,
+        "mark": 1326.2,
+        "max_leverage": 10,
+        "oi_musd": 344.4,
+        "volume_musd": 137.9,
+        "zone": "hot long"
+      },
+      {
+        "coin": "xyz:BRENTOIL",
+        "dex": "xyz",
+        "funding_pct_year": -43.0,
+        "mark": 100.81,
+        "max_leverage": 20,
+        "oi_musd": 167.7,
+        "volume_musd": 117.4,
+        "zone": "mild short"
+      },
+      {
+        "coin": "xyz:SPCX",
+        "dex": "xyz",
+        "funding_pct_year": -19.8,
+        "mark": 171.92,
+        "max_leverage": 20,
+        "oi_musd": 124.2,
+        "volume_musd": 114.1,
+        "zone": "mild short"
+      },
+      {
+        "coin": "ENA",
+        "dex": "main",
+        "funding_pct_year": 11.0,
+        "mark": 0.24466,
+        "max_leverage": 10,
+        "oi_musd": 169.8,
+        "volume_musd": 87.7,
+        "zone": "mild long"
+      },
+      {
+        "coin": "xyz:SNDK",
+        "dex": "xyz",
+        "funding_pct_year": 5.5,
+        "mark": 1696.6,
+        "max_leverage": 10,
+        "oi_musd": 147.6,
+        "volume_musd": 85.9,
+        "zone": "mild long"
+      },
+      {
+        "coin": "xyz:CBRS",
+        "dex": "xyz",
+        "funding_pct_year": 27.3,
+        "mark": 182.18,
+        "max_leverage": 10,
+        "oi_musd": 115.5,
+        "volume_musd": 81.5,
+        "zone": "mild long"
+      },
+      {
+        "coin": "PUMP",
+        "dex": "main",
+        "funding_pct_year": 11.0,
+        "mark": 0.006304,
+        "max_leverage": 10,
+        "oi_musd": 344.6,
+        "volume_musd": 79.5,
+        "zone": "mild long"
+      },
+      {
+        "coin": "xyz:SILVER",
+        "dex": "xyz",
+        "funding_pct_year": 5.5,
+        "mark": 60.562,
+        "max_leverage": 25,
+        "oi_musd": 144.1,
+        "volume_musd": 77.2,
+        "zone": "mild long"
+      },
+      {
+        "coin": "xyz:SKHY",
+        "dex": "xyz",
+        "funding_pct_year": -19.0,
+        "mark": 189.88,
+        "max_leverage": 10,
+        "oi_musd": 220.1,
+        "volume_musd": 65.7,
+        "zone": "mild short"
+      },
+      {
+        "coin": "xyz:NVDA",
+        "dex": "xyz",
+        "funding_pct_year": 5.5,
+        "mark": 239.56,
+        "max_leverage": 20,
+        "oi_musd": 164.0,
+        "volume_musd": 52.3,
+        "zone": "mild long"
+      },
+      {
+        "coin": "xyz:DRAM",
+        "dex": "xyz",
+        "funding_pct_year": 5.5,
+        "mark": 60.771,
+        "max_leverage": 20,
+        "oi_musd": 90.6,
+        "volume_musd": 51.5,
+        "zone": "mild long"
+      }
+    ]
+  },
   "window": {
     "end": "2026-10-06T03:17:00Z",
     "start": "2026-10-02T14:47:00Z"
