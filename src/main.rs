@@ -3,15 +3,15 @@
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use perp_engine::backtest::{load_events, run_backtest, split_halves, BacktestReport};
-use perp_engine::engine::EngineConfig;
-use perp_engine::event::Event;
-use perp_engine::{fetch, paper, record};
+use mft_engine::backtest::{load_events, run_backtest, split_halves, BacktestReport};
+use mft_engine::engine::EngineConfig;
+use mft_engine::event::Event;
+use mft_engine::{fetch, paper, record};
 use std::path::PathBuf;
 use std::time::Duration;
 
 #[derive(Parser)]
-#[command(name = "perp-engine", version, about = "Paper-only mid-frequency engine for crypto perpetuals")]
+#[command(name = "mft-engine", version, about = "Paper-only mid-frequency engine for crypto perpetuals")]
 struct Cli {
     #[command(subcommand)]
     command: Command,

@@ -4,10 +4,10 @@
 mod common;
 
 use common::*;
-use perp_engine::engine::{Decision, Engine, EngineConfig};
-use perp_engine::event::Event;
-use perp_engine::execution::{FillModel, Portfolio};
-use perp_engine::text::{check_not_riskier, Caution, TextParams, TextState};
+use mft_engine::engine::{Decision, Engine, EngineConfig};
+use mft_engine::event::Event;
+use mft_engine::execution::{FillModel, Portfolio};
+use mft_engine::text::{check_not_riskier, Caution, TextParams, TextState};
 
 #[test]
 fn caution_is_always_in_zero_one() {
@@ -86,7 +86,7 @@ fn text_never_increases_gross_exposure_on_real_data() {
     // On the committed sample, every filled target with text is no larger
     // than the strategy's raw target.
     let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let events = perp_engine::backtest::load_events(&[
+    let events = mft_engine::backtest::load_events(&[
         root.join("data/bars_1m.jsonl"),
         root.join("data/text_signals.jsonl"),
     ])
@@ -142,7 +142,7 @@ fn paper_signal_line_is_human_readable() {
     let events = bars_from("BTC", &trending_closes(1));
     let mut eng = Engine::new(EngineConfig::default());
     let decisions = replay(&mut eng, &events);
-    let line = perp_engine::paper::signal_line(decisions.last().unwrap(), &eng);
+    let line = mft_engine::paper::signal_line(decisions.last().unwrap(), &eng);
     println!("{line}");
     assert!(line.starts_with("SIGNAL 2026-"), "{line}");
     for part in ["BTC-PERP LONG", "target +1000 USD", "reason: 5m momentum z=+", "risk: PASSED"] {

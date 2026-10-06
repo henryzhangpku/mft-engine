@@ -1,9 +1,11 @@
-# perp-engine
+# mft-engine
 
-A small Rust engine for crypto perpetuals: live public market data in, one
-mid-frequency signal, a risk layer that fails closed, paper execution, and a
-backtester that runs the same code path, so research and production cannot
-disagree.
+A small Rust engine for mid-frequency trading, where decisions are made on
+minute bars and positions last minutes to hours: live market data in, one
+signal, a risk layer that fails closed, paper execution, and a backtester that
+runs the same code path, so research and production cannot disagree. The
+first venue is crypto perpetuals on Hyperliquid; nothing in the engine core is
+specific to that instrument.
 
 **Paper only.** There is no order router, no signing code and no key handling
 anywhere in the crate. A test (`there_is_no_order_path_in_the_source`) fails
@@ -99,15 +101,15 @@ cargo build --release
 cargo test
 
 # Replay the committed bars (and Jev-scored text signals) through the engine.
-./target/release/perp-engine backtest
-./target/release/perp-engine backtest --no-text
-./target/release/perp-engine backtest --text data/text_signals_mock.jsonl
-./target/release/perp-engine backtest --data data/sample_recorded_feed.jsonl --no-text   # a recorded live feed
+./target/release/mft-engine backtest
+./target/release/mft-engine backtest --no-text
+./target/release/mft-engine backtest --text data/text_signals_mock.jsonl
+./target/release/mft-engine backtest --data data/sample_recorded_feed.jsonl --no-text   # a recorded live feed
 
 # Live, public data, no key needed.
-./target/release/perp-engine record --duration-secs 120          # -> data/recorded_feed.jsonl
-./target/release/perp-engine paper  --duration-secs 240          # -> results/paper.json
-./target/release/perp-engine fetch-bars --days 4                 # -> data/bars_1m.jsonl
+./target/release/mft-engine record --duration-secs 120          # -> data/recorded_feed.jsonl
+./target/release/mft-engine paper  --duration-secs 240          # -> results/paper.json
+./target/release/mft-engine fetch-bars --days 4                 # -> data/bars_1m.jsonl
 ```
 
 `backtest` writes `results/backtest.json` (config and every window) and
@@ -138,7 +140,7 @@ on a line does so by hand, outside this program.
 
 Data: Hyperliquid 1-minute candles for BTC and ETH, 2026-10-02 14:47 UTC to
 2026-10-06 03:17 UTC (10,139 bars, about 3.5 days, which is all the 1m history
-the endpoint keeps). No missing bars. Output of `perp-engine backtest`:
+the endpoint keeps). No missing bars. Output of `mft-engine backtest`:
 
 ```
 window                  fills  trips       hit    pnl_net  pnl_gross     costs   turn_x   max_dd
@@ -177,7 +179,7 @@ What this says, plainly:
 
 ## Paper run (live feed, paper fills)
 
-`perp-engine paper --duration-secs 240`, started 2026-10-06 03:31:54 UTC, BTC
+`mft-engine paper --duration-secs 240`, started 2026-10-06 03:31:54 UTC, BTC
 and ETH. 1,285 trades, 92 book tops and 8 bars processed; 2 decisions, both
 filled on paper (`results/paper.json`, `results/paper_session.log`).
 
@@ -204,7 +206,7 @@ Windows laptop, not a benchmark.
 
 ## Recording
 
-`perp-engine record --duration-secs 120` at 03:27 UTC wrote 406 trades and 46
+`mft-engine record --duration-secs 120` at 03:27 UTC wrote 406 trades and 46
 book tops with no gaps. `data/sample_recorded_feed.jsonl` is that file; it
 replays through `backtest`, which builds bars from its trades with the same
 `BarBuilder` the paper engine uses.

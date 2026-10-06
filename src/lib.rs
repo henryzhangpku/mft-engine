@@ -1,4 +1,4 @@
-//! perp-engine: a small mid-frequency trading engine for crypto perpetuals.
+//! mft-engine: a small mid-frequency trading engine for crypto perpetuals.
 //!
 //! Paper only. Live public market data in, one fixed signal, a risk layer
 //! that fails closed, simulated fills, and a backtester that runs the same

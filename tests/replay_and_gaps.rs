@@ -3,12 +3,12 @@
 mod common;
 
 use common::*;
-use perp_engine::backtest::{load_events, run_backtest};
-use perp_engine::bars::{detect_bar_gaps, with_built_bars, BarBuilder};
-use perp_engine::engine::{Engine, EngineConfig};
-use perp_engine::event::{Event, Gap, Side, Trade};
-use perp_engine::gap::GapDetector;
-use perp_engine::hyperliquid::parse_ws_message;
+use mft_engine::backtest::{load_events, run_backtest};
+use mft_engine::bars::{detect_bar_gaps, with_built_bars, BarBuilder};
+use mft_engine::engine::{Engine, EngineConfig};
+use mft_engine::event::{Event, Gap, Side, Trade};
+use mft_engine::gap::GapDetector;
+use mft_engine::hyperliquid::parse_ws_message;
 use std::path::PathBuf;
 
 fn committed_data() -> Vec<Event> {
@@ -168,7 +168,7 @@ fn events_round_trip_through_json() {
 
 #[test]
 fn utc_formatting() {
-    assert_eq!(perp_engine::clock::format_utc(0), "1970-01-01T00:00:00Z");
-    assert_eq!(perp_engine::clock::format_utc(951_782_400_000), "2000-02-29T00:00:00Z");
-    assert_eq!(perp_engine::clock::format_utc(1_790_952_360_000), "2026-10-02T14:46:00Z");
+    assert_eq!(mft_engine::clock::format_utc(0), "1970-01-01T00:00:00Z");
+    assert_eq!(mft_engine::clock::format_utc(951_782_400_000), "2000-02-29T00:00:00Z");
+    assert_eq!(mft_engine::clock::format_utc(1_790_952_360_000), "2026-10-02T14:46:00Z");
 }

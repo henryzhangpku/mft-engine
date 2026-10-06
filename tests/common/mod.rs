@@ -3,9 +3,9 @@
 
 #![allow(dead_code)]
 
-use perp_engine::clock::ReplayClock;
-use perp_engine::engine::{Decision, Engine};
-use perp_engine::event::{Bar, Event, TextSignal};
+use mft_engine::clock::ReplayClock;
+use mft_engine::engine::{Decision, Engine};
+use mft_engine::event::{Bar, Event, TextSignal};
 
 pub const T0: i64 = 1_790_000_000_000 - (1_790_000_000_000 % 60_000);
 
@@ -57,7 +57,7 @@ pub fn replay(engine: &mut Engine, events: &[Event]) -> Vec<Decision> {
     let mut clock = ReplayClock::new(0);
     let mut out = Vec::new();
     for ev in events {
-        perp_engine::clock::Clock::observe(&mut clock, ev);
+        mft_engine::clock::Clock::observe(&mut clock, ev);
         if let Some(d) = engine.on_event(ev, &clock) {
             out.push(d);
         }
