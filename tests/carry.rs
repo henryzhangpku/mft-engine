@@ -279,3 +279,29 @@ fn design_choices_are_logged_and_capped() {
     assert!(carry_research::run(Phase::Oos, opts(&spec, &ledger_path, &dir, None, false)).unwrap_err().to_string().contains("last run in-sample"));
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+#[test]
+fn every_logged_v4_run_replays_to_its_ledger_fingerprint() {
+    // Deterministic replay on the committed data: each v4 result on the
+    // ledger, rerun with the config it logged, gives the same trades. (A
+    // reproduction of a recorded run, not a new result: nothing is appended.)
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let (spec, _) = carry_research::CarrySpec::load(&root.join("experiments/carry_v4.toml")).unwrap();
+    let entries = ledger::read(&root.join("results/ledger.jsonl")).unwrap();
+    let h = carry_research::history(&entries, &spec.name);
+    assert!(h.preregistered.is_some(), "v4 is pre-registered on the ledger");
+    let universe_doc: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(&spec.universe).unwrap()).unwrap();
+    let universe: Vec<String> = serde_json::from_value(universe_doc["universe"].clone()).unwrap();
+    let w = carry_research::windows(&spec, &universe_doc).unwrap();
+    let full = Panel::load(&spec.bars, &spec.funding).unwrap();
+    let mut checked = 0;
+    for e in h.in_sample.iter().chain(h.oos.iter()) {
+        let params: CarryParams = serde_json::from_value(e.overrides.clone()).unwrap();
+        let (panel, from, to) = if e.result["phase"] == "oos" { (full.clone(), w.split, w.end) } else { (full.truncated_after(w.split), w.trading_start, w.split) };
+        let run = carry::run(&panel.restricted_to(&universe), &params, from, to).unwrap();
+        assert_eq!(run.fingerprint(), e.result["report"]["fingerprint"].as_str().unwrap(), "ledger #{}", e.seq);
+        assert!((run.pnl() - e.result["report"]["pnl_net"].as_f64().unwrap()).abs() < 1e-9, "ledger #{}", e.seq);
+        checked += 1;
+    }
+    assert!(checked >= 1, "at least one logged v4 run");
+}

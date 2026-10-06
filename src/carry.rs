@@ -57,8 +57,8 @@ pub enum Weighting {
 pub struct CarryParams {
     /// Hours of settled funding averaged to rank coins.
     pub lookback_hours: usize,
-    /// Rebalance every this many hours, at hours that are a multiple of it
-    /// since 00:00 UTC (24 = daily at midnight UTC).
+    /// Rebalance every this many hours from the window start, which is a
+    /// UTC midnight (24 = daily at 00:00 UTC).
     pub rebalance_every_hours: i64,
     /// Names short (highest funding) and names long (lowest funding).
     pub bucket_size: usize,
@@ -377,7 +377,9 @@ pub fn run(panel: &Panel, p: &CarryParams, from_ts: i64, to_ts: i64) -> Result<C
             }
         }
         // 2. Rebalance (or close everything at the last hour).
-        let rebalance_hour = h.rem_euclid(p.rebalance_every_hours * HOUR_MS) == 0;
+        // The schedule is anchored at the window start (a UTC midnight), so
+        // every window opens its book at its first hour.
+        let rebalance_hour = (h - from_ts).rem_euclid(p.rebalance_every_hours * HOUR_MS) == 0;
         if i == end || rebalance_hour {
             let (target, eligible, shorts, longs) = if i == end {
                 (vec![0.0; nc], 0, vec![], vec![])
