@@ -37,8 +37,9 @@ seed = 20261006
 [params]
 # Rank by the mean of the last 72 settled hourly funding rates.
 lookback_hours = 72
-# Rebalance daily at 00:00 UTC.
-rebalance_every_hours = 24
+# Pre-registered: 24 (daily at 00:00 UTC). Design choice 1 (see the ledger):
+# 168, weekly from the window start, to cut turnover.
+rebalance_every_hours = 168
 # Short the 6 highest, long the 6 lowest, of the 30-coin universe.
 bucket_size = 6
 weighting = "equal"
