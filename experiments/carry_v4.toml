@@ -1,0 +1,57 @@
+# Strategy v4: cross-sectional funding-rate carry on Hyperliquid perpetuals.
+# Pre-registered: this file is written to the ledger (`mft-engine carry
+# preregister`) before any v4 result exists. Every later change must be run
+# in-sample and logged as a design choice (at most `max_design_choices`), and
+# the sealed out-of-sample window is run once (`mft-engine carry oos`).
+#
+# Run:  mft-engine carry preregister
+#       mft-engine carry in-sample [--note "what changed and why"]
+#       mft-engine carry oos
+
+name = "v4_funding_carry"
+
+hypothesis = "Shorting the perps whose longs paid the most funding over the last 3 days and buying those whose longs paid the least, dollar-neutral and rebalanced daily, earns more in hourly funding than it loses in fees, slippage and the price leg, on the sealed last 40% of a 90-day window."
+
+rationale = "Hyperliquid perps settle funding every hour; a positive rate means longs pay shorts. Persistently high funding marks a crowded, leveraged long side that pays to stay in; the other side is paid to supply that exposure. Funding is persistent hour to hour, so the trailing rate forecasts the next day's payment. The known risk is the price leg: crowded longs are often in coins that keep rising (momentum), and squeezes hit shorts hardest. Dollar neutrality removes the market direction, not the coin-specific moves."
+
+bars = "data/carry_1h_bars.jsonl"
+funding = "data/carry_funding_1h.jsonl"
+universe = "data/carry_universe.json"
+benchmark = "BTC"
+
+# Trading window = the 90 whole days after the 7-day formation week. The
+# first 60% (whole days, rounded down) is for design; the last 40% is sealed.
+in_sample_fraction = 0.6
+max_design_choices = 2
+
+kill_rule = "Killed if, on the sealed out-of-sample window, net Sharpe (daily P&L, annualised with sqrt(365)) <= 0 or net P&L after fees, slippage and funding <= 0. Otherwise kept, which means not refuted on this sample, not proven."
+
+capital_note = "Returns are on gross notional ($10,000: $5,000 long, $5,000 short), as if the full notional were posted as margin (1x, no leverage). Paper fills at the hourly close plus slippage; no borrow cost exists for perps (funding is the carry); margin interest and liquidation are not modelled."
+
+[bootstrap]
+# Moving-block bootstrap of the mean daily P&L, circular, 5-day blocks.
+block_days = 5
+resamples = 10000
+seed = 20261006
+
+[params]
+# Rank by the mean of the last 72 settled hourly funding rates.
+lookback_hours = 72
+# Rebalance daily at 00:00 UTC.
+rebalance_every_hours = 24
+# Short the 6 highest, long the 6 lowest, of the 30-coin universe.
+bucket_size = 6
+weighting = "equal"
+# Only used by inverse-vol weighting.
+vol_lookback_hours = 168
+gross_notional = 10000.0
+# Rebalance trades under $50 are skipped unless they close a position.
+min_trade_notional = 50.0
+# Eligible only with at least 90% of the lookback hours settled.
+min_funding_coverage = 0.9
+# A coin with no close for more than 2 hours is not entered; held, it is
+# closed at its last close.
+stale_price_hours = 2
+# Hyperliquid base taker fee 4.5 bp, plus 3 bp slippage per fill (BTC and ETH
+# use 1 bp elsewhere in this repo; the alts here are thinner).
+fills = { taker_fee_bps = 4.5, slippage_bps = 3.0 }
