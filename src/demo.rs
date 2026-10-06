@@ -30,6 +30,9 @@ pub struct DemoInputs {
     /// inputs as experiments/recorded_session.toml).
     pub session_warmup: PathBuf,
     pub universe: PathBuf,
+    /// The v4 (funding carry) specification; its data and ledger entries
+    /// feed the v4 section. Missing files mean no v4 section.
+    pub carry_spec: PathBuf,
     pub out: PathBuf,
 }
 
@@ -190,11 +193,23 @@ pub async fn run(inputs: DemoInputs) -> Result<()> {
             json!({
                 "seq": e.seq, "variant": e.variant, "hypothesis": e.hypothesis, "verdict": e.verdict,
                 "hash": &e.hash[..12], "prev": &e.prev_hash[..12], "recorded_at": e.recorded_at,
-                "full_pnl": e.result["full"]["pnl_after_costs"], "holdout_pnl": e.result["second_half"]["pnl_after_costs"],
-                "fills": e.result["full"]["fills"],
+                // v4 entries carry one window's report (none when pre-registered):
+                // the in-sample P&L as "PnL", the sealed window's as "holdout".
+                "full_pnl": if e.base == "v4" { e.result["report"]["pnl_net"].clone() } else { e.result["full"]["pnl_after_costs"].clone() },
+                "holdout_pnl": if e.base == "v4" {
+                    if e.result["phase"] == "oos" { e.result["report"]["pnl_net"].clone() } else { Value::Null }
+                } else {
+                    e.result["second_half"]["pnl_after_costs"].clone()
+                },
+                "fills": if e.base == "v4" { e.result["report"]["trades"].clone() } else { e.result["full"]["fills"].clone() },
             })
         })
         .collect();
+
+    let carry = carry_section(&inputs.carry_spec, &inputs.ledger).unwrap_or_else(|e| {
+        println!("no v4 section: {e:#}");
+        Value::Null
+    });
 
     let doc = json!({
         "generated_at": format_utc(wall_now_ms()),
@@ -212,9 +227,68 @@ pub async fn run(inputs: DemoInputs) -> Result<()> {
         "jev": read_json_or_null(&inputs.jev_stats),
         "session": { "window": session_window, "positioning": positioning, "evaluations": session_evals },
         "universe": universe,
+        "carry": carry,
     });
     write_json(&inputs.out, &doc)?;
     let size = std::fs::metadata(&inputs.out).map(|m| m.len()).unwrap_or(0);
     println!("wrote {} ({} KB, {} posts, {} ledger entries)", inputs.out.display(), size / 1024, posts.len(), ledger_rows.len());
     Ok(())
+}
+
+/// Strategy v4 as recorded on the ledger: the pre-registered spec, every
+/// v4 entry, the in-sample and sealed out-of-sample reports exactly as
+/// logged, and equity curves replayed with the logged configs (the replay
+/// reproduces the logged fingerprint; it is not a new result).
+fn carry_section(spec_path: &Path, ledger_path: &Path) -> Result<Value> {
+    use crate::carry::{self, Panel};
+    use crate::carry_research::{evaluate_window, history, windows, CarrySpec};
+    let (spec, _) = CarrySpec::load(spec_path)?;
+    let entries = ledger::read(ledger_path)?;
+    let h = history(&entries, &spec.name);
+    let pre = h.preregistered.ok_or_else(|| anyhow::anyhow!("v4 is not pre-registered"))?;
+    let universe_doc: Value = serde_json::from_str(&std::fs::read_to_string(&spec.universe)?)?;
+    let universe: Vec<String> = serde_json::from_value(universe_doc["universe"].clone())?;
+    let w = windows(&spec, &universe_doc)?;
+    let full = Panel::load(&spec.bars, &spec.funding)?;
+    let curve = |run: &carry::CarryRun| -> Vec<Value> {
+        run.equity.iter().step_by(4).chain(run.equity.last()).map(|(t, e)| json!([t / 1000, round(*e, 2)])).collect()
+    };
+    let replay = |entry: &crate::ledger::LedgerEntry, panel: &Panel, from: i64, to: i64| -> Result<Value> {
+        let mut s = spec.clone();
+        s.params = serde_json::from_value(entry.overrides.clone())?;
+        let (_, _, run) = evaluate_window(&s, &universe, panel, "replay", from, to)?;
+        let bench = carry::buy_and_hold(panel, &s.benchmark, s.params.gross_notional, &s.params.fills, from, to)?;
+        Ok(json!({ "fingerprint": run.fingerprint(), "strategy": curve(&run), "benchmark": curve(&bench),
+            "last_rebalance": run.rebalances.iter().rev().find(|r| !r.longs.is_empty()) }))
+    };
+    let summary = |e: &crate::ledger::LedgerEntry| json!({
+        "seq": e.seq, "verdict": e.verdict, "phase": e.result["phase"], "note": e.result["note"],
+        "recorded_at": e.recorded_at, "hash": &e.hash[..12], "config": e.overrides,
+        "report": e.result["report"], "benchmark": e.result["benchmark"],
+    });
+    let is_entry = h.in_sample.last();
+    let oos_entry = h.oos.first();
+    Ok(json!({
+        "name": spec.name,
+        "hypothesis": spec.hypothesis,
+        "rationale": spec.rationale,
+        "kill_rule": spec.kill_rule,
+        "capital_note": spec.capital_note,
+        "preregistered": { "seq": pre.seq, "recorded_at": pre.recorded_at, "hash": &pre.hash[..12], "config": pre.overrides },
+        "universe_rule": universe_doc["rule"],
+        "universe": universe,
+        "windows": {
+            "formation": [universe_doc["window_start"], format_utc(w.trading_start)],
+            "in_sample": [format_utc(w.trading_start), format_utc(w.split)],
+            "out_of_sample": [format_utc(w.split), format_utc(w.end)],
+        },
+        "entries": h.in_sample.iter().chain(h.oos.iter()).map(|e| summary(e)).collect::<Vec<_>>(),
+        "in_sample": is_entry.map(|e| summary(e)),
+        "oos": oos_entry.map(|e| summary(e)),
+        "oos_reruns": h.oos.len().saturating_sub(1),
+        "curves": {
+            "in_sample": is_entry.map(|e| replay(e, &full.truncated_after(w.split), w.trading_start, w.split)).transpose()?,
+            "out_of_sample": oos_entry.map(|e| replay(e, &full, w.split, w.end)).transpose()?,
+        },
+    }))
 }

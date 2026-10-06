@@ -30,6 +30,11 @@ v3, gated by what the top Hyperliquid wallets hold, can only be tested on
 data recorded live (positioning has no history); on one 85-minute session it
 took 4 fills and lost $3.06, against v1's 12 fills and $9.79. All of that is
 far too short a sample to call an edge, and the numbers are below in full.
+v4, a cross-sectional funding-carry strategy across 30 Hyperliquid perps, was
+pre-registered on the ledger and tested on 90 days of hourly data, with a
+sealed out-of-sample window run once: **it was killed**, losing $478.69 on
+$10,000 gross over the sealed 36 days (Sharpe -1.91). It collected the
+funding it was built to collect and lost far more on the price leg.
 
 ## What it does, in one picture
 
@@ -267,6 +272,119 @@ gates lost less by trading less. **This is 85 minutes and one momentum
 burst: it shows the positioning gate working end to end on live data, and
 says nothing about whether it helps.**
 
+## Strategy v4: funding carry across perps (pre-registered, sealed out-of-sample)
+
+**What it does.** Hyperliquid perpetuals settle funding **every hour**: when
+the rate is positive, longs pay shorts that share of position value for the
+hour (the old Python scanner's 8-hour assumption understated this eightfold;
+see above). v4 ranks a fixed universe of 30 liquid perps on a schedule by
+their trailing funding, shorts the six whose longs pay the most, buys the six
+whose longs pay the least (or are paid), and stays dollar-neutral. It accrues
+funding hourly on every position and pays the taker fee and slippage on
+every rebalance trade.
+
+**Why it might work.** Persistently high funding marks a crowded, leveraged
+long side that pays to stay in; whoever supplies the other side is paid for
+it, and funding persists from hour to hour, so the trailing rate forecasts
+the next payment. **Why it might not:** crowded longs are often in coins that
+keep rising, so the short side can lose on price far more than it earns in
+funding. Dollar neutrality removes the market's direction, not coin-specific
+moves.
+
+`src/carry.rs` is the strategy and backtest: a pure, deterministic function
+of an hourly panel, fingerprinted like the other strategies. It does not go
+through `Engine::on_event`, which handles one coin and one minute bar at a
+time; v4 is a cross-sectional portfolio rebalanced on a schedule. Point in
+time: a rebalance at hour `h` sees only closes stamped at or before `h` and
+funding settled at or before `h`; funding settled at `h` pays positions held
+over the hour before it, so a position opened at `h` first earns the payment
+at `h + 1h`. The in-sample run is handed a panel physically cut at the split.
+
+### The protocol (`src/carry_research.rs`, `mft-engine carry`)
+
+1. `fetch-carry` downloaded 97 days (2026-07-01 to 10-06 UTC) of hourly
+   candles (`candleSnapshot`) and settled hourly funding (`fundingHistory`)
+   from the public info API, paced at 1.5 s per request.
+2. `carry preregister` wrote the whole specification to the ledger (entry
+   14) **before any v4 run on real data**, and it was committed on its own.
+   The engine refuses an in-sample run without it, refuses data that differ
+   from the pre-registered hashes, and refuses a second pre-registration.
+3. `carry in-sample` runs the first 60% of the trading window. A config that
+   differs from the pre-registered one is a design choice: it needs a note,
+   is logged as such, and at most two are allowed.
+4. `carry oos` runs the sealed last 40% once. It refuses a config that was
+   not the last one run in-sample, and refuses a second run unless given
+   `--force` and a `--note`, in which case the rerun is recorded as forced
+   next to the first result. The kill rule is applied by code.
+
+### The specification as pre-registered (ledger entry 14, `experiments/carry_v4.toml`)
+
+| item | value |
+|---|---|
+| universe | every main-dex perp in the metadata at fetch time, listed or delisted (234), ranked by dollar volume (hourly volume x close) over the formation week 2026-07-01 to 07-08; the top 30 with at least 90% of formation hours, fixed for the whole window |
+| the 30 | BTC, ETH, HYPE, SOL, ZEC, LIT, XRP, NEAR, WLD, PUMP, FARTCOIN, XPL, SUI, VVV, AAVE, kBONK, ADA, kPEPE, DOGE, ENA, BNB, TAO, LINK, MORPHO, JTO, BCH, DYDX, AVAX, UNI, XMR |
+| signal | mean of the last 72 settled hourly funding rates (at least 90% present) |
+| rebalance | every 24 h at 00:00 UTC (changed in-sample to every 168 h, see below) |
+| buckets | short the top 6, long the bottom 6; ties broken by coin name |
+| weights | equal inside each side |
+| gross | $10,000: $5,000 long, $5,000 short; returns are on $10,000, as if the full notional were posted (1x) |
+| costs | 4.5 bp taker fee + 3 bp slippage per fill (these alts are thinner than BTC and ETH, which use 1 bp elsewhere here); trades under $50 skipped unless closing; every window starts flat and closes everything at its end, with costs |
+| split | trading window 2026-07-08 to 10-06 (90 days): in-sample 07-08 to 08-31 (54 days), sealed out-of-sample 08-31 to 10-06 (36 days) |
+| kill rule | killed if sealed out-of-sample net Sharpe <= 0 or net P&L <= 0 after fees, slippage and funding |
+| statistics | daily P&L (00:00 UTC marks), Sharpe annualised with sqrt(365); 95% circular moving-block bootstrap (5-day blocks, 10,000 resamples, fixed seed) on mean daily P&L |
+| benchmark | buy and hold $10,000 of the BTC perp over the same window, paying funding and costs; and zero |
+
+### Results, as they came out
+
+| run | ledger | net P&L | funding | fees + slippage | price | Sharpe | annualised | max DD | turnover / day | mean / day (95% CI) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| in-sample, pre-registered (daily) | 15 | -$820.98 | +$136.00 | -$209.51 | -$747.47 | -2.44 | -55.0% | $1,272 | 0.52x | -$15.06 (-$41.30 to +$9.40) |
+| in-sample, design choice 1 (weekly) | 16 | -$475.42 | +$103.23 | -$73.48 | -$505.18 | -1.48 | -31.6% | $915 | 0.18x | -$8.67 (-$35.65 to +$17.72) |
+| **sealed out-of-sample (weekly), run once** | **17** | **-$478.69** | **+$54.75** | **-$70.70** | **-$462.73** | **-1.91** | **-47.8%** | **$1,080** | **0.26x** | **-$13.09 (-$52.90 to +$22.65)** |
+| hold BTC perp, in-sample | | +$2,103.74 | -$137.32 | -$16.69 | +$2,257.75 | 3.39 | 142.7% | $709 | | +$39.10 (-$19.64 to +$121.68) |
+| hold BTC perp, out-of-sample | | +$931.98 | -$92.56 | -$15.78 | +$1,040.32 | 2.37 | 95.3% | $831 | | +$26.10 (-$25.60 to +$90.36) |
+
+Zero, the other benchmark, beats v4 in every window. The sealed run made 112
+trades over 7 rebalances, was up on 17 of 36 days, and 74.8% of bootstrap
+means were at or below zero. Its fingerprint is `e762463bfde66cbe`; a test
+replays every logged v4 run and requires the fingerprint and P&L on the
+ledger. Both logged in-sample results and the sealed result were reproduced
+to the cent by a separate re-implementation written from the specification.
+
+**The one design choice.** At daily rebalancing, fees and slippage ($209.51)
+were larger than the funding earned ($136.00): the ranking churned half the
+book every day. Weekly rebalancing was run in-sample under a rule written
+before the run (adopt only if in-sample net P&L improves), improved it, and
+was adopted. For this the schedule was anchored at the window start (no
+effect on the daily config: ledger 15 replays unchanged). The second allowed
+design choice was not used: the remaining loss is the price leg, and tuning
+against it would be fitting the in-sample path.
+
+**What it says, plainly.** v4 is killed by its own pre-registered rule. The
+carry is real and was collected (+$54.75 in the sealed window, about 5.5% a
+year on gross), and weekly rebalancing kept costs close to the funding
+earned. But the short side, coins with crowded longs, kept outperforming the
+long side, and that price leg lost about eight times the funding. Over the
+same 36 days, simply holding the BTC perp made $931.98. The bootstrap
+interval for the sealed mean daily P&L includes zero, so the size of the loss
+is not precisely estimated either: this is a clear failure to show an edge,
+not proof of a reliably negative one.
+
+Caveats: 90 days and one regime (BTC rose strongly through both windows);
+paper fills at the hourly close plus 3 bp; no margin interest, liquidation or
+funding caps modelled; prices from 1-hour candle closes, not the oracle price
+Hyperliquid uses for funding. Residual survivorship: the candidate list is
+Hyperliquid's metadata at fetch time; delisted perps stay in it, flagged, but
+`candleSnapshot` returned no formation-week history for 55 of the 56 (most
+were delisted long before the window), so a coin delisted during the
+formation week itself could be missed. No universe coin was delisted inside
+the window. Builder (HIP-3) dexes are excluded.
+
+Data added: `data/carry_1h_bars.jsonl` (69,870 hourly bars, 11.3 MB),
+`data/carry_funding_1h.jsonl` (69,870 funding settlements, 5.3 MB) and
+`data/carry_universe.json` (the rule, the formation-week volume of all 234
+candidates, the chosen 30): 16.6 MB in all.
+
 ## Experiment ledger ("idea to live experiment fast")
 
 `mft-engine experiment` runs every variant in `experiments/ideas.toml` (a base
@@ -295,11 +413,19 @@ positive and beats the baseline's.
 | 11 | session_v2_reasoning_gated | killed | -6.86 | -6.86 | 8 |
 | 12 | session_v3_positioning_gated | killed | -3.06 | -3.06 | 4 |
 | 13 | session_v2_plus_positioning | killed | -2.88 | -2.88 | 4 |
+| 14 | v4_funding_carry | preregistered | | | |
+| 15 | v4_funding_carry | in_sample | -820.98 | | 397 trades |
+| 16 | v4_funding_carry | design_choice | -475.42 | | 127 trades |
+| 17 | v4_funding_carry | killed | | -478.69 | 112 trades |
 
 Entries 7 to 9 (`experiments/positioning.toml`) are v3 on the backfilled
 window, where no positioning exists: zero trades, as predicted, recorded
 anyway. Entries 10 to 13 (`experiments/recorded_session.toml`) are the live
 session; each file's first variant is its own baseline.
+
+Entries 14 to 17 are v4 (above), recorded by `mft-engine carry` on the same
+chain, each carrying v4's kill rule as its verdict rule. For v4, "PnL" is the
+in-sample result and "holdout" the sealed out-of-sample one.
 
 Every non-baseline entry was killed: nothing has a positive holdout. On the
 backfilled window the two that lose least (strict Kalshi agreement, and a
@@ -365,6 +491,12 @@ cargo test
 ./target/release/mft-engine experiment               # experiments/ideas.toml -> results/ledger.jsonl
 ./target/release/mft-engine experiment --verify      # check the hash chain
 ./target/release/mft-engine export-demo              # -> docs/data/demo.json
+
+# Strategy v4 (funding carry), offline from the committed data. The ledger
+# already holds the pre-registration and the sealed run, so `oos` refuses.
+./target/release/mft-engine carry in-sample          # a changed config needs --note
+./target/release/mft-engine carry oos                # refuses: already run (ledger 17)
+./target/release/mft-engine fetch-carry --end 2026-10-06T00:00:00Z   # refetch the data (~15 min)
 
 # Live, public data, no keys needed except Jev's.
 ./target/release/mft-engine universe                 # every perp on every dex -> data/universe.json
@@ -445,12 +577,14 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
 | `src/kalshi.rs` | Kalshi public markets and candlesticks; live ladder and backfill |
 | `src/positioning.rs` | leaderboard wallet set, public wallet reads, per-coin aggregates, the v3 gate |
 | `src/universe.rs` | every Hyperliquid perp on every dex, with funding, OI and mark |
+| `src/carry.rs` | v4: hourly panel, funding ranking, dollar-neutral rebalancing, hourly funding accrual, bootstrap |
+| `src/carry_research.rs` | v4's protocol: preregister, in-sample with capped design choices, the one-shot sealed out-of-sample run |
 | `src/pollers.rs` | the slow live sources (Kalshi, positioning, social file) for `record` and `paper` |
 | `src/feed.rs`, `src/gap.rs`, `src/hyperliquid.rs`, `src/bars.rs` | live feed, reconnects, gaps, bars |
 | `src/experiment.rs`, `src/ledger.rs` | TOML variants, hash-chained ledger |
 | `src/artifacts.rs` | every file write; refuses anything secret-shaped |
 | `src/demo.rs` | `export-demo` |
-| `src/backtest.rs`, `src/paper.rs`, `src/record.rs`, `src/fetch.rs` | the subcommands |
+| `src/backtest.rs`, `src/paper.rs`, `src/record.rs`, `src/fetch.rs` | the subcommands (`fetch.rs` also fetches the v4 data) |
 | `sidecar/` | HN and Reddit fetchers, Jev scorer, live social feed, secret guard |
 | `docs/` | the static demo (index.html, app.js, style.css) |
 
@@ -466,8 +600,9 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
   session here) can test v3. It reads the main dex only, not builder-dex
   positions. Choosing wallets by 30-day PnL favours whoever was on the right
   side of the last month, so "the crowd" may simply be last month's trend.
-* **No universe-wide strategy.** `universe` lists every perp, including HIP-3
-  equities, but the strategies trade BTC and ETH only.
+* **One universe-wide strategy, and it was killed.** v4 trades 30 main-dex
+  perps; v1 to v3 trade BTC and ETH only. HIP-3 equities are listed by
+  `universe` but not traded.
 * **Social data is thin.** 259 Hacker News items, 12 judged relevant. Reddit
   is implemented but unrun (no credentials). No X/Twitter.
 * **Short history.** 3.5 days of 1-minute bars, the most Hyperliquid keeps.

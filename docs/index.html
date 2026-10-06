@@ -96,6 +96,25 @@
       <div class="table-wrap"><table id="evals"></table></div>
     </section>
 
+    <section aria-labelledby="h-carry">
+      <h2 id="h-carry">Strategy v4: funding carry across Hyperliquid perps (pre-registered, sealed out-of-sample)</h2>
+      <p class="muted">Hyperliquid perpetuals settle funding every hour: when the rate is positive, longs pay shorts that share of position value.
+        v4 ranks a fixed universe of liquid perps by their trailing funding once a day, shorts the coins whose longs pay the most,
+        buys the coins whose longs pay the least, and stays dollar-neutral. It earns funding every hour and pays fees and slippage on every rebalance.
+        The risk is the price leg: crowded longs are often in coins that keep rising.</p>
+      <p class="muted small" id="carry-protocol"></p>
+      <div class="table-wrap"><table id="carry-spec"></table></div>
+      <p id="carry-verdict"></p>
+      <div class="table-wrap"><table id="carry-results"></table></div>
+      <div class="legend">
+        <span><i class="sw sw-v2"></i>v4 in-sample (design window)</span>
+        <span><i class="sw" style="background:var(--median)"></i>v4 sealed out-of-sample</span>
+        <span><i class="sw sw-v1"></i>buy and hold BTC perp, same notional</span>
+      </div>
+      <div id="carry-equity" class="chart short" role="img" aria-label="Equity of v4 in-sample and out-of-sample against holding BTC"></div>
+      <p class="muted small" id="carry-book"></p>
+    </section>
+
     <section aria-labelledby="h-decisions">
       <h2 id="h-decisions">Decisions and risk blocks</h2>
       <p class="muted small" id="decision-summary"></p>

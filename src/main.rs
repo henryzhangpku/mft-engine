@@ -187,6 +187,8 @@ enum Command {
         session_warmup: PathBuf,
         #[arg(long, default_value = "data/universe.json")]
         universe: PathBuf,
+        #[arg(long, default_value = "experiments/carry_v4.toml")]
+        carry_spec: PathBuf,
         #[arg(long, default_value = "docs/data/demo.json")]
         out: PathBuf,
     },
@@ -268,8 +270,8 @@ async fn main() -> Result<()> {
             println!("wrote {} and {}", out.display(), events_out.display());
             Ok(())
         }
-        Command::ExportDemo { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, out } => {
-            demo::run(demo::DemoInputs { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, out }).await
+        Command::ExportDemo { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, out } => {
+            demo::run(demo::DemoInputs { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, out }).await
         }
     }
 }

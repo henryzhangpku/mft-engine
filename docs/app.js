@@ -42,9 +42,10 @@ async function main() {
   drawLatency();
   drawCrowd();
   drawUniverse();
+  drawCarry();
 
   // Redraw charts when the colour scheme changes so they pick up new tokens.
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { drawPriceChart(); drawEquity(); drawPosts(); drawCrowd(); });
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { drawPriceChart(); drawEquity(); drawPosts(); drawCrowd(); drawCarry(); });
   window.addEventListener("resize", () => drawPosts());
 }
 
@@ -293,4 +294,80 @@ function drawUniverse() {
     `<td class="num">${n(c.volume_musd, 1)}</td><td class="num">${n(c.oi_musd, 1)}</td><td class="num">${n(c.funding_pct_year, 1)}</td>` +
     `<td>${esc(c.zone)}</td><td class="num">${c.max_leverage}x</td></tr>`);
   table($("universe"), [["coin"], ["dex"], ["mark", "num"], ["24h vol $M", "num"], ["OI $M", "num"], ["funding %/yr", "num"], ["zone"], ["max lev", "num"]], rows);
+}
+
+function drawCarry() {
+  const c = state.data.carry;
+  const section = $("carry-equity");
+  if (!c) { $("carry-protocol").textContent = "v4 was not exported."; section.hidden = true; return; }
+  const w = c.windows;
+  $("carry-protocol").textContent = `Specification written to the ledger (#${c.preregistered.seq}, ${c.preregistered.recorded_at}) before any v4 result existed. ` +
+    `Universe: ${c.universe_rule} (${c.universe.length} coins: ${c.universe.join(", ")}). ` +
+    `Formation ${w.formation[0]} to ${w.formation[1]}; design (in-sample) ${w.in_sample[0]} to ${w.in_sample[1]}; sealed out-of-sample ${w.out_of_sample[0]} to ${w.out_of_sample[1]}, run once. ${c.capital_note}`;
+
+  const p = c.preregistered.config;
+  const spec = [
+    ["signal", `mean of the last ${p.lookback_hours} settled hourly funding rates`],
+    ["rebalance", `every ${p.rebalance_every_hours} h at 00:00 UTC`],
+    ["buckets", `short the top ${p.bucket_size}, long the bottom ${p.bucket_size}`],
+    ["weights", p.weighting === "equal" ? "equal inside each side" : "inverse volatility inside each side"],
+    ["gross", `${usd(p.gross_notional)} (half long, half short)`],
+    ["costs", `${p.fills.taker_fee_bps} bp taker fee + ${p.fills.slippage_bps} bp slippage per fill; trades under ${usd(p.min_trade_notional)} skipped`],
+    ["kill rule", c.kill_rule],
+  ];
+  // Anything the sealed run used that differs from the pre-registration was
+  // a logged in-sample design choice; show it next to the original.
+  const used = (c.oos || c.in_sample || {}).config;
+  if (used) {
+    const changed = Object.keys(p).filter((k) => JSON.stringify(p[k]) !== JSON.stringify(used[k]));
+    spec.push(["changed in-sample (logged)", changed.length ? changed.map((k) => `${k}: ${JSON.stringify(p[k])} to ${JSON.stringify(used[k])}`).join("; ") : "nothing"]);
+  }
+  table($("carry-spec"), [["pre-registered"], ["value"]], spec.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`));
+
+  const choices = c.entries.filter((e) => e.verdict === "design_choice");
+  const oos = c.oos;
+  if (oos) {
+    const killed = oos.verdict.endsWith("killed");
+    $("carry-verdict").innerHTML = `<b>Sealed out-of-sample: <span class="${killed ? "neg" : "pos"}">${killed ? "killed" : "kept (not refuted)"}</span></b> ` +
+      `(ledger #${oos.seq}, fingerprint <code>${esc(oos.report.fingerprint)}</code>). ` +
+      `${choices.length} logged in-sample design choice${choices.length === 1 ? "" : "s"}` +
+      (choices.length ? `: ${choices.map((e) => esc(e.note)).join("; ")}` : "") + "." +
+      (c.oos_reruns ? ` ${c.oos_reruns} forced rerun(s) recorded on the ledger.` : "");
+  } else {
+    $("carry-verdict").textContent = "The sealed out-of-sample window has not been run yet.";
+  }
+
+  const rows = [];
+  const row = (label, r) => {
+    if (!r) return;
+    const ci = r.mean_daily_ci95 ? `${usd(r.mean_daily_ci95[0])} to ${usd(r.mean_daily_ci95[1])}` : "n/a";
+    rows.push(`<tr><td>${esc(label)}</td><td class="num">${r.days}</td><td class="num ${signClass(r.pnl_net)}">${usd(r.pnl_net)}</td>` +
+      `<td class="num">${usd(r.funding_pnl)}</td><td class="num">${usd(-(r.fees + r.slippage))}</td><td class="num">${usd(r.price_pnl)}</td>` +
+      `<td class="num">${r.sharpe_annualised == null ? "n/a" : r.sharpe_annualised.toFixed(2)}</td><td class="num">${r.annualised_return_pct.toFixed(1)}%</td>` +
+      `<td class="num">${usd(r.max_drawdown)}</td><td class="num">${r.turnover_per_day.toFixed(2)}</td><td class="num">${usd(r.mean_daily_pnl)}</td><td class="num">${ci}</td></tr>`);
+  };
+  if (c.in_sample) { row("v4 in-sample", c.in_sample.report); row("hold BTC, in-sample", c.in_sample.benchmark); }
+  if (oos) { row("v4 sealed out-of-sample", oos.report); row("hold BTC, out-of-sample", oos.benchmark); }
+  table($("carry-results"), [["window"], ["days", "num"], ["net P&L", "num"], ["funding", "num"], ["fees + slippage", "num"], ["price", "num"],
+    ["Sharpe", "num"], ["annualised", "num"], ["max drawdown", "num"], ["turnover / day", "num"], ["mean / day", "num"], ["95% block-bootstrap CI, mean / day", "num"]], rows);
+
+  if (state.carry) state.carry.remove();
+  const chart = LightweightCharts.createChart(section, chartOptions(section));
+  state.carry = chart;
+  const add = (points, color) => {
+    if (!points) return;
+    const s = chart.addLineSeries({ color, lineWidth: 2, priceLineVisible: false });
+    s.setData(uniqueByTime(points.map(([t, e]) => ({ time: t, value: e }))));
+  };
+  const curves = c.curves || {};
+  if (curves.in_sample) { add(curves.in_sample.strategy, css("--v2")); add(curves.in_sample.benchmark, css("--v1")); }
+  if (curves.out_of_sample) { add(curves.out_of_sample.strategy, css("--median")); add(curves.out_of_sample.benchmark, css("--v1")); }
+  chart.timeScale().fitContent();
+
+  const last = (curves.out_of_sample || curves.in_sample || {}).last_rebalance;
+  if (last) {
+    const fmt = (xs) => xs.map(([coin, f]) => `${esc(coin)} ${(f * 24 * 365 * 100).toFixed(1)}%`).join(", ");
+    $("carry-book").innerHTML = `Last rebalance shown, ${utc(last.ts / 1000)}, trailing funding annualised (hourly rate x 24 x 365). ` +
+      `Short: ${fmt(last.shorts)}. Long: ${fmt(last.longs)}. Each window starts flat and closes everything at its end, with costs; equity starts at $0.`;
+  }
 }
