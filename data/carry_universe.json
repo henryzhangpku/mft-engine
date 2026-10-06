@@ -1,0 +1,1213 @@
+{
+  "benchmark": "BTC",
+  "candidates": [
+    {
+      "coin": "BTC",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 16006886040.962664
+    },
+    {
+      "coin": "ETH",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 4810303341.097369
+    },
+    {
+      "coin": "ATOM",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3149188.651331998
+    },
+    {
+      "coin": "MATIC",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "DYDX",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 31887726.442507
+    },
+    {
+      "coin": "SOL",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2154965265.452841
+    },
+    {
+      "coin": "AVAX",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 29100801.191253997
+    },
+    {
+      "coin": "BNB",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 45977548.04884999
+    },
+    {
+      "coin": "APE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2368766.741213001
+    },
+    {
+      "coin": "OP",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 4132724.035401998
+    },
+    {
+      "coin": "LTC",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 19837823.310480006
+    },
+    {
+      "coin": "ARB",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 13651364.321213003
+    },
+    {
+      "coin": "DOGE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 65443404.753688
+    },
+    {
+      "coin": "INJ",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 8723999.156690007
+    },
+    {
+      "coin": "SUI",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 94107448.20684804
+    },
+    {
+      "coin": "kPEPE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 74821292.00821301
+    },
+    {
+      "coin": "CRV",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 18526946.268623
+    },
+    {
+      "coin": "LDO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 8841336.307994999
+    },
+    {
+      "coin": "LINK",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 40127696.82437
+    },
+    {
+      "coin": "STX",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1226015.4085000004
+    },
+    {
+      "coin": "RNDR",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "CFX",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1104615.1267449998
+    },
+    {
+      "coin": "FTM",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "GMX",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1423941.7633459992
+    },
+    {
+      "coin": "SNX",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1729936.4094680008
+    },
+    {
+      "coin": "XRP",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 252648435.7732
+    },
+    {
+      "coin": "BCH",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 34156325.914730005
+    },
+    {
+      "coin": "APT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 9627488.177915
+    },
+    {
+      "coin": "AAVE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 88442380.33165005
+    },
+    {
+      "coin": "COMP",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1266753.5451099998
+    },
+    {
+      "coin": "MKR",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "WLD",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 155286164.95710897
+    },
+    {
+      "coin": "FXS",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "HPOS",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "RLB",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "UNIBOT",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "YGG",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 825828.8809079998
+    },
+    {
+      "coin": "TRX",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 11226502.629570002
+    },
+    {
+      "coin": "kSHIB",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 5271409.519390997
+    },
+    {
+      "coin": "UNI",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 28809954.257089995
+    },
+    {
+      "coin": "SEI",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 4993540.565102995
+    },
+    {
+      "coin": "RUNE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1458313.4221069997
+    },
+    {
+      "coin": "OX",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "FRIEND",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "SHIA",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "CYBER",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "ZRO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 26961986.359705005
+    },
+    {
+      "coin": "BLZ",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "DOT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 8217004.137119
+    },
+    {
+      "coin": "BANANA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2719170.83625
+    },
+    {
+      "coin": "TRB",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3399772.77172
+    },
+    {
+      "coin": "FTT",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "LOOM",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "OGN",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "RDNT",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "ARK",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "BNT",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "CANTO",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "REQ",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "BIGTIME",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 695442.1643489996
+    },
+    {
+      "coin": "KAS",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1833474.817082
+    },
+    {
+      "coin": "ORBS",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "BLUR",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 15316883.649179999
+    },
+    {
+      "coin": "TIA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 7734590.556546999
+    },
+    {
+      "coin": "BSV",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2046364.9430600002
+    },
+    {
+      "coin": "ADA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 75327534.45753999
+    },
+    {
+      "coin": "TON",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "MINA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2469204.9252499994
+    },
+    {
+      "coin": "POLYX",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3418101.910605001
+    },
+    {
+      "coin": "GAS",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 614213.3110600001
+    },
+    {
+      "coin": "PENDLE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 13018480.655000009
+    },
+    {
+      "coin": "STG",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "FET",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 11729544.704840006
+    },
+    {
+      "coin": "STRAX",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "NEAR",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 158092327.79968998
+    },
+    {
+      "coin": "MEME",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1338721.1054270004
+    },
+    {
+      "coin": "ORDI",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3476101.694396001
+    },
+    {
+      "coin": "BADGER",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "NEO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 796727.031202
+    },
+    {
+      "coin": "ZEN",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1425361.3336890005
+    },
+    {
+      "coin": "FIL",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2946491.365516
+    },
+    {
+      "coin": "PYTH",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 10761630.890849996
+    },
+    {
+      "coin": "SUSHI",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 921239.9668300004
+    },
+    {
+      "coin": "ILV",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "IMX",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3681181.7516150014
+    },
+    {
+      "coin": "kBONK",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 77026892.70954797
+    },
+    {
+      "coin": "GMT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1227425.1001900001
+    },
+    {
+      "coin": "SUPER",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 712388.8344940001
+    },
+    {
+      "coin": "USTC",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "NFTI",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "JUP",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 26167792.420949984
+    },
+    {
+      "coin": "kLUNC",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1228187.9984350004
+    },
+    {
+      "coin": "RSR",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 218029.22827200007
+    },
+    {
+      "coin": "GALA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 934447.4576020003
+    },
+    {
+      "coin": "JTO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 35672177.142249994
+    },
+    {
+      "coin": "NTRN",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "ACE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 827424.0104049998
+    },
+    {
+      "coin": "MAV",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "WIF",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 12664805.248370001
+    },
+    {
+      "coin": "CAKE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1717209.3200199995
+    },
+    {
+      "coin": "PEOPLE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 789017.4459360003
+    },
+    {
+      "coin": "ENS",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1834157.3985859999
+    },
+    {
+      "coin": "ETC",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2024471.7768190003
+    },
+    {
+      "coin": "XAI",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 473747.1280709997
+    },
+    {
+      "coin": "MANTA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2723934.2404250004
+    },
+    {
+      "coin": "UMA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 343910.739807
+    },
+    {
+      "coin": "ONDO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 15286069.00644
+    },
+    {
+      "coin": "ALT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1961924.1896900006
+    },
+    {
+      "coin": "ZETA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1358523.249353
+    },
+    {
+      "coin": "DYM",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1079841.5501
+    },
+    {
+      "coin": "MAVIA",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "W",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2440823.4245409984
+    },
+    {
+      "coin": "PANDORA",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "STRK",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 4024091.9184729974
+    },
+    {
+      "coin": "PIXEL",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "AI",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "TAO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 41533835.93305999
+    },
+    {
+      "coin": "AR",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2404400.723370998
+    },
+    {
+      "coin": "MYRO",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "kFLOKI",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1179370.4921209998
+    },
+    {
+      "coin": "BOME",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 372975.59443800023
+    },
+    {
+      "coin": "ETHFI",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 17778652.134504996
+    },
+    {
+      "coin": "ENA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 52135665.31451696
+    },
+    {
+      "coin": "MNT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3027523.079017002
+    },
+    {
+      "coin": "TNSR",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 915874.6809869994
+    },
+    {
+      "coin": "SAGA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1437425.293394
+    },
+    {
+      "coin": "MERL",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1122050.1313959998
+    },
+    {
+      "coin": "HBAR",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 7999894.025133005
+    },
+    {
+      "coin": "POPCAT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 6082168.4526710035
+    },
+    {
+      "coin": "OMNI",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "EIGEN",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 8558948.346271997
+    },
+    {
+      "coin": "REZ",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 776788.1348740003
+    },
+    {
+      "coin": "NOT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1067388.069223
+    },
+    {
+      "coin": "TURBO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 804429.964986
+    },
+    {
+      "coin": "BRETT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 948674.6080799995
+    },
+    {
+      "coin": "IO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1918991.9187899998
+    },
+    {
+      "coin": "ZK",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1684298.1211610008
+    },
+    {
+      "coin": "BLAST",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "LISTA",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "MEW",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "RENDER",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2277677.0449999995
+    },
+    {
+      "coin": "kDOGS",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "POL",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3054039.971462001
+    },
+    {
+      "coin": "CATI",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "CELO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2798148.397593
+    },
+    {
+      "coin": "HMSTR",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 12756843.990759
+    },
+    {
+      "coin": "SCR",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "NEIROETH",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "kNEIRO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2724396.641975001
+    },
+    {
+      "coin": "GOAT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2454748.1968039996
+    },
+    {
+      "coin": "MOODENG",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1808431.73225
+    },
+    {
+      "coin": "GRASS",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 22884628.810387988
+    },
+    {
+      "coin": "PURR",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1835677.099210999
+    },
+    {
+      "coin": "PNUT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3076992.345827
+    },
+    {
+      "coin": "XLM",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 27037549.91779
+    },
+    {
+      "coin": "CHILLGUY",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "SAND",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1228143.2978659999
+    },
+    {
+      "coin": "IOTA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1141471.3441400002
+    },
+    {
+      "coin": "ALGO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3832657.374412001
+    },
+    {
+      "coin": "HYPE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2840569808.04738
+    },
+    {
+      "coin": "ME",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2884885.989614
+    },
+    {
+      "coin": "MOVE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1017081.1420859998
+    },
+    {
+      "coin": "VIRTUAL",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 8291626.5506919995
+    },
+    {
+      "coin": "PENGU",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 20534826.706921995
+    },
+    {
+      "coin": "USUAL",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 413721.0321000001
+    },
+    {
+      "coin": "FARTCOIN",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 127295273.50679792
+    },
+    {
+      "coin": "AI16Z",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "AIXBT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1302170.4060870004
+    },
+    {
+      "coin": "ZEREBRO",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "BIO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 6022302.599292997
+    },
+    {
+      "coin": "GRIFFAIN",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2165096.0289750015
+    },
+    {
+      "coin": "SPX",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 26818210.12711202
+    },
+    {
+      "coin": "S",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3191157.2251609997
+    },
+    {
+      "coin": "MORPHO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 37875797.12314
+    },
+    {
+      "coin": "TRUMP",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 25073151.11082
+    },
+    {
+      "coin": "MELANIA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1963706.8890879992
+    },
+    {
+      "coin": "ANIME",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1196910.7430910002
+    },
+    {
+      "coin": "VINE",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": 2498380.1247320008
+    },
+    {
+      "coin": "VVV",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 93967968.02245001
+    },
+    {
+      "coin": "JELLY",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "BERA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 5671109.038023999
+    },
+    {
+      "coin": "TST",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "LAYER",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1799841.6948270008
+    },
+    {
+      "coin": "IP",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "OM",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "KAITO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 4292522.92122
+    },
+    {
+      "coin": "NIL",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2597446.334139
+    },
+    {
+      "coin": "PAXG",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 15780850.5369
+    },
+    {
+      "coin": "PROMPT",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "BABY",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 932320.7384780002
+    },
+    {
+      "coin": "WCT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 577913.2928940002
+    },
+    {
+      "coin": "HYPER",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1615214.284019999
+    },
+    {
+      "coin": "ZORA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1843435.4373060004
+    },
+    {
+      "coin": "INIT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2842794.4040389988
+    },
+    {
+      "coin": "DOOD",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "LAUNCHCOIN",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "NXPC",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 883791.8498099998
+    },
+    {
+      "coin": "SOPH",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 409340.4781079997
+    },
+    {
+      "coin": "RESOLV",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2915985.813341001
+    },
+    {
+      "coin": "SYRUP",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 4164195.7218400016
+    },
+    {
+      "coin": "PUMP",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 128953584.4704211
+    },
+    {
+      "coin": "PROVE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 734794.0679600002
+    },
+    {
+      "coin": "YZY",
+      "delisted_at_fetch": true,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "XPL",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 103749131.41807194
+    },
+    {
+      "coin": "WLFI",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 9037076.328977998
+    },
+    {
+      "coin": "LINEA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1210103.147602
+    },
+    {
+      "coin": "SKY",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3422703.322367001
+    },
+    {
+      "coin": "ASTER",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 12017962.858430002
+    },
+    {
+      "coin": "AVNT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2608918.043913002
+    },
+    {
+      "coin": "STBL",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1966237.6465289996
+    },
+    {
+      "coin": "0G",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 1160813.0701800003
+    },
+    {
+      "coin": "HEMI",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 4050432.070947998
+    },
+    {
+      "coin": "APEX",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 955398.5897099999
+    },
+    {
+      "coin": "2Z",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2247822.049803999
+    },
+    {
+      "coin": "ZEC",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 638135109.0579
+    },
+    {
+      "coin": "MON",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 24193974.61329801
+    },
+    {
+      "coin": "MET",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 13994937.132020002
+    },
+    {
+      "coin": "MEGA",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 6384683.594530003
+    },
+    {
+      "coin": "CC",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3994812.6407400006
+    },
+    {
+      "coin": "ICP",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 4598529.4121699985
+    },
+    {
+      "coin": "AERO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 16145911.473329999
+    },
+    {
+      "coin": "STABLE",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2757701.3507860005
+    },
+    {
+      "coin": "FOGO",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 776831.0295439998
+    },
+    {
+      "coin": "LIT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 461172426.9176998
+    },
+    {
+      "coin": "XMR",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 27184247.808869995
+    },
+    {
+      "coin": "AXS",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 2139652.6112539996
+    },
+    {
+      "coin": "DASH",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 4117148.0390200005
+    },
+    {
+      "coin": "SKR",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 3015862.256171
+    },
+    {
+      "coin": "AZTEC",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 601838.7568630001
+    },
+    {
+      "coin": "CHIP",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": 15508457.698630996
+    },
+    {
+      "coin": "GRAM",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "CASHCAT",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "PONS",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": null
+    },
+    {
+      "coin": "USELESS",
+      "delisted_at_fetch": false,
+      "formation_dollar_volume": null
+    }
+  ],
+  "fetched_at": "2026-10-06T15:24:59Z",
+  "formation_end": "2026-07-08T00:00:00Z",
+  "rule": "Every main-dex perp in the metadata at fetch time (listed or delisted), ranked by dollar volume (sum of hourly volume x close) over the formation window; the top 30 with at least 90% of formation hours present form the universe for the whole window. Builder (HIP-3) dexes excluded.",
+  "source": "https://api.hyperliquid.xyz/info metaAndAssetCtxs, candleSnapshot (1h), fundingHistory",
+  "universe": [
+    "BTC",
+    "ETH",
+    "HYPE",
+    "SOL",
+    "ZEC",
+    "LIT",
+    "XRP",
+    "NEAR",
+    "WLD",
+    "PUMP",
+    "FARTCOIN",
+    "XPL",
+    "SUI",
+    "VVV",
+    "AAVE",
+    "kBONK",
+    "ADA",
+    "kPEPE",
+    "DOGE",
+    "ENA",
+    "BNB",
+    "TAO",
+    "LINK",
+    "MORPHO",
+    "JTO",
+    "BCH",
+    "DYDX",
+    "AVAX",
+    "UNI",
+    "XMR"
+  ],
+  "window_end": "2026-10-06T00:00:00Z",
+  "window_start": "2026-07-01T00:00:00Z"
+}
