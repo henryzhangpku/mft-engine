@@ -85,13 +85,27 @@ fn gap_on_another_coin_does_not_reset_this_one() {
 }
 
 #[test]
+fn quiet_book_does_not_reset_the_signal() {
+    // Bars come from trades; a silent book stream only affects fill pricing.
+    let mut events = bars_from("BTC", &trending_closes(3));
+    let ts = events[61].ts() - 1;
+    events.insert(
+        61,
+        Event::Gap(Gap { coin: "BTC".into(), stream: "book".into(), ts, from_ts: ts - 30_000, to_ts: ts, reason: "test".into() }),
+    );
+    let mut eng = Engine::new(EngineConfig::default());
+    assert!(fills(&replay(&mut eng, &events)) >= 1);
+}
+
+#[test]
 fn gap_detector_flags_silence_and_backwards_time() {
     let mut g = GapDetector::new();
     assert!(g.observe("book", "BTC", 1_000, 1_000).is_none());
     assert!(g.observe("book", "BTC", 2_000, 2_000).is_none());
-    let silence = g.observe("book", "BTC", 9_000, 9_000).expect("7 s silence > 5 s");
-    assert_eq!((silence.from_ts, silence.to_ts), (2_000, 9_000));
-    let back = g.observe("book", "BTC", 8_000, 9_100).expect("time went backwards");
+    assert!(g.observe("book", "BTC", 7_500, 7_500).is_none(), "normal ~5.4 s cadence");
+    let silence = g.observe("book", "BTC", 30_000, 30_000).expect("22.5 s silence > 20 s");
+    assert_eq!((silence.from_ts, silence.to_ts), (7_500, 30_000));
+    let back = g.observe("book", "BTC", 29_000, 30_100).expect("time went backwards");
     assert!(back.reason.contains("backwards"));
     // Streams and coins are tracked separately.
     assert!(g.observe("book", "ETH", 50_000, 50_000).is_none());

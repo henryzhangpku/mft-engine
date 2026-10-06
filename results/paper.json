@@ -1,0 +1,36 @@
+{
+  "started": "2026-10-06T03:31:54Z",
+  "duration_secs": 240,
+  "coins": [
+    "BTC",
+    "ETH"
+  ],
+  "events_by_kind": {
+    "Bar": 8,
+    "BookTop": 92,
+    "Trade": 1285
+  },
+  "decisions": 2,
+  "fills": 2,
+  "event_to_decision_all_events": {
+    "samples": 1385,
+    "p50_us": 436.3,
+    "p99_us": 2061.3,
+    "max_us": 2111.1
+  },
+  "event_to_decision_bar_events": {
+    "samples": 8,
+    "p50_us": 262.5,
+    "p99_us": 589.7,
+    "max_us": 589.7
+  },
+  "engine_compute_only": {
+    "samples": 1385,
+    "p50_us": 1.4,
+    "p99_us": 24.9,
+    "max_us": 933.1
+  },
+  "exchange_to_receive_ms_p50": 360,
+  "exchange_to_receive_ms_p99": 12707,
+  "paper_pnl_after_costs": -1.8735355844694368
+}

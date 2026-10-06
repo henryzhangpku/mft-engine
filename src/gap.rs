@@ -24,12 +24,13 @@ pub struct GapDetector {
 }
 
 impl GapDetector {
-    /// Default thresholds: the L2 book publishes about twice a second, so 5 s
-    /// of silence is abnormal. Trades are bursty; 60 s without a BTC or ETH
-    /// print on Hyperliquid is unusual enough to flag.
+    /// Default thresholds, from what the feed actually did: in a recorded
+    /// session the public l2Book channel pushed a snapshot every ~5.4 s
+    /// (not sub-second), so 20 s, about four missed snapshots, is abnormal.
+    /// Trades are bursty; 60 s without a BTC or ETH print is worth flagging.
     pub fn new() -> Self {
         let mut max_silence_ms = BTreeMap::new();
-        max_silence_ms.insert("book".to_string(), 5_000);
+        max_silence_ms.insert("book".to_string(), 20_000);
         max_silence_ms.insert("trades".to_string(), 60_000);
         Self {
             max_silence_ms,

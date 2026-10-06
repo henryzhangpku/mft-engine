@@ -136,3 +136,16 @@ fn there_is_no_order_path_in_the_source() {
         }
     }
 }
+
+#[test]
+fn paper_signal_line_is_human_readable() {
+    let events = bars_from("BTC", &trending_closes(1));
+    let mut eng = Engine::new(EngineConfig::default());
+    let decisions = replay(&mut eng, &events);
+    let line = perp_engine::paper::signal_line(decisions.last().unwrap(), &eng);
+    println!("{line}");
+    assert!(line.starts_with("SIGNAL 2026-"), "{line}");
+    for part in ["BTC-PERP LONG", "target +1000 USD", "reason: 5m momentum z=+", "risk: PASSED"] {
+        assert!(line.contains(part), "missing {part:?} in {line}");
+    }
+}

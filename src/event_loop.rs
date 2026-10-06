@@ -37,6 +37,9 @@ pub struct LoopStats {
     pub event_latency_ns: Vec<u64>,
     /// The same, only for bar events (the ones that can produce an order).
     pub bar_latency_ns: Vec<u64>,
+    /// Time spent inside `Engine::on_event` alone, for live events. The gap
+    /// between this and `event_latency_ns` is channel hops and queueing.
+    pub engine_compute_ns: Vec<u64>,
     /// Local receive time minus exchange time, ms, for live trades and books.
     /// Includes any offset between our clock and the exchange's.
     pub feed_latency_ms: Vec<i64>,
@@ -65,10 +68,12 @@ pub async fn run<C: Clock>(
         let Some(env) = next else { break }; // source finished
 
         clock.observe(&env.event);
+        let started = Instant::now();
         let decision = engine.on_event(&env.event, clock);
 
         if let Some(received) = env.received {
             let ns = received.elapsed().as_nanos() as u64;
+            stats.engine_compute_ns.push(started.elapsed().as_nanos() as u64);
             stats.event_latency_ns.push(ns);
             if matches!(env.event, Event::Bar(_)) {
                 stats.bar_latency_ns.push(ns);

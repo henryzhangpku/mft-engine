@@ -1,6 +1,6 @@
 {
   "config": {
-    "book_fresh_ms": 5000,
+    "book_fresh_ms": 12000,
     "fills": {
       "slippage_bps": 1.0,
       "taker_fee_bps": 4.5

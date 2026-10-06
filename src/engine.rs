@@ -32,7 +32,9 @@ pub struct EngineConfig {
     /// Differences between target and position smaller than this (USD) are
     /// not traded, so price drift does not churn fees.
     pub min_order_notional: f64,
-    /// A book top older than this is not used as the fill reference.
+    /// A book top older than this is not used as the fill reference. The
+    /// public feed snapshots the book about every 5.4 s, so this is roughly
+    /// two snapshots.
     pub book_fresh_ms: i64,
 }
 
@@ -44,7 +46,7 @@ impl Default for EngineConfig {
             risk: RiskLimits::default(),
             fills: FillModel::default(),
             min_order_notional: 50.0,
-            book_fresh_ms: 5_000,
+            book_fresh_ms: 12_000,
         }
     }
 }
@@ -168,8 +170,14 @@ impl Engine {
                 None
             }
             Event::Gap(g) => {
-                // Forget price history so no signal is computed across the hole.
-                self.strategy.on_gap(&g.coin);
+                // A hole in trades, bars or the connection means the bar
+                // series may be missing prices: forget the history so no
+                // signal is computed across it. A quiet book stream does not
+                // touch the bars (they come from trades); its only effect is
+                // that a stale book stops being used as the fill reference.
+                if g.stream != "book" {
+                    self.strategy.on_gap(&g.coin);
+                }
                 None
             }
             Event::Bar(bar) => self.on_bar(bar, now),
