@@ -79,7 +79,7 @@ fn config_overrides_apply_and_reject_mistakes() {
     let mut wrong = BTreeMap::new();
     wrong.insert("prediction.enabled".to_string(), toml::Value::String("yes".into()));
     assert!(build_config("v1", &wrong).is_err(), "wrong type");
-    assert!(build_config("v3", &BTreeMap::new()).is_err(), "unknown base");
+    assert!(build_config("v9", &BTreeMap::new()).is_err(), "unknown base");
 }
 
 #[test]

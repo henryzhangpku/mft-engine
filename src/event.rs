@@ -115,6 +115,37 @@ pub struct PredictionMarket {
     pub prob_above: Vec<f64>,
 }
 
+/// Crowd positioning: what a fixed set of top Hyperliquid leaderboard wallets
+/// hold in one coin, aggregated. Built from public data only (the public
+/// leaderboard and `clearinghouseState` of public addresses); no address is
+/// stored, only the totals.
+///
+/// Hyperliquid exposes only *current* wallet state, so there is no history
+/// to backfill: positioning exists in a replay only if it was recorded live.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Positioning {
+    pub coin: String,
+    /// When the scan of all wallets finished.
+    pub ts: i64,
+    pub source: String,
+    /// Wallets scanned, and how many of them hold this coin.
+    pub wallets_scanned: u32,
+    pub wallets_holding: u32,
+    pub long_count: u32,
+    pub short_count: u32,
+    /// Position value in USD, long and short.
+    pub long_value: f64,
+    pub short_value: f64,
+    /// Long share of the gross value, in [0, 1]. 0.5 when nobody holds it.
+    pub long_share: f64,
+    /// Change in `long_share` since the previous snapshot of the same wallet
+    /// set, if there was one.
+    #[serde(default)]
+    pub long_share_change: Option<f64>,
+    pub avg_long_leverage: f64,
+    pub avg_short_leverage: f64,
+}
+
 /// A hole in the data that we detected and want every consumer to know about.
 ///
 /// Gaps are events rather than log lines so that a replay of a recorded file
@@ -143,6 +174,7 @@ pub enum Event {
     Bar(Bar),
     TextSignal(TextSignal),
     PredictionMarket(PredictionMarket),
+    Positioning(Positioning),
     Gap(Gap),
 }
 
@@ -155,6 +187,7 @@ impl Event {
             Event::Bar(e) => e.ts,
             Event::TextSignal(e) => e.ts,
             Event::PredictionMarket(e) => e.ts,
+            Event::Positioning(e) => e.ts,
             Event::Gap(e) => e.ts,
         }
     }
@@ -166,6 +199,7 @@ impl Event {
             Event::Bar(e) => &e.coin,
             Event::TextSignal(e) => &e.coin,
             Event::PredictionMarket(e) => &e.coin,
+            Event::Positioning(e) => &e.coin,
             Event::Gap(e) => &e.coin,
         }
     }
@@ -178,19 +212,21 @@ impl Event {
             Event::Bar(_) => "Bar",
             Event::TextSignal(_) => "TextSignal",
             Event::PredictionMarket(_) => "PredictionMarket",
+            Event::Positioning(_) => "Positioning",
             Event::Gap(_) => "Gap",
         }
     }
 
     /// Tie-break rank for events that share a timestamp, so that sorting a
     /// merged replay is fully deterministic. Gaps first (they invalidate
-    /// state), then text and prediction markets (context), then market data,
+    /// state), then text, prediction markets and positioning (context), then market data,
     /// then bars (decisions).
     pub fn sort_rank(&self) -> u8 {
         match self {
             Event::Gap(_) => 0,
             Event::TextSignal(_) => 1,
             Event::PredictionMarket(_) => 1,
+            Event::Positioning(_) => 1,
             Event::BookTop(_) => 2,
             Event::Trade(_) => 3,
             Event::Bar(_) => 4,

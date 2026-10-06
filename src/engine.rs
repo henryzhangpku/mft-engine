@@ -16,6 +16,7 @@
 
 use crate::clock::Clock;
 use crate::event::{Bar, BookTop, Event};
+use crate::positioning::{PositioningParams, PositioningState};
 use crate::prediction::{PredictionParams, PredictionState};
 use crate::execution::{Fill, FillModel, Portfolio};
 use crate::risk::{OrderIntent, RiskContext, RiskEngine, RiskLimits};
@@ -30,6 +31,8 @@ pub struct EngineConfig {
     pub strategy: MomentumParams,
     pub text: TextParams,
     pub prediction: PredictionParams,
+    #[serde(default)]
+    pub positioning: PositioningParams,
     pub risk: RiskLimits,
     pub fills: FillModel,
     /// Differences between target and position smaller than this (USD) are
@@ -47,6 +50,7 @@ impl Default for EngineConfig {
             strategy: MomentumParams::default(),
             text: TextParams::default(),
             prediction: PredictionParams::default(),
+            positioning: PositioningParams::default(),
             risk: RiskLimits::default(),
             fills: FillModel::default(),
             min_order_notional: 50.0,
@@ -67,6 +71,15 @@ impl EngineConfig {
         let mut c = Self::default();
         c.prediction.enabled = true;
         c.text.enabled = true;
+        c
+    }
+
+    /// Strategy v3: the same momentum, entered only when the top leaderboard
+    /// wallets lean the same way (more than 60% of their gross position value
+    /// on our side). Positioning only, to isolate it.
+    pub fn v3() -> Self {
+        let mut c = Self::default();
+        c.positioning.enabled = true;
         c
     }
 }
@@ -132,6 +145,7 @@ pub struct Engine {
     strategy: Momentum,
     text: TextState,
     prediction: PredictionState,
+    positioning: PositioningState,
     risk: RiskEngine,
     pub portfolio: Portfolio,
     market: BTreeMap<String, MarketState>,
@@ -141,6 +155,8 @@ pub struct Engine {
     pub text_reductions: u64,
     /// How many times the prediction-market gate vetoed a target.
     pub pm_vetoes: u64,
+    /// How many times the positioning gate vetoed a target.
+    pub crowd_vetoes: u64,
 }
 
 impl Engine {
@@ -155,6 +171,7 @@ impl Engine {
             strategy: Momentum::new(config.strategy),
             text: TextState::new(config.text),
             prediction: PredictionState::new(config.prediction),
+            positioning: PositioningState::new(config.positioning),
             risk,
             portfolio: Portfolio::default(),
             market: BTreeMap::new(),
@@ -162,6 +179,7 @@ impl Engine {
             day_start_equity: 0.0,
             text_reductions: 0,
             pm_vetoes: 0,
+            crowd_vetoes: 0,
         }
     }
 
@@ -223,6 +241,10 @@ impl Engine {
                 self.prediction.on_snapshot(p);
                 None
             }
+            Event::Positioning(p) => {
+                self.positioning.on_snapshot(p);
+                None
+            }
             Event::Gap(g) => {
                 // A hole in trades, bars or the connection means the bar
                 // series may be missing prices: forget the history so no
@@ -252,9 +274,10 @@ impl Engine {
         // 3. Reasoning gates, then the check that they did not add risk.
         let position = self.portfolio.position(&bar.coin);
         let pm = self.prediction.caution_for(&bar.coin, raw_target, position * bar.close, bar.close, now);
+        let crowd = self.positioning.caution_for(&bar.coin, raw_target, position * bar.close, now);
         let text = self.text.caution_for(&bar.coin, raw_target, now);
-        let target = text.apply(pm.apply(raw_target));
-        let why = self.explain(&bar.coin, bar.close, now, pm.value(), text.value());
+        let target = text.apply(crowd.apply(pm.apply(raw_target)));
+        let why = self.explain(&bar.coin, bar.close, now, pm.value(), crowd.value(), text.value());
         if let Err(reason) = check_not_riskier(raw_target, target) {
             return Some(Decision::Blocked {
                 coin: bar.coin.clone(),
@@ -268,6 +291,9 @@ impl Engine {
         }
         if pm.value() < 1.0 {
             self.pm_vetoes += 1;
+        }
+        if crowd.value() < 1.0 {
+            self.crowd_vetoes += 1;
         }
         if text.value() < 1.0 {
             self.text_reductions += 1;
@@ -317,13 +343,17 @@ impl Engine {
     }
 
     /// One line of the inputs behind a bar's decision, for logs and the demo.
-    fn explain(&self, coin: &str, spot: f64, now: i64, pm_mult: f64, text_mult: f64) -> String {
+    fn explain(&self, coin: &str, spot: f64, now: i64, pm_mult: f64, crowd_mult: f64, text_mult: f64) -> String {
         let fmt = |v: Option<f64>, digits: usize| v.map_or("n/a".to_string(), |x| format!("{x:.digits$}"));
         let z = self.strategy.last_z(coin).map_or("n/a".to_string(), |z| format!("{z:+.2}"));
         let mut out = format!("5m momentum z={z}");
         if self.config.prediction.enabled {
             let v = self.prediction.view(coin, spot, now);
             out += &format!("; kalshi P(up)={} median={} gate x{pm_mult:.0}", fmt(v.p_up, 2), fmt(v.median, 0));
+        }
+        if self.config.positioning.enabled {
+            let share = self.positioning.long_share(coin, now).map(|s| s * 100.0);
+            out += &format!("; top wallets long {}% gate x{crowd_mult:.0}", fmt(share, 0));
         }
         if self.config.text.enabled {
             out += &format!("; social x{text_mult:.2}");

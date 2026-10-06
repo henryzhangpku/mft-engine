@@ -140,6 +140,31 @@ struct Candle {
     n: u64,
 }
 
+fn agent(timeout_secs: u64) -> Result<ureq::Agent> {
+    Ok(ureq::AgentBuilder::new()
+        .tls_connector(std::sync::Arc::new(native_tls::TlsConnector::new()?))
+        .timeout(std::time::Duration::from_secs(timeout_secs))
+        .build())
+}
+
+/// POST a read-only query to the public `/info` endpoint and parse the reply.
+/// Every Hyperliquid read in this crate goes through here (or `get_public`).
+pub fn info<T: serde::de::DeserializeOwned>(body: &serde_json::Value) -> Result<T> {
+    let resp = agent(20)?
+        .post(INFO_URL)
+        .send_json(body.clone())
+        .map_err(|e| anyhow!("info request {} failed: {e}", body["type"]))?;
+    // Parse from the reader: some replies are larger than ureq's 10 MB
+    // string limit.
+    serde_json::from_reader(resp.into_reader()).context("info reply is not the expected JSON")
+}
+
+/// GET a public JSON document (the stats leaderboard is about 40 MB).
+pub fn get_public<T: serde::de::DeserializeOwned>(url: &str) -> Result<T> {
+    let resp = agent(120)?.get(url).call().map_err(|e| anyhow!("GET {url} failed: {e}"))?;
+    serde_json::from_reader(std::io::BufReader::new(resp.into_reader())).with_context(|| format!("unexpected JSON from {url}"))
+}
+
 /// One request to `candleSnapshot`. The endpoint returns at most 5,000
 /// candles per call and only keeps roughly the most recent 5,000 one-minute
 /// candles in total, so "a few days" is all the 1m history there is.
@@ -148,16 +173,7 @@ pub fn fetch_candles(coin: &str, interval: &str, start_ms: i64, end_ms: i64) -> 
         "type": "candleSnapshot",
         "req": { "coin": coin, "interval": interval, "startTime": start_ms, "endTime": end_ms }
     });
-    let agent = ureq::AgentBuilder::new()
-        .tls_connector(std::sync::Arc::new(native_tls::TlsConnector::new()?))
-        .timeout(std::time::Duration::from_secs(20))
-        .build();
-    let candles: Vec<Candle> = agent
-        .post(INFO_URL)
-        .send_json(body)
-        .map_err(|e| anyhow!("candleSnapshot request failed: {e}"))?
-        .into_json()
-        .context("candleSnapshot response is not the expected JSON")?;
+    let candles: Vec<Candle> = info(&body).context("candleSnapshot")?;
     candles
         .into_iter()
         .map(|c| {

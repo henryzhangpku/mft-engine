@@ -59,7 +59,8 @@ pub fn build_config(base: &str, set: &BTreeMap<String, toml::Value>) -> Result<E
     let base_config = match base {
         "v1" => EngineConfig::v1(),
         "v2" => EngineConfig::v2(),
-        other => bail!("unknown base {other:?}; use \"v1\" or \"v2\""),
+        "v3" => EngineConfig::v3(),
+        other => bail!("unknown base {other:?}; use \"v1\", \"v2\" or \"v3\""),
     };
     let mut json = serde_json::to_value(base_config)?;
     for (path, value) in set {

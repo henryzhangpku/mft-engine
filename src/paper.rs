@@ -49,6 +49,7 @@ pub struct PaperReport {
     pub decisions: u64,
     pub fills: u64,
     pub pm_vetoes: u64,
+    pub crowd_vetoes: u64,
     pub text_reductions: u64,
     pub event_to_decision_all_events: LatencySummary,
     pub event_to_decision_bar_events: LatencySummary,
@@ -107,63 +108,6 @@ async fn warm_up(engine: &mut Engine, coins: &[String]) {
     }
 }
 
-/// Poll Kalshi for each coin's next-closing ladder every `every`, sending
-/// each snapshot into the engine channel. A failed poll is logged and
-/// skipped; the gate then sees an ageing ladder and closes on its own.
-async fn poll_kalshi(coins: Vec<String>, tx: mpsc::Sender<Envelope>, every: Duration) {
-    let mut tick = tokio::time::interval(every);
-    loop {
-        tick.tick().await;
-        for coin in &coins {
-            if crate::kalshi::series_for(coin).is_none() {
-                continue;
-            }
-            let c = coin.clone();
-            let fetched = tokio::task::spawn_blocking(move || crate::kalshi::fetch_live_ladder(&c, wall_now_ms())).await;
-            match fetched {
-                Ok(Ok(Some(pm))) => {
-                    let event = Event::PredictionMarket(pm);
-                    if tx.send(Envelope { event, received: Some(Instant::now()) }).await.is_err() {
-                        return;
-                    }
-                }
-                Ok(Ok(None)) => eprintln!("[kalshi] no usable ladder for {coin}"),
-                Ok(Err(e)) => eprintln!("[kalshi] poll failed for {coin}: {e:#}"),
-                Err(e) => eprintln!("[kalshi] poll task failed: {e}"),
-            }
-        }
-    }
-}
-
-/// Follow a JSONL file of `TextSignal` events written by the sidecar
-/// (`sidecar/live_social.py`), sending each new complete line into the engine
-/// channel. Reads from the start: old signals expire by their own TTL.
-async fn tail_text_feed(path: PathBuf, tx: mpsc::Sender<Envelope>) {
-    let mut offset = 0usize;
-    let mut tick = tokio::time::interval(Duration::from_secs(1));
-    loop {
-        tick.tick().await;
-        // Small file, read whole; a missing file just means "nothing yet".
-        let Ok(bytes) = std::fs::read(&path) else { continue };
-        let Some(end) = bytes.iter().rposition(|b| *b == b'\n') else { continue };
-        if end < offset {
-            continue;
-        }
-        for line in String::from_utf8_lossy(&bytes[offset..=end]).lines() {
-            match serde_json::from_str::<Event>(line) {
-                Ok(event @ Event::TextSignal(_)) => {
-                    if tx.send(Envelope { event, received: Some(Instant::now()) }).await.is_err() {
-                        return;
-                    }
-                }
-                Ok(other) => eprintln!("[text] ignoring non-text event {}", other.kind()),
-                Err(e) => eprintln!("[text] bad line skipped: {e}"),
-            }
-        }
-        offset = end + 1;
-    }
-}
-
 pub struct PaperOptions {
     pub coins: Vec<String>,
     pub duration: Duration,
@@ -174,10 +118,12 @@ pub struct PaperOptions {
     /// The sidecar's live TextSignal file, if any.
     pub text_feed: Option<PathBuf>,
     pub kalshi_every: Duration,
+    /// Zero turns positioning off.
+    pub positioning_every: Duration,
 }
 
 pub async fn run(opts: PaperOptions) -> Result<PaperReport> {
-    let PaperOptions { coins, duration, config, out, events_out, text_feed, kalshi_every } = opts;
+    let PaperOptions { coins, duration, config, out, events_out, text_feed, kalshi_every, positioning_every } = opts;
     let started = wall_now_ms();
     let mut engine = Engine::new(config);
     warm_up(&mut engine, &coins).await;
@@ -187,8 +133,10 @@ pub async fn run(opts: PaperOptions) -> Result<PaperReport> {
     let (raw_tx, mut raw_rx) = mpsc::channel::<Envelope>(10_000);
     let (tx, rx) = mpsc::channel::<Envelope>(10_000);
     let feed = tokio::spawn(run_feed(coins.clone(), raw_tx));
-    let kalshi = tokio::spawn(poll_kalshi(coins.clone(), tx.clone(), kalshi_every));
-    let text = text_feed.map(|p| tokio::spawn(tail_text_feed(p, tx.clone())));
+    let kalshi = tokio::spawn(crate::pollers::poll_kalshi(coins.clone(), tx.clone(), kalshi_every));
+    let text = text_feed.map(|p| tokio::spawn(crate::pollers::tail_text_feed(p, tx.clone())));
+    let crowd = (!positioning_every.is_zero())
+        .then(|| tokio::spawn(crate::pollers::poll_positioning(coins.clone(), tx.clone(), positioning_every, 100)));
     let bars = tokio::spawn(async move {
         let mut builder = BarBuilder::new();
         while let Some(env) = raw_rx.recv().await {
@@ -222,14 +170,14 @@ pub async fn run(opts: PaperOptions) -> Result<PaperReport> {
             println!("{}", signal_line(d));
         }
         if let Event::Bar(b) = event {
-            if eng.pm_vetoes > vetoes_seen || eng.text_reductions > text_seen {
+            if eng.pm_vetoes + eng.crowd_vetoes > vetoes_seen || eng.text_reductions > text_seen {
                 let z = eng.signal_z(&b.coin).map_or("n/a".into(), |z| format!("{z:+.2}"));
                 println!(
-                    "[gate] {} {} momentum z={z}: Kalshi vetoes {}, social reductions {} (no order if the gated target equals the position)",
-                    format_utc(b.ts), b.coin, eng.pm_vetoes, eng.text_reductions
+                    "[gate] {} {} momentum z={z}: Kalshi vetoes {}, positioning vetoes {}, social reductions {} (no order if the gated target equals the position)",
+                    format_utc(b.ts), b.coin, eng.pm_vetoes, eng.crowd_vetoes, eng.text_reductions
                 );
             }
-            vetoes_seen = eng.pm_vetoes;
+            vetoes_seen = eng.pm_vetoes + eng.crowd_vetoes;
             text_seen = eng.text_reductions;
         }
         match event {
@@ -243,6 +191,10 @@ pub async fn run(opts: PaperOptions) -> Result<PaperReport> {
                     p.coin, p.event, p.strikes.len(), show(v.median, 0), show(v.p_up, 3)
                 );
             }
+            Event::Positioning(p) => println!(
+                "[positioning] {} {} of {} top wallets hold it, {:.1}% long by value",
+                p.coin, p.wallets_holding, p.wallets_scanned, p.long_share * 100.0
+            ),
             Event::TextSignal(t) if t.relevance >= 0.5 => println!(
                 "[social] {} {} relevance {:.2} bullish {:.2} bearish {:.2} ({})",
                 t.coin, t.post_id, t.relevance, t.bullish, t.bearish, t.scorer
@@ -255,7 +207,7 @@ pub async fn run(opts: PaperOptions) -> Result<PaperReport> {
     feed.abort();
     bars.abort();
     kalshi.abort();
-    if let Some(t) = text {
+    for t in [text, crowd].into_iter().flatten() {
         t.abort();
     }
 
@@ -263,11 +215,19 @@ pub async fn run(opts: PaperOptions) -> Result<PaperReport> {
         started: format_utc(started),
         duration_secs: duration.as_secs(),
         coins,
-        strategy: if config.prediction.enabled { "v2" } else { "v1" }.into(),
+        strategy: if config.positioning.enabled {
+            "v3"
+        } else if config.prediction.enabled {
+            "v2"
+        } else {
+            "v1"
+        }
+        .into(),
         events_by_kind: stats.events_by_kind.clone(),
         decisions: stats.decisions,
         fills: engine.portfolio.fills,
         pm_vetoes: engine.pm_vetoes,
+        crowd_vetoes: engine.crowd_vetoes,
         text_reductions: engine.text_reductions,
         event_to_decision_all_events: summarise(&stats.event_latency_ns),
         event_to_decision_bar_events: summarise(&stats.bar_latency_ns),

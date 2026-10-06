@@ -6,7 +6,7 @@ use clap::{Parser, Subcommand};
 use mft_engine::artifacts::{write_json, write_jsonl};
 use mft_engine::backtest::{evaluate, load_events, print_table};
 use mft_engine::engine::EngineConfig;
-use mft_engine::{demo, experiment, fetch, paper, record};
+use mft_engine::{demo, experiment, fetch, paper, positioning, record, universe};
 use std::path::PathBuf;
 use std::time::Duration;
 
@@ -33,6 +33,37 @@ enum Command {
         #[arg(long, default_value_t = 120)]
         duration_secs: u64,
         #[arg(long, default_value = "data/recorded_feed.jsonl")]
+        out: PathBuf,
+        /// Also poll Kalshi ladders (0 = off).
+        #[arg(long, default_value_t = 60)]
+        kalshi_every_secs: u64,
+        /// Also snapshot top-wallet positioning (0 = off).
+        #[arg(long, default_value_t = 300)]
+        positioning_every_secs: u64,
+        #[arg(long, default_value_t = 100)]
+        positioning_wallets: usize,
+        /// Also record the sidecar's live TextSignal file.
+        #[arg(long)]
+        text_feed: Option<PathBuf>,
+    },
+    /// Every Hyperliquid perp across all dexes (main + HIP-3 builder dexes).
+    Universe {
+        #[arg(long, default_value = "data/universe.json")]
+        out: PathBuf,
+        /// Rows to print, by 24h volume.
+        #[arg(long, default_value_t = 40)]
+        top: usize,
+    },
+    /// One snapshot of top leaderboard wallets' positioning, per coin.
+    Positioning {
+        /// Coins to show (empty = the 25 largest by gross value).
+        #[arg(long, value_delimiter = ',')]
+        coins: Vec<String>,
+        #[arg(long, default_value_t = 100)]
+        wallets: usize,
+        #[arg(long, default_value_t = 100_000.0)]
+        min_account_value: f64,
+        #[arg(long, default_value = "results/positioning_snapshot.jsonl")]
         out: PathBuf,
     },
     /// Download historical 1-minute candles to JSONL.
@@ -80,7 +111,7 @@ enum Command {
         coins: Vec<String>,
         #[arg(long, default_value_t = 180)]
         duration_secs: u64,
-        /// v1 (momentum only) or v2 (with the reasoning gates).
+        /// v1 (momentum only), v2 (Kalshi + social gates) or v3 (positioning gate).
         #[arg(long, default_value = "v2")]
         strategy: String,
         /// TextSignal JSONL written live by sidecar/live_social.py.
@@ -88,6 +119,9 @@ enum Command {
         text_feed: Option<PathBuf>,
         #[arg(long, default_value_t = 60)]
         kalshi_every_secs: u64,
+        /// Top-wallet positioning snapshots (0 = off).
+        #[arg(long, default_value_t = 300)]
+        positioning_every_secs: u64,
         #[arg(long, default_value = "results/paper.json")]
         out: PathBuf,
         #[arg(long, default_value = "results/paper_events.jsonl")]
@@ -114,15 +148,26 @@ fn strategy_config(name: &str) -> Result<EngineConfig> {
     match name {
         "v1" => Ok(EngineConfig::v1()),
         "v2" => Ok(EngineConfig::v2()),
-        other => anyhow::bail!("unknown strategy {other:?}; use v1 or v2"),
+        "v3" => Ok(EngineConfig::v3()),
+        other => anyhow::bail!("unknown strategy {other:?}; use v1, v2 or v3"),
     }
 }
 
 #[tokio::main]
 async fn main() -> Result<()> {
     match Cli::parse().command {
-        Command::Record { coins, duration_secs, out } => {
-            record::run(coins, &out, Duration::from_secs(duration_secs)).await
+        Command::Record { coins, duration_secs, out, kalshi_every_secs, positioning_every_secs, positioning_wallets, text_feed } => {
+            let extras = record::Extras {
+                kalshi_every: Duration::from_secs(kalshi_every_secs),
+                positioning_every: Duration::from_secs(positioning_every_secs),
+                positioning_wallets,
+                text_feed,
+            };
+            record::run(coins, &out, Duration::from_secs(duration_secs), extras).await
+        }
+        Command::Universe { out, top } => tokio::task::spawn_blocking(move || universe::run(&out, top)).await?,
+        Command::Positioning { coins, wallets, min_account_value, out } => {
+            tokio::task::spawn_blocking(move || positioning::run(&coins, wallets, min_account_value, &out)).await?
         }
         Command::FetchBars { coins, days, out } => {
             // Blocking HTTP; run it off the async workers.
@@ -140,7 +185,7 @@ async fn main() -> Result<()> {
             }
             experiment::run(&file, &ledger).await.map(|_| ())
         }
-        Command::Paper { coins, duration_secs, strategy, text_feed, kalshi_every_secs, out, events_out } => {
+        Command::Paper { coins, duration_secs, strategy, text_feed, kalshi_every_secs, positioning_every_secs, out, events_out } => {
             let report = paper::run(paper::PaperOptions {
                 coins,
                 duration: Duration::from_secs(duration_secs),
@@ -149,6 +194,7 @@ async fn main() -> Result<()> {
                 events_out: events_out.clone(),
                 text_feed,
                 kalshi_every: Duration::from_secs(kalshi_every_secs),
+                positioning_every: Duration::from_secs(positioning_every_secs),
             })
             .await?;
             println!("{}", serde_json::to_string_pretty(&report)?);
@@ -165,7 +211,12 @@ async fn main() -> Result<()> {
 async fn backtest(data: Vec<PathBuf>, out: PathBuf) -> Result<()> {
     let events = load_events(&data)?;
     let mut evals = Vec::new();
-    for (name, config) in [("v1_momentum", EngineConfig::v1()), ("v2_reasoning_gated", EngineConfig::v2())] {
+    let strategies = [
+        ("v1_momentum", EngineConfig::v1()),
+        ("v2_reasoning_gated", EngineConfig::v2()),
+        ("v3_positioning_gated", EngineConfig::v3()),
+    ];
+    for (name, config) in strategies {
         let (eval, run) = evaluate(name, &events, config).await;
         let trail = out.with_file_name(format!("backtest_decisions_{}.jsonl", &name[..2]));
         write_jsonl(&trail, &run.decisions)?;
@@ -175,14 +226,14 @@ async fn backtest(data: Vec<PathBuf>, out: PathBuf) -> Result<()> {
     for e in &evals {
         let r = &e.full;
         println!(
-            "{} full: {} to {}, {} bars, {} kalshi snapshots, {} text signals, {} gaps, blocked {:?}, pm vetoes {}, text reductions {}, fingerprint {}",
-            e.name, r.start, r.end, r.bars, r.prediction_snapshots, r.text_signals, r.gaps, r.blocked_orders,
-            r.pm_vetoes, r.text_reductions, r.decisions_fingerprint
+            "{} full: {} to {}, {} bars, {} kalshi snapshots, {} positioning snapshots, {} text signals, {} gaps, blocked {:?}, kalshi vetoes {}, positioning vetoes {}, text reductions {}, fingerprint {}",
+            e.name, r.start, r.end, r.bars, r.prediction_snapshots, r.positioning_snapshots, r.text_signals, r.gaps, r.blocked_orders,
+            r.pm_vetoes, r.crowd_vetoes, r.text_reductions, r.decisions_fingerprint
         );
     }
     let doc = serde_json::json!({
         "data": data,
-        "config": { "v1": EngineConfig::v1(), "v2": EngineConfig::v2() },
+        "config": { "v1": EngineConfig::v1(), "v2": EngineConfig::v2(), "v3": EngineConfig::v3() },
         "evaluations": evals,
     });
     write_json(&out, &doc)?;

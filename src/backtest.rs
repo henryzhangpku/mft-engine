@@ -21,6 +21,7 @@ pub struct BacktestReport {
     pub bars: u64,
     pub text_signals: u64,
     pub prediction_snapshots: u64,
+    pub positioning_snapshots: u64,
     pub gaps: u64,
     pub fills: u64,
     pub round_trips: usize,
@@ -38,6 +39,7 @@ pub struct BacktestReport {
     pub blocked_orders: BTreeMap<String, u64>,
     pub text_reductions: u64,
     pub pm_vetoes: u64,
+    pub crowd_vetoes: u64,
     /// FNV-1a of every decision serialised in order. Same input and config
     /// must give the same fingerprint; that is the determinism claim.
     pub decisions_fingerprint: String,
@@ -127,6 +129,7 @@ pub async fn run_backtest(window: &str, events: Vec<Event>, config: EngineConfig
         bars: counts.get("Bar").copied().unwrap_or(0),
         text_signals: counts.get("TextSignal").copied().unwrap_or(0),
         prediction_snapshots: counts.get("PredictionMarket").copied().unwrap_or(0),
+        positioning_snapshots: counts.get("Positioning").copied().unwrap_or(0),
         gaps: counts.get("Gap").copied().unwrap_or(0),
         fills: p.fills,
         round_trips: p.round_trips.len(),
@@ -141,6 +144,7 @@ pub async fn run_backtest(window: &str, events: Vec<Event>, config: EngineConfig
         blocked_orders: blocked,
         text_reductions: engine.text_reductions,
         pm_vetoes: engine.pm_vetoes,
+        crowd_vetoes: engine.crowd_vetoes,
         decisions_fingerprint: format!("{fingerprint:016x}"),
     };
     BacktestRun {
@@ -194,7 +198,7 @@ pub fn print_table(evals: &[Evaluation]) {
                 r.fees + r.slippage,
                 r.turnover_multiple,
                 r.max_drawdown,
-                r.pm_vetoes,
+                r.pm_vetoes + r.crowd_vetoes,
             );
         }
     }
