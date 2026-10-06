@@ -192,3 +192,40 @@ pub fn fetch_candles(coin: &str, interval: &str, start_ms: i64, end_ms: i64) -> 
         })
         .collect()
 }
+
+/// One settled funding payment from `fundingHistory`. Hyperliquid settles
+/// funding every hour; `rate` is the fraction of position value paid for
+/// that hour, by longs to shorts when positive.
+#[derive(Debug, Clone, PartialEq, serde::Serialize, Deserialize)]
+pub struct FundingRecord {
+    pub coin: String,
+    /// Exchange settlement time (a few ms after the hour).
+    pub ts: i64,
+    pub rate: f64,
+    pub premium: f64,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct WireFunding {
+    coin: String,
+    funding_rate: String,
+    premium: String,
+    time: i64,
+}
+
+/// One request to `fundingHistory`: at most 500 records from `start_ms`.
+pub fn fetch_funding(coin: &str, start_ms: i64, end_ms: i64) -> Result<Vec<FundingRecord>> {
+    let body = serde_json::json!({ "type": "fundingHistory", "coin": coin, "startTime": start_ms, "endTime": end_ms });
+    let rows: Vec<WireFunding> = info(&body).context("fundingHistory")?;
+    rows.into_iter()
+        .map(|r| {
+            Ok(FundingRecord {
+                coin: r.coin,
+                ts: r.time,
+                rate: num(&r.funding_rate)?,
+                premium: num(&r.premium)?,
+            })
+        })
+        .collect()
+}

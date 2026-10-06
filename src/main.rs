@@ -93,6 +93,43 @@ enum Command {
         #[arg(long, default_value = "data/kalshi_ladders.jsonl")]
         out: PathBuf,
     },
+    /// Download the v4 data: hourly candles and funding for a liquid universe.
+    FetchCarry {
+        /// Window length in days, ending at the last UTC midnight (or --end).
+        #[arg(long, default_value_t = 97)]
+        days: i64,
+        /// Leading days used only to choose the universe and warm the signal.
+        #[arg(long, default_value_t = 7)]
+        formation_days: i64,
+        #[arg(long, default_value_t = 30)]
+        top: usize,
+        #[arg(long, default_value = "BTC")]
+        benchmark: String,
+        /// Window end, RFC 3339 UTC, on a midnight.
+        #[arg(long)]
+        end: Option<String>,
+        #[arg(long, default_value = "data/carry_1h_bars.jsonl")]
+        bars_out: PathBuf,
+        #[arg(long, default_value = "data/carry_funding_1h.jsonl")]
+        funding_out: PathBuf,
+        #[arg(long, default_value = "data/carry_universe.json")]
+        universe_out: PathBuf,
+    },
+    /// Strategy v4 (funding carry): preregister, in-sample, or the sealed out-of-sample run.
+    Carry {
+        #[arg(value_enum)]
+        phase: mft_engine::carry_research::Phase,
+        #[arg(long, default_value = "experiments/carry_v4.toml")]
+        file: PathBuf,
+        #[arg(long, default_value = "results/ledger.jsonl")]
+        ledger: PathBuf,
+        /// Why: required for a design choice and for a forced rerun.
+        #[arg(long)]
+        note: Option<String>,
+        /// Rerun the sealed out-of-sample window anyway (recorded as forced).
+        #[arg(long)]
+        force: bool,
+    },
     /// Replay event files through strategies v1 and v2, side by side.
     Backtest {
         #[arg(long, default_values = DEFAULT_DATA)]
@@ -194,6 +231,17 @@ async fn main() -> Result<()> {
         }
         Command::FetchKalshi { coins, bars, strikes_each_side, out } => {
             tokio::task::spawn_blocking(move || fetch::run_kalshi(&coins, &bars, strikes_each_side, &out)).await?
+        }
+        Command::FetchCarry { days, formation_days, top, benchmark, end, bars_out, funding_out, universe_out } => {
+            let end = end
+                .map(|t| mft_engine::clock::parse_utc(&t).ok_or_else(|| anyhow::anyhow!("bad UTC time {t:?}")))
+                .transpose()?;
+            let opts = fetch::CarryFetch { days, formation_days, top, benchmark, end, bars_out, funding_out, universe_out };
+            tokio::task::spawn_blocking(move || fetch::run_carry(&opts)).await?
+        }
+        Command::Carry { phase, file, ledger, note, force } => {
+            let opts = mft_engine::carry_research::Options { spec: &file, ledger: &ledger, note, force, results_dir: std::path::Path::new("results") };
+            mft_engine::carry_research::run(phase, opts).map(|_| ())
         }
         Command::Backtest { data, out } => backtest(data, out).await,
         Command::Experiment { file, ledger, verify } => {

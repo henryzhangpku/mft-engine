@@ -11,6 +11,8 @@
 pub mod artifacts;
 pub mod backtest;
 pub mod bars;
+pub mod carry;
+pub mod carry_research;
 pub mod clock;
 pub mod demo;
 pub mod engine;

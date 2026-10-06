@@ -98,6 +98,42 @@ pub struct NewEntry<'a> {
 
 /// Verify the existing chain, then link and append one entry.
 pub fn append(path: &Path, new: NewEntry) -> Result<LedgerEntry> {
+    append_record(
+        path,
+        NewRecord {
+            variant: new.variant,
+            hypothesis: new.hypothesis,
+            base: new.base,
+            overrides: new.overrides,
+            experiment_file_sha256: new.experiment_file_sha256,
+            data_files: new.data_files,
+            data_sha256: new.data_sha256,
+            verdict: new.verdict,
+            verdict_rule: new.verdict_rule,
+            result: serde_json::to_value(new.eval)?,
+            recorded_at: new.recorded_at,
+        },
+    )
+}
+
+/// A new entry whose result is any JSON value: a pre-registered
+/// specification (no result yet), or a result that is not an `Evaluation`.
+pub struct NewRecord<'a> {
+    pub variant: &'a str,
+    pub hypothesis: &'a str,
+    pub base: &'a str,
+    pub overrides: serde_json::Value,
+    pub experiment_file_sha256: String,
+    pub data_files: Vec<String>,
+    pub data_sha256: String,
+    pub verdict: &'a str,
+    pub verdict_rule: &'a str,
+    pub result: serde_json::Value,
+    pub recorded_at: String,
+}
+
+/// Verify the existing chain, then link and append one record.
+pub fn append_record(path: &Path, new: NewRecord) -> Result<LedgerEntry> {
     let existing = read(path)?;
     verify(&existing).context("refusing to append to a broken ledger")?;
     let mut entry = LedgerEntry {
@@ -114,7 +150,7 @@ pub fn append(path: &Path, new: NewEntry) -> Result<LedgerEntry> {
         data_sha256: new.data_sha256,
         verdict: new.verdict.to_string(),
         verdict_rule: new.verdict_rule.to_string(),
-        result: serde_json::to_value(new.eval)?,
+        result: new.result,
     };
     entry.hash = entry_hash(&entry)?;
     append_line(path, &serde_json::to_string(&entry)?)?;
