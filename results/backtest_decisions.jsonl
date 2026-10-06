@@ -1,0 +1,953 @@
+{"Filled":{"fill":{"coin":"ETH","ts":1790958420000,"qty":-0.3715124270906862,"px":2691.43083,"ref_px":2691.7,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790958540000,"qty":0.3715124270906862,"px":2694.36941,"ref_px":2694.1,"fee":0.4504462735446001},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790961300000,"qty":-0.011777453243510623,"px":84899.5092,"ref_px":84908.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790961300000,"qty":-0.3731204059550017,"px":2679.83199,"ref_px":2680.1,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790961600000,"qty":0.011777453243510623,"px":84947.4939,"ref_px":84939.0,"fee":0.4502093119022943},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790961600000,"qty":0.3731204059550017,"px":2685.96857,"ref_px":2685.7,"fee":0.45098535744934887},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790961660000,"qty":0.3723978698841842,"px":2685.56853,"ref_px":2685.3,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790961840000,"qty":-0.3723978698841842,"px":2682.9316799999997,"ref_px":2683.2,"fee":0.4496031192045581},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790962080000,"qty":-0.011810140186364013,"px":84664.5327,"ref_px":84673.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790962320000,"qty":0.011810140186364013,"px":84705.4697,"ref_px":84697.0,"fee":0.4501725622689642},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790965140000,"qty":-0.37330147827385396,"px":2678.5321200000003,"ref_px":2678.8,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790965200000,"qty":-0.011813488641330671,"px":84640.5351,"ref_px":84649.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790965740000,"qty":0.011813488641330671,"px":84578.457,"ref_px":84570.0,"fee":0.4496249884818485},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790965740000,"qty":0.37330147827385396,"px":2678.56783,"ref_px":2678.3,"fee":0.44996099876810514},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790966400000,"qty":-0.011893576279451468,"px":84070.5921,"ref_px":84079.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790966400000,"qty":-0.37691756812785043,"px":2652.83469,"ref_px":2653.1,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790966700000,"qty":0.37691756812785043,"px":2658.2658,"ref_px":2658.0,"fee":0.45087618634804566},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790966820000,"qty":0.011893576279451468,"px":84040.4032,"ref_px":84032.0,"fee":0.44979342570677583},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790967180000,"qty":0.011874087179548073,"px":84225.4217,"ref_px":84217.0,"fee":0.4500450000000001},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790967840000,"qty":-0.011874087179548073,"px":84192.5799,"ref_px":84201.0,"fee":0.4498695151216501},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790972760000,"qty":0.011835440041660749,"px":84500.4492,"ref_px":84492.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790972940000,"qty":-0.011835440041660749,"px":84330.5661,"ref_px":84339.0,"fee":0.4491402114401363},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790973000000,"qty":-0.011860004506801712,"px":84308.5683,"ref_px":84317.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790973180000,"qty":0.011860004506801712,"px":84408.44,"ref_px":84400.0,"fee":0.4504880154654458},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790973240000,"qty":0.37433555439095606,"px":2671.66714,"ref_px":2671.4,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790973480000,"qty":-0.37433555439095606,"px":2669.23305,"ref_px":2669.5,"fee":0.44963497510668565},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790973780000,"qty":-0.37530493525989866,"px":2664.23355,"ref_px":2664.5,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790974260000,"qty":0.011850306922949305,"px":84394.4386,"ref_px":84386.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790974320000,"qty":0.37530493525989866,"px":2664.16639,"ref_px":2663.9,"fee":0.44994365753424653},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790974560000,"qty":-0.011850306922949305,"px":84339.5652,"ref_px":84348.0,"fee":0.4497523800156424},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790974920000,"qty":0.3751359867952133,"px":2665.9665699999996,"ref_px":2665.7,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790975220000,"qty":-0.3751359867952133,"px":2664.23355,"ref_px":2664.5,"fee":0.4497524468244739},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790978820000,"qty":-0.011846095526914329,"px":84407.5584,"ref_px":84416.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790978880000,"qty":0.011846095526914329,"px":84458.44499999999,"ref_px":84450.0,"fee":0.4502262633860879},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790982600000,"qty":-0.01184202735508319,"px":84436.5555,"ref_px":84445.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790982900000,"qty":0.01184202735508319,"px":84458.44499999999,"ref_px":84450.0,"fee":0.450071647226005},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790983800000,"qty":0.011830679317606417,"px":84534.4526,"ref_px":84526.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790984040000,"qty":-0.011830679317606417,"px":84472.5519,"ref_px":84481.0,"fee":0.4497154527009441},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790985660000,"qty":-0.3749109586473212,"px":2667.0332700000004,"ref_px":2667.3,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790985900000,"qty":-0.011844411806509688,"px":84419.5572,"ref_px":84428.0,"fee":0.44995499999999994},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790986260000,"qty":0.011844411806509688,"px":84474.4466,"ref_px":84466.0,"fee":0.45024755969583546},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790986260000,"qty":0.3749109586473212,"px":2668.2668,"ref_px":2668.0,"fee":0.450163108761669},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790986380000,"qty":0.011836000378752012,"px":84496.4488,"ref_px":84488.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790986380000,"qty":0.3747142803612246,"px":2668.9668699999997,"ref_px":2668.7,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790986860000,"qty":-0.011836000378752012,"px":84488.5503,"ref_px":84497.0,"fee":0.4500029310079538},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790986860000,"qty":-0.3747142803612246,"px":2669.4330299999997,"ref_px":2669.7,"fee":0.45012360456401995},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790987460000,"qty":0.21756086615056658,"px":2674.16739,"ref_px":2673.9,"fee":0.26180737812000004},"raw_target":1000.0,"target":581.736}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790987580000,"qty":0.01182284646851576,"px":84590.4582,"ref_px":84582.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790987940000,"qty":-0.01182284646851576,"px":84558.5433,"ref_px":84567.0,"fee":0.44987520376675894},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790987940000,"qty":-0.21756086615056658,"px":2673.23265,"ref_px":2673.5,"fee":0.2617158648401885},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790989740000,"qty":0.37321788460103006,"px":2679.6679400000003,"ref_px":2679.4,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790990400000,"qty":-0.37321788460103006,"px":2678.93208,"ref_px":2679.2,"fee":0.4499214137493468},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790990520000,"qty":-0.011823405613752985,"px":84569.5422,"ref_px":84578.0,"fee":0.44995499999999994},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790990520000,"qty":-0.3733432891543774,"px":2678.23215,"ref_px":2678.5,"fee":0.44995499999999994},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790990760000,"qty":0.13168844634950844,"px":2678.46782,"ref_px":2678.2,"fee":0.15872546961582967},"raw_target":-1000.0,"target":-647.2}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790990880000,"qty":0.011823405613752985,"px":84584.4576,"ref_px":84576.0,"fee":0.45003435787084106},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790990940000,"qty":0.24165484280486899,"px":2679.16789,"ref_px":2678.9,"fee":0.29134525288761115},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790993940000,"qty":0.011817257923471438,"px":84630.4622,"ref_px":84622.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790994240000,"qty":-0.011817257923471438,"px":84602.5389,"ref_px":84611.0,"fee":0.44989651042282147},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790995380000,"qty":0.37271710771524413,"px":2683.2683,"ref_px":2683.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790995620000,"qty":-0.37271710771524413,"px":2680.9318799999996,"ref_px":2681.2,"fee":0.4496531293328363},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790995680000,"qty":-0.01181837520977616,"px":84605.5386,"ref_px":84614.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790996580000,"qty":0.01181837520977616,"px":84592.4584,"ref_px":84584.0,"fee":0.4498854359798615},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790997180000,"qty":-0.011836700874732195,"px":84474.5517,"ref_px":84483.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790997360000,"qty":0.011836700874732195,"px":84558.455,"ref_px":84550.0,"fee":0.4504019122190263},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790997420000,"qty":0.011824803708258443,"px":84576.4568,"ref_px":84568.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790997480000,"qty":0.21544097895836445,"px":2680.66804,"ref_px":2680.4,"fee":0.25988658606000004},"raw_target":1000.0,"target":577.4680000000001}}
+{"Filled":{"fill":{"coin":"ETH","ts":1790997660000,"qty":-0.21544097895836445,"px":2679.13206,"ref_px":2679.4,"fee":0.2597376751943128},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1790997720000,"qty":-0.011824803708258443,"px":84542.54490000001,"ref_px":84551.0,"fee":0.4498645492976068},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791000660000,"qty":-0.011816001228864129,"px":84622.5369,"ref_px":84631.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791001020000,"qty":-0.3737619136609979,"px":2675.23245,"ref_px":2675.5,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791001500000,"qty":0.011816001228864129,"px":84561.4553,"ref_px":84553.0,"fee":0.44963021688270255},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791001500000,"qty":0.3737619136609979,"px":2675.1674900000003,"ref_px":2674.9,"fee":0.4499440741917399},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791001800000,"qty":-0.01183529996567763,"px":84484.5507,"ref_px":84493.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791001980000,"qty":0.01183529996567763,"px":84538.453,"ref_px":84530.0,"fee":0.45024207745020295},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791002880000,"qty":0.011827321111768185,"px":84558.455,"ref_px":84550.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791003120000,"qty":-0.011827321111768185,"px":84522.5469,"ref_px":84531.0,"fee":0.449853886516854},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791006840000,"qty":-0.011822706690469717,"px":84574.5417,"ref_px":84583.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791007020000,"qty":0.011822706690469717,"px":84624.4616,"ref_px":84616.0,"fee":0.45022058475107285},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791007380000,"qty":0.3733432891543774,"px":2678.76785,"ref_px":2678.5,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791007560000,"qty":-0.3733432891543774,"px":2676.5323200000003,"ref_px":2676.8,"fee":0.44966942094455853},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791007620000,"qty":-0.3736641506613856,"px":2675.9323799999997,"ref_px":2676.2,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791008220000,"qty":0.3736641506613856,"px":2676.0675800000004,"ref_px":2675.8,"fee":0.44997773372692634},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791009240000,"qty":0.3732875433946769,"px":2679.16789,"ref_px":2678.9,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791009420000,"qty":-0.3732875433946769,"px":2676.93228,"ref_px":2677.2,"fee":0.44966946358580007},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791010200000,"qty":-0.011831799143377742,"px":84509.5482,"ref_px":84518.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791010440000,"qty":0.37286998023789103,"px":2682.16819,"ref_px":2681.9,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791010500000,"qty":0.011831799143377742,"px":84563.4555,"ref_px":84555.0,"fee":0.45024201915568285},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791010680000,"qty":-0.37286998023789103,"px":2678.4321299999997,"ref_px":2678.7,"fee":0.4494181209217345},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791015840000,"qty":-0.37330147827385396,"px":2678.5321200000003,"ref_px":2678.8,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791016140000,"qty":0.37330147827385396,"px":2679.36791,"ref_px":2679.1,"fee":0.45009540073913695},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791018420000,"qty":0.37243947858473,"px":2685.2685,"ref_px":2685.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791018840000,"qty":-0.37243947858473,"px":2684.23155,"ref_px":2684.5,"fee":0.44987120949720666},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791019020000,"qty":-0.011824803708258443,"px":84559.5432,"ref_px":84568.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791019620000,"qty":0.011824803708258443,"px":84574.4566,"ref_px":84566.0,"fee":0.4500343566124303},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791020460000,"qty":-0.37289778871611295,"px":2681.43183,"ref_px":2681.7,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791021360000,"qty":0.37289778871611295,"px":2679.86796,"ref_px":2679.6,"fee":0.4496925763508223},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791022320000,"qty":0.37293950921160585,"px":2681.66814,"ref_px":2681.4,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791022560000,"qty":-0.37293950921160585,"px":2680.5319200000004,"ref_px":2680.8,"fee":0.4498543164018796},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791022800000,"qty":-0.37316217628181203,"px":2679.53202,"ref_px":2679.8,"fee":0.44995499999999994},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791022860000,"qty":-0.011602200272076655,"px":84526.5465,"ref_px":84535.0,"fee":0.44131226436},"raw_target":-1000.0,"target":-980.792}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791023160000,"qty":0.011602200272076655,"px":84558.455,"ref_px":84550.0,"fee":0.4414788583233217},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791023160000,"qty":0.37316217628181203,"px":2680.5680300000004,"ref_px":2680.3,"fee":0.4501289698858124},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791023340000,"qty":0.011825083366837736,"px":84574.4566,"ref_px":84566.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791023340000,"qty":0.37286998023789103,"px":2682.16819,"ref_px":2681.9,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791023460000,"qty":-0.011825083366837736,"px":84540.5451,"ref_px":84549.0,"fee":0.4498645471584325},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791023520000,"qty":0.01182382500738989,"px":84583.4575,"ref_px":84575.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791023820000,"qty":-0.01182382500738989,"px":84561.543,"ref_px":84570.0,"fee":0.449928399054094},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791024120000,"qty":-0.37286998023789103,"px":2682.13176,"ref_px":2682.4,"fee":0.450038887355979},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791024960000,"qty":0.3726476616359232,"px":2683.76835,"ref_px":2683.5,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791025260000,"qty":-0.3726476616359232,"px":2682.63171,"ref_px":2682.9,"fee":0.4498543951928452},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791027180000,"qty":0.37263377552541366,"px":2683.86836,"ref_px":2683.6,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791027840000,"qty":-0.37263377552541366,"px":2684.23155,"ref_px":2684.5,"fee":0.45010590158741987},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791028080000,"qty":0.0118140469017662,"px":84653.4645,"ref_px":84645.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791028440000,"qty":-0.0118140469017662,"px":84638.5353,"ref_px":84647.0,"fee":0.4499656315789474},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791029880000,"qty":0.011807908937406275,"px":84697.46889999999,"ref_px":84689.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791029940000,"qty":0.3724949713178872,"px":2684.8684599999997,"ref_px":2684.6,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791030360000,"qty":-0.3724949713178872,"px":2684.1315600000003,"ref_px":2684.4,"fee":0.4499214788050362},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791030480000,"qty":-0.011807908937406275,"px":84810.5181,"ref_px":84819.0,"fee":0.450645693596571},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791030600000,"qty":-0.3727865796831314,"px":2682.23175,"ref_px":2682.5,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791031200000,"qty":0.3727865796831314,"px":2682.4682199999997,"ref_px":2682.2,"fee":0.4499946687791239},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791031380000,"qty":-0.011798157127856628,"px":84750.5241,"ref_px":84759.0,"fee":0.44995499999999994},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791031680000,"qty":0.011798157127856628,"px":84801.4793,"ref_px":84793.0,"fee":0.4502255298552366},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791032280000,"qty":0.011780644401248748,"px":84893.48849999999,"ref_px":84885.0,"fee":0.4500449999999999},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791032400000,"qty":-0.011780644401248748,"px":84844.5147,"ref_px":84853.0,"fee":0.44978537568474997},"raw_target":0.0,"target":0.0}}
+{"Blocked":{"coin":"BTC","ts":1791034500000,"qty":0.0077914158134712586,"raw_target":1000.0,"target":661.312,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791034560000,"qty":0.011776205000176643,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791034560000,"qty":0.3730786449783614,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791034620000,"qty":0.01178050561930118,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791034620000,"qty":0.37303689334875223,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791034680000,"qty":0.011781893585937132,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791034680000,"qty":0.373134328358209,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791034740000,"qty":0.011781893585937132,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791034740000,"qty":0.3731482518004403,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791034800000,"qty":0.3731482518004403,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791034860000,"qty":0.3730090641202581,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791034920000,"qty":0.37293950921160585,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791034980000,"qty":0.37292560134253216,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791035040000,"qty":0.37298123904367614,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791035100000,"qty":0.37309256426519416,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791038220000,"qty":-0.37321788460103006,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791038280000,"qty":-0.37321788460103006,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791038340000,"qty":-0.3732875433946769,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791038400000,"qty":-0.3732875433946769,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791038460000,"qty":-0.37330147827385396,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791038520000,"qty":-0.3732736095558044,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791038580000,"qty":-0.3732736095558044,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791038760000,"qty":0.37303689334875223,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791038820000,"qty":0.01179843552744906,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791038820000,"qty":0.37292560134253216,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791038880000,"qty":0.011797043660858588,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791038880000,"qty":0.37286998023789103,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791038940000,"qty":0.01179245283018868,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791038940000,"qty":0.3727448933949605,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791039000000,"qty":0.01178995024640996,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039000000,"qty":0.3726060064088233,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791039060000,"qty":0.01179147947692997,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039060000,"qty":0.37281437572232784,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791039120000,"qty":0.01179147947692997,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039120000,"qty":0.37281437572232784,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791039180000,"qty":0.01179147947692997,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039180000,"qty":0.3728004771846108,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791039240000,"qty":0.011791340439581171,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039300000,"qty":-0.37292560134253216,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039360000,"qty":-0.37284217590693863,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039420000,"qty":-0.37284217590693863,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039480000,"qty":-0.3728282752963985,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039540000,"qty":-0.37291169451073986,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791039720000,"qty":-0.011799827722515251,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039720000,"qty":-0.37324574499850705,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791039780000,"qty":-0.011797461186352698,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039780000,"qty":-0.37316217628181203,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791039840000,"qty":-0.011797461186352698,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039840000,"qty":-0.37316217628181203,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791039900000,"qty":-0.011797322007904206,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039900000,"qty":-0.3730786449783614,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791039960000,"qty":-0.011797043660858588,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791039960000,"qty":-0.3730786449783614,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791040500000,"qty":0.01178605944888386,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791040560000,"qty":0.011793426344155767,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791041520000,"qty":-0.011803309648025307,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791041580000,"qty":-0.011798017932987258,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791041640000,"qty":-0.011798296326010524,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791041700000,"qty":-0.011795512986859798,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791041760000,"qty":-0.011797600368085132,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791043380000,"qty":-0.17106084359835763,"raw_target":-1000.0,"target":-458.2720000000001,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791043440000,"qty":-0.1710544585868389,"raw_target":-1000.0,"target":-458.2720000000001,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791043500000,"qty":-0.1710289233065871,"raw_target":-1000.0,"target":-458.2720000000001,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791043560000,"qty":-0.17102254067771314,"raw_target":-1000.0,"target":-458.2720000000001,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791043620000,"qty":-0.17104807405195585,"raw_target":-1000.0,"target":-458.2720000000001,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791043680000,"qty":-0.17106084359835763,"raw_target":-1000.0,"target":-458.2720000000001,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791043740000,"qty":-0.171086388411857,"raw_target":-1000.0,"target":-458.2720000000001,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791043800000,"qty":-0.1710672290865654,"raw_target":-1000.0,"target":-458.2720000000001,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791043860000,"qty":-0.17106084359835763,"raw_target":-1000.0,"target":-458.2720000000001,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791043920000,"qty":-0.3732875433946769,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791043980000,"qty":-0.3732736095558044,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791045060000,"qty":0.1514529786995934,"raw_target":1000.0,"target":406.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791045120000,"qty":0.15144732915547596,"raw_target":1000.0,"target":406.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791045180000,"qty":0.1514529786995934,"raw_target":1000.0,"target":406.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791045240000,"qty":0.1514360313315927,"raw_target":1000.0,"target":406.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791045300000,"qty":0.1514416800328248,"raw_target":1000.0,"target":406.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791045360000,"qty":0.1514529786995934,"raw_target":1000.0,"target":406.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791047520000,"qty":0.37259212340251124,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791047580000,"qty":0.37259212340251124,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791047640000,"qty":0.37255048059011997,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791047700000,"qty":0.37257824143070045,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791047760000,"qty":0.37245335021788517,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791047820000,"qty":0.3724949713178872,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791047880000,"qty":0.37256436049327524,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048180000,"qty":0.011775788977861516,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048240000,"qty":0.011775927648700526,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791048240000,"qty":0.3723424060766281,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048300000,"qty":0.011776621051887792,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791048300000,"qty":0.3723562704795949,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048360000,"qty":0.011779672996277623,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048480000,"qty":-0.011784115012962526,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791048480000,"qty":-0.3726754369619498,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048540000,"qty":-0.011783976149232274,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791048540000,"qty":-0.3726893261776983,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048600000,"qty":-0.011784115012962526,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791048600000,"qty":-0.3726893261776983,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048660000,"qty":-0.01178967224711153,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791048660000,"qty":-0.37281437572232784,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048720000,"qty":-0.011791340439581171,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791048720000,"qty":-0.37292560134253216,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048780000,"qty":-0.011789811245121965,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791048780000,"qty":-0.37285607755406414,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048840000,"qty":-0.01178995024640996,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791048840000,"qty":-0.37285607755406414,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791048900000,"qty":-0.011787170843254202,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791048900000,"qty":-0.3727726832177738,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791049080000,"qty":0.011780644401248748,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791049080000,"qty":0.37257824143070045,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791049140000,"qty":0.011783837288774716,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791049140000,"qty":0.37266154878139673,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791049200000,"qty":0.011781477161606522,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791049200000,"qty":0.3726060064088233,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791049260000,"qty":0.011776759742324497,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791049260000,"qty":0.37257824143070045,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791049320000,"qty":0.011776759742324497,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791049320000,"qty":0.37255048059011997,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791049380000,"qty":0.011780089293076841,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791049380000,"qty":0.37255048059011997,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791049440000,"qty":0.011780089293076841,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791049440000,"qty":0.37259212340251124,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791049500000,"qty":0.011771630370806356,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791049500000,"qty":0.37242560798480506,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791049860000,"qty":0.37220381881118103,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791049920000,"qty":0.37218996575852314,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791049980000,"qty":0.3719822936428226,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791050040000,"qty":0.3722730995458268,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791050100000,"qty":0.3721622627465575,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791050160000,"qty":0.37218996575852314,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791050220000,"qty":0.3721207159602575,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791054240000,"qty":-0.011790645302017379,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791054300000,"qty":-0.011789394260922874,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791054300000,"qty":-0.37286998023789103,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791054360000,"qty":-0.01178967224711153,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791054360000,"qty":-0.37285607755406414,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791054420000,"qty":-0.011787448724598047,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791054420000,"qty":-0.37275878778842214,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791054480000,"qty":-0.011787309782288388,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791054480000,"qty":-0.3727726832177738,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055320000,"qty":-0.3727865796831314,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055380000,"qty":-0.3727865796831314,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055440000,"qty":-0.3727865796831314,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055500000,"qty":-0.3728004771846108,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055560000,"qty":-0.3727865796831314,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055620000,"qty":-0.37281437572232784,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055680000,"qty":-0.37281437572232784,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055740000,"qty":-0.37281437572232784,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055800000,"qty":-0.3730090641202581,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055860000,"qty":-0.37298123904367614,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055920000,"qty":-0.37299515106303616,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791055980000,"qty":-0.37298123904367614,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791056040000,"qty":-0.3730090641202581,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791057300000,"qty":0.01179008925097563,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057300000,"qty":0.3724949713178872,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791057360000,"qty":0.01179245283018868,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057360000,"qty":0.37252272388615704,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791057420000,"qty":0.011792313769884788,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057420000,"qty":0.3725366017211191,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791057480000,"qty":0.011792313769884788,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057480000,"qty":0.37248109658434836,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791057540000,"qty":0.011790645302017379,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057540000,"qty":0.37246722288438616,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057600000,"qty":0.37248109658434836,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057660000,"qty":0.3723562704795949,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057720000,"qty":0.3722592413356661,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057780000,"qty":0.37224538415723646,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057840000,"qty":0.3720653346727686,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057900000,"qty":0.37210686909280344,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791057960000,"qty":0.3720099698671925,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791058020000,"qty":0.37218996575852314,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791058080000,"qty":0.37220381881118103,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791060600000,"qty":-0.011805260424044955,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791060660000,"qty":-0.011804424298226975,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791060720000,"qty":-0.01180651483488589,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791060780000,"qty":-0.011803866946811776,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791060840000,"qty":-0.011805399789863884,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791061560000,"qty":-0.011825642723682032,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791061560000,"qty":-0.37261989044975224,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791061620000,"qty":-0.01182648185817683,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791061620000,"qty":-0.37259212340251124,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791061680000,"qty":-0.011825922421948912,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791061680000,"qty":-0.37256436049327524,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791061740000,"qty":-0.011828440301861797,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791061740000,"qty":-0.37271710771524413,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791061800000,"qty":-0.011826062276043946,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791061800000,"qty":-0.3726476616359232,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791062040000,"qty":0.011812651349595417,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791062040000,"qty":0.3722869587878337,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791062100000,"qty":0.011812790889975666,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791062100000,"qty":0.3722869587878337,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791062160000,"qty":0.011812651349595417,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791062160000,"qty":0.3722592413356661,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791062220000,"qty":0.011810419151775697,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791062220000,"qty":0.37217611373702036,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791062280000,"qty":0.011809442830487257,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791062280000,"qty":0.37218996575852314,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791062340000,"qty":0.011807351256892541,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791062340000,"qty":0.37217611373702036,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791062400000,"qty":0.011810698130366486,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791062400000,"qty":0.37224538415723646,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791062460000,"qty":0.011810698130366486,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791062460000,"qty":0.3722315280104225,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791065220000,"qty":0.37218996575852314,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791065280000,"qty":0.3722315280104225,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791065340000,"qty":0.3722592413356661,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791065400000,"qty":0.37224538415723646,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791065460000,"qty":0.37209302325581395,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791065520000,"qty":0.37194078702670536,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791065580000,"qty":0.37192695354632355,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791065640000,"qty":0.3719961312402351,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791065700000,"qty":0.3719546215361726,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791065760000,"qty":0.37209302325581395,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791069780000,"qty":0.011797878741402297,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791069840000,"qty":0.011796765326947352,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791069900000,"qty":0.011796208698524295,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791069960000,"qty":0.011796069549626064,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070020000,"qty":0.011800663197271686,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070140000,"qty":-0.011804006279731341,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070200000,"qty":-0.011804842346330465,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070260000,"qty":-0.011804981702278361,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070320000,"qty":-0.011803866946811776,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070380000,"qty":-0.011804006279731341,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070440000,"qty":-0.011804145615940318,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070680000,"qty":0.01179871394018052,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070740000,"qty":0.011798296326010524,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070800000,"qty":0.011798296326010524,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070860000,"qty":0.011798296326010524,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070920000,"qty":0.011798296326010524,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791070980000,"qty":0.011798157127856628,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791071040000,"qty":0.011798296326010524,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791071100000,"qty":0.011798296326010524,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791071160000,"qty":0.011798296326010524,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791071220000,"qty":0.011798296326010524,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791071580000,"qty":-0.011803866946811776,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791071640000,"qty":-0.011803309648025307,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791071700000,"qty":-0.01180665423032421,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791071760000,"qty":-0.01180665423032421,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791071760000,"qty":-0.37224538415723646,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791071820000,"qty":-0.3721207159602575,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791071880000,"qty":-0.3721484127870195,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.49 at or below -50.00; only reducing orders allowed"}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791072180000,"qty":0.011792730960635864,"px":84806.4798,"ref_px":84798.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791072480000,"qty":-0.011792730960635864,"px":84769.5222,"ref_px":84778.0,"fee":0.4498488760348122},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791073140000,"qty":0.3718992896723567,"px":2689.16889,"ref_px":2688.9,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791073620000,"qty":-0.3718992896723567,"px":2690.93088,"ref_px":2691.2,"fee":0.4503398772732344},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791076560000,"qty":-0.011804563644304888,"px":84704.5287,"ref_px":84713.0,"fee":0.44995499999999994},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791077040000,"qty":0.011804563644304888,"px":84712.4704,"ref_px":84704.0,"fee":0.4499971867363923},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791079560000,"qty":0.011787726619044252,"px":84842.4834,"ref_px":84834.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791079740000,"qty":-0.011787726619044252,"px":84770.5221,"ref_px":84779.0,"fee":0.44966328294080204},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791084900000,"qty":0.011790228258819091,"px":84824.4816,"ref_px":84816.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791084900000,"qty":0.152835998071002,"px":2695.9695699999997,"ref_px":2695.7,"fee":0.18541854000000002},"raw_target":1000.0,"target":412.00000000000006}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791085140000,"qty":0.2183592506298146,"px":2694.2694,"ref_px":2694.0,"fee":0.26474339123047813},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791085200000,"qty":-0.3711952487008166,"px":2693.63061,"ref_px":2693.9,"fee":0.44993829788418704},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791085560000,"qty":-0.011790228258819091,"px":84838.5153,"ref_px":84847.0,"fee":0.4501194572368421},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791090120000,"qty":0.011791896608650536,"px":84812.4804,"ref_px":84804.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791090120000,"qty":0.37137445686485687,"px":2692.9692699999996,"ref_px":2692.7,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791090720000,"qty":-0.011791896608650536,"px":84789.5202,"ref_px":84798.0,"fee":0.44992316506296876},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791090840000,"qty":-0.37137445686485687,"px":2692.93068,"ref_px":2693.2,"fee":0.4500385508968693},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791091200000,"qty":0.37109882361672913,"px":2694.96947,"ref_px":2694.7,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791091320000,"qty":0.011788838327871172,"px":84834.4826,"ref_px":84826.0,"fee":0.4500450000000001},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791091620000,"qty":-0.37109882361672913,"px":2694.4305299999996,"ref_px":2694.7,"fee":0.44995499999999994},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791091800000,"qty":-0.011788838327871172,"px":84825.5166,"ref_px":84834.0,"fee":0.4499974355739986},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791092160000,"qty":0.011784948264077121,"px":84862.4854,"ref_px":84854.0,"fee":0.4500450000000001},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791092700000,"qty":0.37083735073796636,"px":2696.86966,"ref_px":2696.6,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791092940000,"qty":-0.37083735073796636,"px":2694.7305,"ref_px":2695.0,"fee":0.44968802380775796},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791093000000,"qty":-0.011784948264077121,"px":84875.5116,"ref_px":84884.0,"fee":0.45011408089188487},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791093000000,"qty":-0.37105751391465674,"px":2694.7305,"ref_px":2695.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791093240000,"qty":0.37105751391465674,"px":2695.36951,"ref_px":2695.1,"fee":0.4500616992578849},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791094860000,"qty":0.011775511645981018,"px":84930.4922,"ref_px":84922.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791095100000,"qty":-0.37138824927579295,"px":2692.33074,"ref_px":2692.6,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791095160000,"qty":-0.011775511645981018,"px":84894.5097,"ref_px":84903.0,"fee":0.4498543294434893},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791095220000,"qty":-0.011783420727037058,"px":84856.5135,"ref_px":84865.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791095460000,"qty":0.011783420727037058,"px":84919.4911,"ref_px":84911.0,"fee":0.45028894120073054},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791095580000,"qty":0.01176692083215664,"px":84992.4984,"ref_px":84984.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791095580000,"qty":0.37138824927579295,"px":2694.16939,"ref_px":2693.9,"fee":0.4502622838520389},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791095760000,"qty":0.37123658907821955,"px":2693.96937,"ref_px":2693.7,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791095880000,"qty":-0.01176692083215664,"px":84953.5038,"ref_px":84962.0,"fee":0.44983851913301326},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791095880000,"qty":-0.37123658907821955,"px":2692.33074,"ref_px":2692.6,"fee":0.4497712562646174},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791096960000,"qty":0.3709749220952664,"px":2695.86956,"ref_px":2695.6,"fee":0.4500450000000001},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791097320000,"qty":-0.3709749220952664,"px":2695.43043,"ref_px":2695.7,"fee":0.44997169220210714},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791098400000,"qty":-0.37147102526002973,"px":2691.7308,"ref_px":2692.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791098580000,"qty":0.37147102526002973,"px":2693.66934,"ref_px":2693.4,"fee":0.45027905014858843},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791099060000,"qty":-0.3715262297518205,"px":2691.33084,"ref_px":2691.6,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791099240000,"qty":-0.011779117979645684,"px":84887.5104,"ref_px":84896.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791099360000,"qty":0.011779117979645684,"px":84940.4932,"ref_px":84932.0,"fee":0.45023584079344137},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791099360000,"qty":0.7427490376811396,"px":2694.0693800000004,"ref_px":2693.8,"fee":0.9004578477485511},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791100260000,"qty":-0.37122280792931917,"px":2695.3304399999997,"ref_px":2695.6,"fee":0.45025566040537524},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791100560000,"qty":0.3706037134492087,"px":2698.5698300000004,"ref_px":2698.3,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791100800000,"qty":0.011753919932297421,"px":85086.50779999999,"ref_px":85078.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791101040000,"qty":-0.3706037134492087,"px":2702.42973,"ref_px":2702.7,"fee":0.4506887219730941},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791101220000,"qty":-0.011753919932297421,"px":85096.4895,"ref_px":85105.0,"fee":0.4500977958461647},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791101640000,"qty":0.011742602160638797,"px":85168.516,"ref_px":85160.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791101760000,"qty":-0.011742602160638797,"px":85116.4875,"ref_px":85125.0,"fee":0.4497700725105684},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791102720000,"qty":-0.011759863585582408,"px":85026.4965,"ref_px":85035.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791102720000,"qty":-0.37065866043960116,"px":2697.6302100000003,"ref_px":2697.9,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791103020000,"qty":0.011759863585582408,"px":85048.504,"ref_px":85040.0,"fee":0.45007146233903694},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791103020000,"qty":0.37065866043960116,"px":2698.86986,"ref_px":2698.6,"fee":0.4501617691537862},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791106020000,"qty":0.37012362128951065,"px":2702.07018,"ref_px":2701.8,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791106440000,"qty":-0.37012362128951065,"px":2701.12986,"ref_px":2701.4,"fee":0.4498883844103931},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791106560000,"qty":-0.011741912757588211,"px":85156.4835,"ref_px":85165.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791106560000,"qty":-0.37037037037037035,"px":2699.73,"ref_px":2700.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791106800000,"qty":0.011741912757588211,"px":85205.5197,"ref_px":85197.0,"fee":0.45021410045206367},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791106860000,"qty":0.7404528987742044,"px":2702.37021,"ref_px":2702.1,"fee":0.900440035},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791106980000,"qty":0.011727591504532715,"px":85277.5269,"ref_px":85269.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791107400000,"qty":-0.011727591504532715,"px":85243.4748,"ref_px":85252.0,"fee":0.4498652928965978},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791107460000,"qty":-0.37008252840383404,"px":2702.62971,"ref_px":2702.9,"fee":0.4500882163872544},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791107640000,"qty":-0.3700962250185048,"px":2701.7298,"ref_px":2702.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791108240000,"qty":0.3700962250185048,"px":2702.2702,"ref_px":2702.0,"fee":0.450045},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791109140000,"qty":0.011716461628588167,"px":85358.535,"ref_px":85350.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791109140000,"qty":0.36957646537068517,"px":2706.07058,"ref_px":2705.8,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791109440000,"qty":-0.36957646537068517,"px":2705.0294700000004,"ref_px":2705.3,"fee":0.4498718536107621},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791109500000,"qty":-0.011716461628588167,"px":85357.46340000001,"ref_px":85366.0,"fee":0.4500393500878735},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791110160000,"qty":-0.011724841421519774,"px":85280.4711,"ref_px":85289.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791110520000,"qty":0.011724841421519774,"px":85331.5323,"ref_px":85323.0,"fee":0.4502244080127566},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791113700000,"qty":-0.3701921297153222,"px":2701.0298700000003,"ref_px":2701.3,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791114600000,"qty":0.3701921297153222,"px":2700.37001,"ref_px":2700.1,"fee":0.44984507625957865},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791116100000,"qty":-0.3705075954057058,"px":2698.7301,"ref_px":2699.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791116340000,"qty":0.3705075954057058,"px":2700.67004,"ref_px":2700.4,"fee":0.4502784431270841},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791116520000,"qty":0.011728691898992505,"px":85269.5261,"ref_px":85261.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791116520000,"qty":0.3702332469455757,"px":2701.2701,"ref_px":2701.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791116880000,"qty":-0.011728691898992505,"px":85252.4739,"ref_px":85261.0,"fee":0.449955},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791117180000,"qty":-0.3702332469455757,"px":2700.22995,"ref_px":2700.5,"fee":0.4498717058496853},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791118020000,"qty":-0.011745498537685433,"px":85130.4861,"ref_px":85139.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791118080000,"qty":-0.37072736709423887,"px":2697.13026,"ref_px":2697.4,"fee":0.44995499999999994},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791118320000,"qty":0.011745498537685433,"px":85152.5144,"ref_px":85144.0,"fee":0.450071430014447},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791118380000,"qty":0.37072736709423887,"px":2697.86976,"ref_px":2697.6,"fee":0.4500783687995848},"raw_target":0.0,"target":0.0}}
+{"Blocked":{"coin":"ETH","ts":1791118740000,"qty":-0.37114014251781474,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791118800000,"qty":-0.37112636852848396,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791121380000,"qty":-0.011738604749439482,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791121440000,"qty":-0.011736400445983217,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791121500000,"qty":-0.01173543632352251,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791121560000,"qty":-0.011737089201877934,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791122580000,"qty":-0.37091988130563797,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791122640000,"qty":-0.370933639971809,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791122700000,"qty":-0.37085110328203225,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791122760000,"qty":-0.37085110328203225,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791122820000,"qty":-0.3709749220952664,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791122880000,"qty":-0.37100244861616083,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791122940000,"qty":-0.3710162134085259,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791123000000,"qty":-0.37102997922232117,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791123060000,"qty":-0.37102997922232117,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791123120000,"qty":-0.011745912422476978,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791123120000,"qty":-0.3711125955614934,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791123180000,"qty":-0.011741223435481977,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791123180000,"qty":-0.37102997922232117,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791123240000,"qty":-0.011739018148522058,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791123660000,"qty":-0.01174784427057635,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791123720000,"qty":-0.011748810432943664,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791123780000,"qty":-0.011746050390556175,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791123840000,"qty":-0.011745084682060558,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791124860000,"qty":-0.37109882361672913,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791124920000,"qty":-0.37109882361672913,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791124980000,"qty":-0.37109882361672913,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125040000,"qty":-0.3711539175295995,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125100000,"qty":-0.37114014251781474,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125160000,"qty":-0.37116769356395224,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125220000,"qty":-0.37137445686485687,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125280000,"qty":-0.37154003343860303,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791125580000,"qty":0.011739155954686858,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125580000,"qty":0.3708786114304788,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791125640000,"qty":0.01173791581566777,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125640000,"qty":0.37091988130563797,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791125700000,"qty":0.011734610058907743,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125700000,"qty":0.37091988130563797,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791125760000,"qty":0.011734610058907743,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125760000,"qty":0.37086485684616527,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791125820000,"qty":0.011734610058907743,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125820000,"qty":0.37085110328203225,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791125880000,"qty":0.011730067682490528,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125880000,"qty":0.3707411114818522,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791125940000,"qty":0.011729930089616666,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791125940000,"qty":0.3707686033146713,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126000000,"qty":0.01172896702987368,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791126000000,"qty":0.3707823507601038,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126060000,"qty":0.011729104600154824,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791126060000,"qty":0.3707823507601038,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126120000,"qty":0.01172649131653318,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791126120000,"qty":0.37065866043960116,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126180000,"qty":0.01172607879924953,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791126180000,"qty":0.370699881376038,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126240000,"qty":0.0117212682412237,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791126240000,"qty":0.37064492216456635,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126300000,"qty":0.011722230037042246,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791126300000,"qty":0.37058997924696113,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126360000,"qty":0.01172346686362091,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791126360000,"qty":0.370699881376038,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126540000,"qty":-0.011734059280467484,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126600000,"qty":-0.011731581417175035,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126660000,"qty":-0.011729792499970675,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126840000,"qty":0.0117236043049075,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126900000,"qty":0.011719757166631508,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791126960000,"qty":0.011718795776546002,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127020000,"qty":0.011720169239243815,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127080000,"qty":0.011718795776546002,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127140000,"qty":0.011719070443332435,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127200000,"qty":0.0117053528578619,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127260000,"qty":0.0117053528578619,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791127260000,"qty":0.3699593044765076,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127320000,"qty":0.011711384637005634,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791127320000,"qty":0.3702195401873311,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127380000,"qty":0.011712344811431248,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791127380000,"qty":0.3701510216168197,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127440000,"qty":0.011715775291429911,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791127440000,"qty":0.37028808412945274,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127500000,"qty":-0.011719482467654228,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127560000,"qty":-0.01172607879924953,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127620000,"qty":-0.011728004128257453,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127680000,"qty":-0.011718246481596493,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127740000,"qty":-0.011721405630963265,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127800000,"qty":-0.011723879197148752,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791127860000,"qty":-0.011727178909841448,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791131520000,"qty":0.37046641721927903,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791131580000,"qty":0.37039780724498106,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791131640000,"qty":0.37028808412945274,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791131700000,"qty":0.37016472330186934,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791131760000,"qty":0.37010992264702613,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791131820000,"qty":0.37006883280290137,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791131880000,"qty":0.3699593044765076,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791131940000,"qty":0.37006883280290137,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791132000000,"qty":0.3700140605343003,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791132060000,"qty":0.3699182480671771,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791132120000,"qty":0.369890882189754,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791132180000,"qty":0.3699045646223274,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791132240000,"qty":0.36984984096456835,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791132300000,"qty":0.3698772007693446,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791132360000,"qty":0.369890882189754,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791132600000,"qty":0.011708093805247568,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791132660000,"qty":0.011714951792973372,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791132720000,"qty":0.01171152179514206,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791132780000,"qty":0.011714677319213242,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791132840000,"qty":0.011716461628588167,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791135900000,"qty":0.011708505058074185,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791135900000,"qty":0.3697814591576378,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791135960000,"qty":0.011707271386258005,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791135960000,"qty":0.36980880884582673,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136020000,"qty":0.011707408448065936,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791136020000,"qty":0.3697267719155544,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136080000,"qty":0.011707545513083182,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791136080000,"qty":0.3697131026323573,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136140000,"qty":0.011712756362954895,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791136140000,"qty":0.3698635203609868,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136380000,"qty":-0.011716736185968036,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136440000,"qty":-0.0117204439704176,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136500000,"qty":-0.011721817819507449,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136560000,"qty":-0.011721817819507449,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136620000,"qty":-0.011721817819507449,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136680000,"qty":-0.011724291559682506,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136740000,"qty":-0.01172415410228152,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136800000,"qty":-0.01172415410228152,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136860000,"qty":-0.011722917130698804,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791136920000,"qty":-0.011723191990715231,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791140700000,"qty":0.011712619175900114,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791140700000,"qty":0.37008252840383404,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791140760000,"qty":0.011712619175900114,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791140760000,"qty":0.37006883280290137,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791140820000,"qty":0.0117096018735363,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791140820000,"qty":0.3700140605343003,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791140880000,"qty":0.011714951792973372,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791140940000,"qty":0.011714814554485602,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142080000,"qty":0.01170302406141747,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142140000,"qty":0.011703708905352106,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142200000,"qty":0.011703708905352106,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142260000,"qty":0.011703708905352106,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142320000,"qty":0.01169426513237908,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791142320000,"qty":0.3697951334960432,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142380000,"qty":0.011699464164541264,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142440000,"qty":0.011697411362865397,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142500000,"qty":0.011692214154594456,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142560000,"qty":0.011694812181316369,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142860000,"qty":-0.011706175007316359,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142920000,"qty":-0.011712619175900114,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791142980000,"qty":-0.011712893553223388,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791143040000,"qty":-0.011707956727391935,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791143100000,"qty":-0.011708093805247568,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791143160000,"qty":-0.011709190543657717,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146100000,"qty":0.01168825097012483,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146160000,"qty":0.011684973124561814,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791146160000,"qty":0.3697814591576378,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146220000,"qty":0.0116831983923919,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791146220000,"qty":0.3697814591576378,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146280000,"qty":0.011679377722754932,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791146280000,"qty":0.3697131026323573,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146340000,"qty":0.011687294741886095,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791146340000,"qty":0.37008252840383404,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146400000,"qty":0.011684836587560322,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146460000,"qty":0.011682788915369877,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146520000,"qty":0.011679923379702629,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146580000,"qty":0.011675150609442861,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791146580000,"qty":-0.3701784260013326,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146640000,"qty":0.011661943579516961,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146700000,"qty":0.011662351596575934,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146760000,"qty":0.011667250029168125,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146820000,"qty":0.011663303747419494,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146880000,"qty":0.011655011655011656,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791146940000,"qty":0.011652023956561255,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791148320000,"qty":0.011622636246353398,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791148380000,"qty":0.011628042186537053,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791148440000,"qty":0.011629529701818858,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791148500000,"qty":0.011627906976744186,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791148560000,"qty":0.011631288165164292,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791148920000,"qty":-0.011658408627222384,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791148920000,"qty":-0.36993193252441553,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791148980000,"qty":-0.011650123491309007,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791148980000,"qty":-0.369890882189754,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791149040000,"qty":-0.011658000886008067,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791149040000,"qty":-0.3699456179941549,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791149100000,"qty":-0.011646866992778943,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791149100000,"qty":-0.3698772007693446,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791151080000,"qty":-0.3701510216168197,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791151140000,"qty":-0.3702469547187974,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791151200000,"qty":-0.37008252840383404,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791151380000,"qty":0.00756699283815626,"raw_target":1000.0,"target":651.904,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791151380000,"qty":0.36845983787767134,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791151440000,"qty":0.007573234200743495,"raw_target":1000.0,"target":651.904,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791151440000,"qty":0.36854131348124125,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791151500000,"qty":0.007564270961453668,"raw_target":1000.0,"target":651.904,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791151500000,"qty":0.3683241252302026,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791151560000,"qty":0.007566641518193953,"raw_target":1000.0,"target":651.904,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791151560000,"qty":0.36850057117588536,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791151620000,"qty":0.01159635410626899,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791151620000,"qty":0.3682834309284425,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791151680000,"qty":0.011605640341205826,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791151740000,"qty":0.011601331832894416,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791151800000,"qty":0.011598506112412721,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791151860000,"qty":0.011602947148575737,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791151920000,"qty":0.011595547309833023,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791151980000,"qty":0.011597161014983532,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791152040000,"qty":0.011588425480629947,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791152100000,"qty":0.011585740270874608,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791152160000,"qty":0.011583727180057455,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791152220000,"qty":0.011551746046414915,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152280000,"qty":0.3676605757564616,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791152340000,"qty":0.01154854430599023,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152340000,"qty":0.36749843813163796,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791152400000,"qty":0.011547877500115478,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152400000,"qty":0.36747142909638775,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791152460000,"qty":0.011548410938654842,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152460000,"qty":0.3672150411280846,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152520000,"qty":0.3670667694453621,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152580000,"qty":0.36668989035972277,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152640000,"qty":0.3665420423722601,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152700000,"qty":0.3663674665689687,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152760000,"qty":0.3655104353229285,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152820000,"qty":0.3658447354942562,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152880000,"qty":0.36627353307450006,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791152940000,"qty":0.3663137843877065,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791153060000,"qty":-0.3666764447051922,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791153120000,"qty":-0.36689169357205753,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791153180000,"qty":-0.3666630000366663,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791153240000,"qty":-0.366905155017428,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.97 at or below -50.00; only reducing orders allowed"}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791159960000,"qty":-0.36749843813163796,"px":2720.82789,"ref_px":2721.1,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791160440000,"qty":0.36749843813163796,"px":2721.0720800000004,"ref_px":2720.8,"fee":0.4499953827496234},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791160920000,"qty":0.011562431348063871,"px":86495.6487,"ref_px":86487.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791160980000,"qty":0.36660923122044214,"px":2727.97277,"ref_px":2727.7,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791161280000,"qty":-0.011562431348063871,"px":86517.3474,"ref_px":86526.0,"fee":0.45015790037809156},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791161280000,"qty":-0.36660923122044214,"px":2726.52732,"ref_px":2726.8,"fee":0.4498065381090296},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791162240000,"qty":-0.011564570780955465,"px":86462.3529,"ref_px":86471.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791162240000,"qty":-0.3672015569346014,"px":2723.0276700000004,"ref_px":2723.3,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791162360000,"qty":0.011564570780955465,"px":86592.6584,"ref_px":86584.0,"fee":0.450633117230054},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791162360000,"qty":0.3672015569346014,"px":2727.97277,"ref_px":2727.7,"fee":0.4507721317886388},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791162900000,"qty":0.011528706479133042,"px":86748.674,"ref_px":86740.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791163380000,"qty":-0.011528706479133042,"px":86751.32400000001,"ref_px":86760.0,"fee":0.4500587479824764},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791163920000,"qty":-0.3671880737313652,"px":2723.12766,"ref_px":2723.4,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791164040000,"qty":-0.011532695190866105,"px":86701.329,"ref_px":86710.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791164220000,"qty":0.3671880737313652,"px":2724.2724,"ref_px":2724.0,"fee":0.4501441506939854},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791164400000,"qty":0.011532695190866105,"px":86752.6744,"ref_px":86744.0,"fee":0.4502214678814439},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791167580000,"qty":-0.3664077385314378,"px":2728.92708,"ref_px":2729.2,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791167760000,"qty":0.3664077385314378,"px":2734.2734,"ref_px":2734.0,"fee":0.45083651985929946},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791167880000,"qty":0.011548677676406051,"px":86598.659,"ref_px":86590.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791167880000,"qty":0.3655237955990935,"px":2736.07358,"ref_px":2735.8,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791168300000,"qty":-0.3655237955990935,"px":2734.7265,"ref_px":2735.0,"fee":0.449823424592441},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791168360000,"qty":-0.011548677676406051,"px":86615.3376,"ref_px":86624.0,"fee":0.45013167709897217},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791170880000,"qty":0.36662267194603315,"px":2727.8727599999997,"ref_px":2727.6,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791171180000,"qty":-0.36662267194603315,"px":2727.22725,"ref_px":2727.5,"fee":0.44993850362956445},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791172680000,"qty":-0.011621825788831426,"px":86036.3955,"ref_px":86045.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791172680000,"qty":-0.3684462621126709,"px":2713.82859,"ref_px":2714.1,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791172980000,"qty":0.3684462621126709,"px":2715.07148,"ref_px":2714.8,"fee":0.45016107217862283},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791173040000,"qty":0.011621825788831426,"px":86078.607,"ref_px":86070.0,"fee":0.4501757586146784},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791173880000,"qty":-0.3694126339120798,"px":2706.7293,"ref_px":2707.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791174180000,"qty":0.3694126339120798,"px":2708.07078,"ref_px":2707.8,"fee":0.4501780018470632},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791174360000,"qty":0.36855489625179666,"px":2713.57133,"ref_px":2713.3,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791174540000,"qty":-0.36855489625179666,"px":2708.42913,"ref_px":2708.7,"fee":0.44919216765562225},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791174780000,"qty":-0.011694675414283876,"px":85500.4491,"ref_px":85509.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791174780000,"qty":-0.37028808412945274,"px":2700.32994,"ref_px":2700.6,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791175080000,"qty":0.011694675414283876,"px":85621.5613,"ref_px":85613.0,"fee":0.4505923655404694},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791175080000,"qty":0.37028808412945274,"px":2702.2702,"ref_px":2702.0,"fee":0.4502783048211509},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791178560000,"qty":0.37037037037037035,"px":2700.27,"ref_px":2700.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791178620000,"qty":0.011674060238150829,"px":85668.566,"ref_px":85660.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791178980000,"qty":-0.011674060238150829,"px":85625.4366,"ref_px":85634.0,"fee":0.4498184271538641},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791178980000,"qty":-0.37037037037037035,"px":2700.02997,"ref_px":2700.3,"fee":0.45000499499999996},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791182880000,"qty":0.01161480655539682,"px":86105.6097,"ref_px":86097.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791182880000,"qty":0.36770113251948816,"px":2719.87196,"ref_px":2719.6,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791183180000,"qty":-0.36770113251948816,"px":2718.62811,"ref_px":2718.9,"fee":0.4498391857258421},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791183240000,"qty":0.3666764447051922,"px":2727.4727199999998,"ref_px":2727.2,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791183540000,"qty":-0.01161480655539682,"px":86217.3774,"ref_px":86226.0,"fee":0.4506291720965887},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791183540000,"qty":-0.3666764447051922,"px":2723.82759,"ref_px":2724.1,"fee":0.44944353751100036},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791188340000,"qty":-0.3669724770642202,"px":2724.7275,"ref_px":2725.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791188640000,"qty":0.3669724770642202,"px":2728.2728,"ref_px":2728.0,"fee":0.4505404623853212},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791190020000,"qty":-0.011620745354607045,"px":86044.3947,"ref_px":86053.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791190020000,"qty":-0.16535907734256974,"px":2713.62861,"ref_px":2713.9,"fee":0.20192540544000004},"raw_target":-1000.0,"target":-448.76800000000003}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791190260000,"qty":0.011620745354607045,"px":86206.6198,"ref_px":86198.0,"fee":0.4508033294597515},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791190260000,"qty":0.16535907734256974,"px":2718.5718300000003,"ref_px":2718.3,"fee":0.20229323827423565},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791191820000,"qty":-0.01165609847071988,"px":85783.4208,"ref_px":85792.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791192120000,"qty":0.01165609847071988,"px":85854.5846,"ref_px":85846.0,"fee":0.45032827151715776},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791196440000,"qty":-0.3682834309284425,"px":2715.02847,"ref_px":2715.3,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791196980000,"qty":0.3682834309284425,"px":2714.17139,"ref_px":2713.9,"fee":0.44981295823665896},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791198300000,"qty":-0.01164022395790895,"px":85900.4091,"ref_px":85909.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791198300000,"qty":-0.36875875802050295,"px":2711.52882,"ref_px":2711.8,"fee":0.44995499999999994},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791198600000,"qty":0.01164022395790895,"px":85925.5917,"ref_px":85917.0,"fee":0.4500869089967291},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791198960000,"qty":0.36875875802050295,"px":2713.57133,"ref_px":2713.3,"fee":0.45029393705288},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791199680000,"qty":0.011605370965682918,"px":86175.6167,"ref_px":86167.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791199680000,"qty":0.36763354288445277,"px":2720.37201,"ref_px":2720.1,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791199980000,"qty":-0.011605370965682918,"px":86136.3855,"ref_px":86145.0,"fee":0.44984011831675697},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791199980000,"qty":-0.36763354288445277,"px":2718.62811,"ref_px":2718.9,"fee":0.4497564977390537},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791201540000,"qty":0.011600389773096376,"px":86212.6204,"ref_px":86204.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791201840000,"qty":-0.011600389773096376,"px":86137.3854,"ref_px":86146.0,"fee":0.44965226010393944},"raw_target":0.0,"target":0.0}}
+{"Blocked":{"coin":"BTC","ts":1791203700000,"qty":-0.011642934485207652,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791203760000,"qty":-0.0116375146923623,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791203820000,"qty":-0.0116375146923623,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791203880000,"qty":-0.01164469700498393,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791203940000,"qty":-0.011652702844424764,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791204000000,"qty":-0.011649309195964679,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791204060000,"qty":-0.011648359328588568,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791204120000,"qty":-0.011647680946723507,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791204180000,"qty":-0.011647680946723507,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791205320000,"qty":0.011630205970947745,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791205380000,"qty":0.011628447834783014,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791205380000,"qty":0.3684191135836127,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791205440000,"qty":0.011622095928779797,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791205440000,"qty":0.36820206929562943,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791205500000,"qty":0.011619260085517754,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791205500000,"qty":0.3681342953909586,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791205560000,"qty":0.011616695514793862,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791205560000,"qty":0.3679446611229671,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791205620000,"qty":0.011622501162250116,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791205620000,"qty":0.3680800942285041,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791205680000,"qty":0.011624527753560012,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791205680000,"qty":0.368093643022785,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791205740000,"qty":0.011621150493898896,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791205740000,"qty":0.3679446611229671,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791205800000,"qty":0.011616830463976208,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791205800000,"qty":0.36786344908769864,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791205860000,"qty":0.36784991723376864,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791205920000,"qty":0.3677552221241542,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791205980000,"qty":0.367728175332794,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791206040000,"qty":0.3677552221241542,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791206100000,"qty":0.3678228565123037,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791207060000,"qty":-0.011657729074376311,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791207060000,"qty":-0.36881315925352215,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791207120000,"qty":-0.011644425813363142,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791207120000,"qty":-0.36822918584527015,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791207180000,"qty":-0.011636566747346862,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791207180000,"qty":-0.3680800942285041,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791207240000,"qty":-0.011638733705772812,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791207240000,"qty":-0.3681342953909586,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791207300000,"qty":-0.011634129883426018,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791207300000,"qty":-0.3681478481758274,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791207360000,"qty":0.011619260085517754,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791207420000,"qty":0.011629935453858231,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791208080000,"qty":0.011582922139597378,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791208140000,"qty":0.011591246290801186,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791208200000,"qty":0.011591649375789681,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791208260000,"qty":0.011582117211026175,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791208260000,"qty":0.3672015569346014,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791208320000,"qty":0.011580775911986103,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791208320000,"qty":0.3670532961385993,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791208380000,"qty":0.011581983067140755,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791208440000,"qty":0.011590171534538712,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791208500000,"qty":0.01158453233242974,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791209340000,"qty":0.36647487814710306,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791209400000,"qty":0.3665151737281923,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791209460000,"qty":0.36677058499908305,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791209520000,"qty":0.36655547817162126,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791209580000,"qty":0.3665420423722601,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791210780000,"qty":-0.011643476742155207,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791210780000,"qty":-0.3696721008465491,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791210840000,"qty":-0.01167365140142185,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791210840000,"qty":-0.3701921297153222,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791210900000,"qty":-0.011700148591887116,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791210900000,"qty":-0.3704115272067267,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791210960000,"qty":-0.01169426513237908,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791210960000,"qty":-0.3706861400452237,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791211020000,"qty":-0.011689480636375326,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791211020000,"qty":-0.3704389701796629,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791211080000,"qty":-0.011668611435239206,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791211080000,"qty":-0.3697677858304984,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791214500000,"qty":-0.011731994321714748,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791214500000,"qty":-0.3710437460576602,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791214560000,"qty":-0.011714814554485602,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791214560000,"qty":-0.3704115272067267,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791214620000,"qty":-0.011716873469483403,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791214620000,"qty":-0.37032922267896157,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791214680000,"qty":-0.011727591504532715,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791214680000,"qty":-0.37052132350216754,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791217080000,"qty":-0.37255048059011997,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791217140000,"qty":-0.37242560798480506,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791217200000,"qty":-0.3726476616359232,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791217260000,"qty":-0.3726476616359232,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791217320000,"qty":-0.3726476616359232,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791217380000,"qty":-0.37324574499850705,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791217440000,"qty":-0.37255048059011997,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791222840000,"qty":0.011716461628588167,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791222900000,"qty":0.011715089034676664,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791222900000,"qty":0.3698772007693446,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791222960000,"qty":0.011714951792973372,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791222960000,"qty":0.36983616257997703,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791223020000,"qty":0.011712619175900114,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791223020000,"qty":0.3697951334960432,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791223080000,"qty":0.011712207634016937,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791223080000,"qty":0.36975411351451287,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791223140000,"qty":0.01170877924267616,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791223140000,"qty":0.36965843560550055,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791223200000,"qty":0.011706175007316359,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791223200000,"qty":0.3696721008465491,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791223260000,"qty":0.01170877924267616,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791223260000,"qty":0.36963110815406225,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791223320000,"qty":0.011698916680315403,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791223320000,"qty":0.3692080487354624,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791223380000,"qty":0.011701517686843984,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791223380000,"qty":0.3693853427895981,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791223440000,"qty":0.011706586125354124,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791223440000,"qty":0.3695218387406696,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791223500000,"qty":0.36956280719908347,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791223560000,"qty":0.36956280719908347,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224280000,"qty":0.011697958706205767,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791224280000,"qty":0.36911265318175107,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224340000,"qty":0.011701380762930026,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791224340000,"qty":0.3691944177804032,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224400000,"qty":0.011699053546568083,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791224400000,"qty":0.36911265318175107,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224460000,"qty":0.011699464164541264,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791224460000,"qty":0.3691262780997379,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224520000,"qty":0.011695906432748537,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791224520000,"qty":0.36913990402362495,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224580000,"qty":0.011697548193898559,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224640000,"qty":0.011696864070742633,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224700000,"qty":0.011695632850693551,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224760000,"qty":0.01169645363525779,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224820000,"qty":0.011695496064465575,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224880000,"qty":0.011693307919877454,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791224940000,"qty":0.011682788915369877,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791225000000,"qty":0.011690300557627337,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791225060000,"qty":0.01168975393067976,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791225120000,"qty":0.011691940745244303,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791227580000,"qty":0.011675968521588866,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791227640000,"qty":0.011673787677149728,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791227700000,"qty":0.01167555955119149,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791227760000,"qty":0.01167555955119149,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791227820000,"qty":0.011678013803412315,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791227880000,"qty":0.011673242593327575,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791227940000,"qty":0.011658680470544344,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791228000000,"qty":0.011661399601180133,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791228060000,"qty":0.011664936367772114,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791228120000,"qty":0.011665888940737284,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791228180000,"qty":0.011663575819074613,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791231660000,"qty":0.011653381811401669,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791231720000,"qty":0.011654196676223107,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791231780000,"qty":0.011655011655011656,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791231840000,"qty":0.011658136796577172,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791231900000,"qty":0.011658816396959381,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791234120000,"qty":-0.011668202980059042,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791234180000,"qty":-0.011666433337999906,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791234240000,"qty":-0.011667113906033064,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791234300000,"qty":-0.011666977786074294,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791234360000,"qty":-0.011666569445254623,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791235020000,"qty":0.36851415094339623,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791235080000,"qty":0.36851415094339623,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791235140000,"qty":0.36851415094339623,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791235200000,"qty":0.36843268734802154,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791235260000,"qty":0.36843268734802154,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791235320000,"qty":0.3684462621126709,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791235380000,"qty":0.36843268734802154,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791235440000,"qty":0.36845983787767134,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791236100000,"qty":0.011643070044709389,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791236160000,"qty":0.011644425813363142,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791236220000,"qty":0.011646324420013045,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791236280000,"qty":0.011643747889570694,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791236340000,"qty":0.011643883468014251,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791237300000,"qty":0.36791758646063283,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791237360000,"qty":0.36787698193724017,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791237420000,"qty":0.36780932764454904,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791237480000,"qty":0.3678228565123037,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791237540000,"qty":0.3678228565123037,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791237600000,"qty":0.36787698193724017,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791237660000,"qty":0.36767409368335907,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791237900000,"qty":0.36752545113749124,"raw_target":1000.0,"target":1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791238200000,"qty":-0.011647816616775185,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791238200000,"qty":-0.368052999631947,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791238260000,"qty":-0.011640901471409946,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791238260000,"qty":-0.36791758646063283,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791238320000,"qty":-0.36787698193724017,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791242040000,"qty":-0.011643476742155207,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791242100000,"qty":-0.011648359328588568,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791242100000,"qty":-0.22770160695857294,"raw_target":-1000.0,"target":-617.8000000000001,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791242160000,"qty":-0.011649444903950326,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791242160000,"qty":-0.22766804245283023,"raw_target":-1000.0,"target":-617.8000000000001,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791242220000,"qty":-0.011651073646436519,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791242220000,"qty":-0.22770999963141797,"raw_target":-1000.0,"target":-617.8000000000001,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791242280000,"qty":-0.011647545279832276,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791242280000,"qty":-0.22768482346871086,"raw_target":-1000.0,"target":-617.8000000000001,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791242340000,"qty":-0.011644561407594583,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791242340000,"qty":-0.22766804245283023,"raw_target":-1000.0,"target":-617.8000000000001,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791244080000,"qty":-0.011668883754580037,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791244140000,"qty":-0.011666569445254623,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"BTC","ts":1791244200000,"qty":-0.011666977786074294,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791244200000,"qty":-0.36901730691169415,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791244260000,"qty":-0.3689356207341819,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791244320000,"qty":-0.36890840004426906,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791244380000,"qty":-0.3689492325855962,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Blocked":{"coin":"ETH","ts":1791244440000,"qty":-0.3689220098871099,"raw_target":-1000.0,"target":-1000.0,"reason":"max_daily_loss: daily PnL -50.47 at or below -50.00; only reducing orders allowed"}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791245400000,"qty":0.3683241252302026,"px":2715.2715,"ref_px":2715.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791245700000,"qty":-0.3683241252302026,"px":2712.7287,"ref_px":2713.0,"fee":0.44962354143646416},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791246540000,"qty":-0.011651888188480944,"px":85814.4177,"ref_px":85823.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791246840000,"qty":0.011651888188480944,"px":85855.58469999999,"ref_px":85847.0,"fee":0.4501708529764748},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791248460000,"qty":0.011630611770179112,"px":85988.598,"ref_px":85980.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791248460000,"qty":0.36768761260433136,"px":2719.9719699999996,"ref_px":2719.7,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791248820000,"qty":-0.36768761260433136,"px":2719.728,"ref_px":2720.0,"fee":0.4500046328639188},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791249000000,"qty":-0.011630611770179112,"px":85997.3994,"ref_px":86006.0,"fee":0.45009106454989534},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791249600000,"qty":-0.01164740961610138,"px":85847.4144,"ref_px":85856.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791249780000,"qty":0.01164740961610138,"px":85932.5924,"ref_px":85924.0,"fee":0.45040144637532614},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791250500000,"qty":-0.011658544547298715,"px":85765.4226,"ref_px":85774.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791250620000,"qty":-0.3688675765400221,"px":2710.7289,"ref_px":2711.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791251280000,"qty":0.011658544547298715,"px":85704.5696,"ref_px":85696.0,"fee":0.4496357441648985},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791251280000,"qty":0.3688675765400221,"px":2709.17089,"ref_px":2708.9,"fee":0.44969638528218364},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791253200000,"qty":0.36964477137470886,"px":2705.57053,"ref_px":2705.3,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791253440000,"qty":0.011665072440099853,"px":85734.5726,"ref_px":85726.0,"fee":0.450045},"raw_target":1000.0,"target":1000.0}}
+{"Filled":{"fill":{"coin":"BTC","ts":1791253740000,"qty":-0.011665072440099853,"px":85619.4372,"ref_px":85628.0,"fee":0.4494406217483611},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791253740000,"qty":-0.36964477137470886,"px":2705.7294,"ref_px":2706.0,"fee":0.45007142645917264},"raw_target":0.0,"target":0.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791253860000,"qty":-0.3698224852071006,"px":2703.7296,"ref_px":2704.0,"fee":0.449955},"raw_target":-1000.0,"target":-1000.0}}
+{"Filled":{"fill":{"coin":"ETH","ts":1791254160000,"qty":0.3698224852071006,"px":2704.57043,"ref_px":2704.3,"fee":0.45009493102810655},"raw_target":0.0,"target":0.0}}

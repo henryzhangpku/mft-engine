@@ -60,7 +60,7 @@ pub struct RiskContext {
     pub now_ms: i64,
     /// Current position in coin units (signed).
     pub position_qty: f64,
-    /// Engine-clock time of the last market data event for this coin.
+    /// Exchange timestamp of the newest market data for this coin.
     pub last_data_ms: Option<i64>,
     /// PnL since the start of the current UTC day, after fees.
     pub daily_pnl: f64,
@@ -107,6 +107,12 @@ impl RiskRule for SaneInputs {
     }
 }
 
+/// How far the exchange's clock may run ahead of ours before we treat the
+/// timestamps as nonsense. Live, a few ms of skew is normal.
+pub const MAX_CLOCK_SKEW_MS: i64 = 5_000;
+
+/// Blocks when the newest market data for the coin is older than the limit,
+/// measured on the engine clock against the data's exchange timestamp.
 pub struct StaleData {
     pub stale_after_ms: i64,
 }
@@ -120,8 +126,8 @@ impl RiskRule for StaleData {
             return Ok(Verdict::Block("no market data received yet".into()));
         };
         let age = ctx.now_ms - last;
-        if age < 0 {
-            bail!("last data time {last} is after the clock {}", ctx.now_ms);
+        if age < -MAX_CLOCK_SKEW_MS {
+            bail!("last data time {last} is {} ms ahead of the clock", -age);
         }
         if age > self.stale_after_ms {
             return Ok(Verdict::Block(format!(

@@ -1,0 +1,10 @@
+{
+  "scorer": "jev",
+  "posts": 60,
+  "latency_ms_p50": 144.3,
+  "latency_ms_p99": 401.5,
+  "latency_ms_first_call": 401.5,
+  "latency_ms_mean": 148.3,
+  "input_tokens_per_post_mean": 506.4,
+  "input_tokens_total": 30381
+}

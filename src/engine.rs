@@ -73,11 +73,16 @@ pub enum Decision {
 struct MarketState {
     last_px: Option<f64>,
     book: Option<BookTop>,
-    /// Engine-clock time the book top arrived. Kept in the engine's clock
-    /// domain (not the exchange's) so freshness means the same in both modes.
-    book_ms: Option<i64>,
-    /// Engine-clock time of the last market data for this coin.
+    /// Newest exchange timestamp seen for this coin. Freshness is judged as
+    /// "engine clock minus this", so data that arrives late (a lagging feed)
+    /// counts as old even though we only just received it.
     last_data_ms: Option<i64>,
+}
+
+impl MarketState {
+    fn touch(&mut self, exchange_ts: i64) {
+        self.last_data_ms = Some(self.last_data_ms.map_or(exchange_ts, |t| t.max(exchange_ts)));
+    }
 }
 
 pub struct Engine {
@@ -149,14 +154,13 @@ impl Engine {
             Event::Trade(t) => {
                 let m = self.market.entry(t.coin.clone()).or_default();
                 m.last_px = Some(t.px);
-                m.last_data_ms = Some(now);
+                m.touch(t.ts);
                 None
             }
             Event::BookTop(b) => {
                 let m = self.market.entry(b.coin.clone()).or_default();
                 m.book = Some(b.clone());
-                m.book_ms = Some(now);
-                m.last_data_ms = Some(now);
+                m.touch(b.ts);
                 None
             }
             Event::TextSignal(s) => {
@@ -177,7 +181,7 @@ impl Engine {
         {
             let m = self.market.entry(bar.coin.clone()).or_default();
             m.last_px = Some(bar.close);
-            m.last_data_ms = Some(now);
+            m.touch(bar.ts);
         }
 
         // 2. Strategy target.
@@ -249,9 +253,9 @@ impl Engine {
             return f64::NAN; // no market at all: risk will reject NaN
         };
         let last = m.last_px.unwrap_or(f64::NAN);
-        match (&m.book, m.book_ms) {
-            (Some(b), Some(at))
-                if now - at <= self.config.book_fresh_ms
+        match &m.book {
+            Some(b)
+                if (now - b.ts).abs() <= self.config.book_fresh_ms
                     && b.bid_px > 0.0
                     && b.ask_px > b.bid_px =>
             {

@@ -22,7 +22,8 @@ pub struct TextParams {
     pub ttl_ms: i64,
     /// Posts less relevant than this are ignored.
     pub min_relevance: f64,
-    /// If relevance-weighted opposing probability reaches this, veto (go flat).
+    /// If the relevance- and novelty-weighted opposing probability reaches
+    /// this, veto (go flat).
     pub veto_at: f64,
 }
 
@@ -98,14 +99,21 @@ impl TextState {
         }
     }
 
+    /// Keep the newest *relevant* post per coin. An irrelevant post must not
+    /// displace a relevant one, or a meme about another token could switch
+    /// off a warning about this one.
     pub fn on_signal(&mut self, signal: &TextSignal) {
-        self.latest.insert(signal.coin.clone(), signal.clone());
+        if signal.relevance >= self.params.min_relevance {
+            self.latest.insert(signal.coin.clone(), signal.clone());
+        }
     }
 
     /// How much to scale `target_notional` for `coin` at time `now_ms`.
     ///
     /// Only the probability that *opposes* the intended direction matters. A
     /// bullish post never adds to a long; a bearish post can shrink or veto it.
+    /// The opposing probability is weighted by relevance and novelty, so a
+    /// repost of old news brakes less than fresh news.
     pub fn caution_for(&self, coin: &str, target_notional: f64, now_ms: i64) -> Caution {
         if target_notional == 0.0 {
             return Caution::NONE;
@@ -114,11 +122,11 @@ impl TextState {
             return Caution::NONE;
         };
         let age = now_ms - sig.ts;
-        if age < 0 || age > self.params.ttl_ms || sig.relevance < self.params.min_relevance {
+        if age < 0 || age > self.params.ttl_ms {
             return Caution::NONE;
         }
         let opposing = if target_notional > 0.0 { sig.bearish } else { sig.bullish };
-        let strength = opposing * sig.relevance;
+        let strength = opposing * sig.relevance * sig.novelty;
         if strength >= self.params.veto_at {
             Caution::new(0.0)
         } else {

@@ -1,0 +1,5 @@
+{
+  "scorer": "mock-keyword-v1",
+  "posts": 60,
+  "note": "mock: no network, assumed scoring delay 1000 ms"
+}
