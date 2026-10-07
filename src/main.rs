@@ -7,7 +7,7 @@ use mft_engine::artifacts::{write_json, write_jsonl};
 use mft_engine::backtest::{evaluate_keyed, load_session, print_table};
 use mft_engine::clock::TimeKey;
 use mft_engine::engine::EngineConfig;
-use mft_engine::{demo, experiment, fetch, paper, positioning, record, universe};
+use mft_engine::{demo, experiment, fetch, paper, positioning, record, universe, verify};
 use std::path::PathBuf;
 use std::time::Duration;
 
@@ -146,6 +146,18 @@ enum Command {
         #[arg(long, value_enum)]
         time_key: Option<TimeKey>,
     },
+    /// Replay a live session log and diff its decisions against the live run's.
+    VerifyReplay {
+        #[arg(long, default_values = ["results/paper_events.jsonl"])]
+        session: Vec<PathBuf>,
+        #[arg(long, default_value = "results/paper_decisions.jsonl")]
+        decisions: PathBuf,
+        /// The strategy the live run used (`strategy` in its paper.json).
+        #[arg(long, default_value = "v2")]
+        strategy: String,
+        #[arg(long, value_enum, default_value = "arrival")]
+        time_key: TimeKey,
+    },
     /// Run the variants in a TOML file and append each to the hash-chained ledger.
     Experiment {
         #[arg(long, default_value = "experiments/ideas.toml")]
@@ -261,6 +273,15 @@ async fn main() -> Result<()> {
             mft_engine::carry_research::run(phase, opts).map(|_| ())
         }
         Command::Backtest { data, out, time_key } => backtest(data, out, time_key).await,
+        Command::VerifyReplay { session, decisions, strategy, time_key } => {
+            let live = verify::read_decisions(&decisions)?;
+            let report = verify::verify(&session, live, strategy_config(&strategy)?, time_key).await?;
+            verify::print(&report);
+            if !report.identical() {
+                anyhow::bail!("the replay diverged from the live decision stream");
+            }
+            Ok(())
+        }
         Command::Experiment { file, ledger, verify } => {
             if verify {
                 let n = mft_engine::ledger::verify(&mft_engine::ledger::read(&ledger)?)?;

@@ -6,7 +6,8 @@
 //!
 //! Reading order for a newcomer: `event` (the one type), `clock`, `engine`
 //! (the shared path), `risk`, `text`, `strategy`, `execution`, then
-//! `event_loop` and the two drivers `backtest` and `paper`.
+//! `event_loop` and the two drivers `backtest` and `paper`; `verify` diffs a
+//! live session against its replay.
 
 pub mod artifacts;
 pub mod backtest;
@@ -36,3 +37,4 @@ pub mod risk;
 pub mod strategy;
 pub mod text;
 pub mod universe;
+pub mod verify;
