@@ -67,7 +67,8 @@ funding it was built to collect and lost far more on the price leg.
    long/short totals -> Positioning events -> the v3 gate (can only shrink)
    universe.rs: every perp on every dex (main + HIP-3 builder dexes)
 
-   Clock: event time in replay, wall time live. Nothing else differs.
+   Clock: event time in replay; live, the arrival time of each event, recorded
+   with it, so a replay by arrival runs on the live clock. Nothing else differs.
    Research: experiment.rs + ledger.rs (hash-chained results), demo.rs (web export)
 ```
 
@@ -427,6 +428,70 @@ Entries 14 to 17 are v4 (above), recorded by `mft-engine carry` on the same
 chain, each carrying v4's kill rule as its verdict rule. For v4, "PnL" is the
 in-sample result and "holdout" the sealed out-of-sample one.
 
+A note on fingerprints: entries 0 to 6 logged decision fingerprints that no
+committed build gives back (the builds of c77ede1, which added the ledger, of
+4c53179 and of today all give `5ccac06aa73491d6` for entry 0, not the logged
+`afb924fee4ed2223`), while every number in their reports reproduces exactly,
+and entry 7, the same configuration rerun an hour later, logged the
+fingerprint the code gives.
+Why is not known; an uncommitted difference in the decisions' text at the
+time would explain it. `ledger dsr` accepts such an entry only if every field
+of its logged report matches the replay, and marks it.
+
+### Deflated Sharpe ratio (`mft-engine ledger dsr`)
+
+The best of many tried strategies has a positive Sharpe ratio by luck alone.
+`ledger dsr --entry <seq>` (or `--all`) computes the deflated Sharpe ratio of
+Bailey and López de Prado (2014): the probabilistic Sharpe ratio
+
+`PSR(SR0) = Phi( (SR - SR0) sqrt(T - 1) / sqrt(1 - skew SR + (kurt - 1)/4 SR^2) )`
+
+against `SR0 = sqrt(V) ((1 - g) PhiInv(1 - 1/N) + g PhiInv(1 - 1/(N e)))`, the
+expected maximum Sharpe of N trials with no edge (g the Euler-Mascheroni
+constant, V the variance of the trial Sharpe ratios). SR uses the standard
+deviation with T - 1; skewness and kurtosis (not excess) are the sample
+moments; with N = 1, SR0 = 0 and the DSR is the PSR against zero
+(`src/dsr.rs`, tested against hand-computed values).
+
+* **N** counts every ledger entry that evaluated a strategy, once per
+  distinct (config, data, window, time key): entries 0 to 13 and the three v4
+  runs 15 to 17, killed ones and the two that never traded included. Not
+  counted: the pre-registration (14), which has no result, and entry 7, an
+  exact rerun of entry 0. **N = 16.**
+* **Returns** are replayed, not read: the ledger keeps summaries only, so
+  each trial is rerun from what its entry recorded and must reproduce it
+  (above). v1 to v3 use P&L per minute over the full window, v4 its daily P&L.
+  Sharpe ratios are compared across trials annualised (sqrt(525,600) per
+  minute, sqrt(365) per day), and SR0 is converted back to the entry's own
+  period.
+
+| # | variant | T | SR, annualised | skew | kurt | PSR vs 0 | DSR | DSR, same-period trials only |
+|---|---|---|---|---|---|---|---|---|
+| 0 | v1_momentum | 5,071 min | -98.7 | -2.36 | 73.1 | 0.0000 | 0.0000 | 0.0000 |
+| 1 | v2_reasoning_gated | 5,071 min | -96.5 | -2.92 | 45.3 | 0.0000 | 0.0000 | 0.0000 |
+| 5 | v2_kalshi_strict_0p6 | 5,071 min | -58.9 | -5.84 | 86.5 | 0.0000 | 0.0000 | 0.0000 |
+| 6 | v1_entry_z_3 | 5,071 min | -49.6 | -2.00 | 266.8 | 0.0000 | 0.0000 | 0.0000 |
+| 12 | session_v3_positioning_gated | 175 min | -104.9 | -7.51 | 60.2 | 0.0000 | 0.0000 | 0.0000 |
+| 15 | v4 in-sample, daily | 54 days | -2.44 | 0.74 | 6.1 | 0.190 | 0.0000 | 0.152 |
+| 16 | v4 in-sample, weekly | 54 days | -1.48 | 1.29 | 6.6 | 0.296 | 0.0000 | 0.247 |
+| 17 | v4 sealed out-of-sample | 36 days | -1.91 | -0.66 | 3.2 | 0.271 | 0.0000 | 0.230 |
+
+(All rows: `ledger dsr --all`. Entries 2 to 4, 7, 10, 11 and 13 look like
+their neighbours; 8 and 9 never traded, so their Sharpe is undefined and they
+enter V as 0.) With N = 16, V = 3,242 and SR0 = +102.5 annualised.
+
+What it says, plainly: **nothing on the ledger needed deflating to be
+rejected.** Every entry has a negative Sharpe ratio, so the PSR against zero
+is already below one half: about 0 for the 1-minute strategies, 0.19 to 0.30
+for v4. The DSR, which can only be lower, is 0.0000 for all of them. The
+headline SR0 is large because the 1-minute strategies' annualised Sharpe
+ratios are large and spread out (annualising minute P&L by sqrt(525,600)
+magnifies them); deflating v4 only by the three daily v4 trials gives SR0 =
++0.41 and DSRs of 0.15 to 0.25, still well below one half. The 1-minute
+series are far from normal (kurtosis 23 to 267: mostly flat minutes, a few
+fills), which the PSR's denominator accounts for. The 175-minute session
+windows include the 90 warm-up minutes, in which v1 can already trade.
+
 Every non-baseline entry was killed: nothing has a positive holdout. On the
 backfilled window the two that lose least (strict Kalshi agreement, and a
 higher momentum threshold) do so by trading a quarter to a third as often;
@@ -473,10 +538,72 @@ too few for a stable p99. Exchange-to-receive was 312 ms at p50; its p99
 (17.8 s) is the batch of recent trades Hyperliquid replays on subscribe.
 
 Every event the live engine saw is in `results/paper_events.jsonl`, and the
-live Jev output in `results/live_text_signals.jsonl`, so the session can be
-replayed through `backtest --data results/paper_events.jsonl`. The 90 bars of
-REST history used to warm the strategy up are not in that file, so a replay
-starts cold.
+live Jev output in `results/live_text_signals.jsonl`. That run predates the
+replay verification below: its log has no warm-up, no arrival stamps on the
+Kalshi and social lines, and no decision log, so a replay of it starts cold.
+Replay it with `--time-key arrival`: by exchange time `backtest` rebuilds
+bars from its trades on top of the bars it already holds, and feeds each bar
+twice.
+
+## Replay verification
+
+The claim "the same code runs in replay and live" is now checked against the
+live run itself, decision by decision.
+
+* **The live clock is recorded.** The live engine used to read the wall clock
+  as it processed each event, which no log kept. It now runs on each event's
+  arrival time (the wall-clock read time of its websocket frame, poll or file
+  line), and every line of the session log carries it as `arrival_ts`, raised
+  where needed so it never decreases in the order the engine consumed events.
+  The file order is then the arrival order, and the clock is an input.
+* **The warm-up is recorded.** `paper` (and `record`) write the 90 REST bars
+  per coin that warm the strategy at the head of the session log, as `Warmup`
+  events stamped with their fetch time. They reach the strategy's window and
+  nothing else, as before, through the same `Engine::on_event` call in both
+  modes.
+* **Live decisions are recorded.** `paper` writes
+  `results/paper_decisions.jsonl`: every decision with the session-log index
+  of the event behind it. `paper.json` gives their fingerprint.
+* **`--time-key arrival|exchange`.** By arrival, a replay orders events by
+  arrival (a stable sort, so a session log keeps its exact order), clocks by
+  arrival, builds bars from trades the way the live bar builder does (unless
+  the log already holds the live bars) and adds no bar-gap events (the live
+  engine only sees the gaps its feed reports, and those are in the log). By
+  exchange, nothing changed. `backtest` picks arrival when its files carry
+  arrival stamps, exchange otherwise; an experiment file replays by exchange
+  unless it says `time_key = "arrival"`, and new ledger entries record their
+  key. Every entry already on the ledger carries none and is pinned to
+  exchange; a test replays all of them (see the DSR below), and the existing
+  replay-fingerprint tests pass unchanged.
+
+```
+mft-engine verify-replay --session results/paper_events.jsonl --decisions results/paper_decisions.jsonl --strategy v2
+```
+
+replays the log through the same engine and loop and prints either
+`identical` with both fingerprints, or the first divergence: the decision
+index, the session event behind it, and the live and replayed decisions
+(exit code 1). The tests run a synthetic session through the live path
+(`paper::run_session`: 61 warm-up bars, trades through the live bar builder,
+two posts from the recorded fixture log, virtual arrival stamps, no model
+call), write both logs, and require `verify-replay` to say identical; the
+same log without its warm-up diverges at decision 0, and so does a replay by
+exchange time (each decision's time is off by the 120 ms feed lag). A log
+that lost one post the live engine saw is reported at decision 1, at the bar
+where the live engine closed its long on that post and the replay did not.
+
+**On the session already committed** (`results/paper_events.jsonl`, the
+04:22 run, with an empty decision log since that run made no decisions):
+`identical`, 0 decisions on each side, fingerprint `09612b07b5ecb5a5` (the
+empty list). That match is vacuous. Without the warm-up the 60-bar window
+never fills in 22 live bars, so the replay cannot decide at all; the live run,
+warm, made no decisions because |z| never reached 2. It shows nothing about
+state. A new four-minute v2 run on 2026-10-07 at 16:55 UTC (not committed)
+wrote 180 warm-up bars and 1,097 live events with their arrival times;
+`verify-replay` on it: identical, 0 decisions on each side, because momentum
+again never reached |z| >= 2. That checks the recording and the warm replay
+path end to end, not a decision. The decision-level evidence so far is the
+synthetic session in the tests; a live session that trades is still to come.
 
 ## Running it
 
@@ -490,6 +617,9 @@ cargo test
 ./target/release/mft-engine backtest                 # v1, v2, v3 side by side -> results/backtest.json
 ./target/release/mft-engine experiment               # experiments/ideas.toml -> results/ledger.jsonl
 ./target/release/mft-engine experiment --verify      # check the hash chain
+./target/release/mft-engine ledger dsr --all         # deflated Sharpe of every ledger trial
+./target/release/mft-engine ledger dsr --entry 17
+./target/release/mft-engine verify-replay            # replay results/paper_events.jsonl, diff its decisions
 ./target/release/mft-engine export-demo              # -> docs/data/demo.json
 
 # Strategy v4 (funding carry), offline from the committed data. The ledger
@@ -584,7 +714,9 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
 | `src/experiment.rs`, `src/ledger.rs` | TOML variants, hash-chained ledger |
 | `src/artifacts.rs` | every file write; refuses anything secret-shaped |
 | `src/demo.rs` | `export-demo` |
-| `src/backtest.rs`, `src/paper.rs`, `src/record.rs`, `src/fetch.rs` | the subcommands (`fetch.rs` also fetches the v4 data) |
+| `src/backtest.rs`, `src/paper.rs`, `src/record.rs`, `src/fetch.rs` | the subcommands (`fetch.rs` also fetches the v4 data); `backtest.rs` also loads a replay by exchange or arrival time |
+| `src/verify.rs` | `verify-replay`: replay a live session log, diff against its decision log |
+| `src/dsr.rs`, `src/trials.rs` | the deflated Sharpe ratio; the ledger's trials, replayed for their returns |
 | `sidecar/` | HN and Reddit fetchers, Jev scorer, live social feed, secret guard |
 | `docs/` | the static demo (index.html, app.js, style.css) |
 
@@ -628,6 +760,8 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
   risk rule that errors blocks; non-finite numbers are errors.
 * **Deterministic replay.** Event time drives the clock, maps are `BTreeMap`,
   events are sorted by time, coin and kind, and decisions are fingerprinted.
+  Live, the clock is each event's recorded arrival time, so a live session
+  replays by arrival to the live decisions (`verify-replay`).
 * **Point in time everywhere.** Bars stamped at close, Kalshi snapshots at
   minute end, posts at publication plus poll delay plus scoring latency.
 * **Research is recorded, not remembered.** The ledger keeps killed ideas next
