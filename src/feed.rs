@@ -114,9 +114,9 @@ async fn connect_and_stream(
                 for ev in events {
                     let stream = match &ev { Event::Trade(_) => "trades", _ => "book" };
                     if let Some(gap) = detector.observe(stream, ev.coin(), ev.ts(), recv_ts) {
-                        if send_at(tx, Event::Gap(gap), received).await.is_err() { return Ok(()); }
+                        if send_at(tx, Event::Gap(gap), received, recv_ts).await.is_err() { return Ok(()); }
                     }
-                    if send_at(tx, ev, received).await.is_err() { return Ok(()); }
+                    if send_at(tx, ev, received, recv_ts).await.is_err() { return Ok(()); }
                 }
             }
         }
@@ -124,9 +124,11 @@ async fn connect_and_stream(
 }
 
 async fn send(tx: &mpsc::Sender<Envelope>, event: Event) -> Result<(), ()> {
-    send_at(tx, event, Instant::now()).await
+    send_at(tx, event, Instant::now(), wall_now_ms()).await
 }
 
-async fn send_at(tx: &mpsc::Sender<Envelope>, event: Event, received: Instant) -> Result<(), ()> {
-    tx.send(Envelope { event, received: Some(received) }).await.map_err(|_| ())
+/// `recv_ts` is the wall-clock read time of the frame, the same stamp its
+/// trades and book tops carry, so every event of one frame arrives together.
+async fn send_at(tx: &mpsc::Sender<Envelope>, event: Event, received: Instant, recv_ts: i64) -> Result<(), ()> {
+    tx.send(Envelope::live(event, received, recv_ts)).await.map_err(|_| ())
 }

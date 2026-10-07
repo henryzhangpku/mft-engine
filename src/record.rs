@@ -5,8 +5,14 @@
 //! recorded as events in the same stream so a replay sees them in place.
 //! Optionally the slow sources too (Kalshi ladders, top-wallet positioning,
 //! the sidecar's social file), so one recording is a complete replay input.
+//!
+//! The file starts with the same warm-up history `paper` fetches (as
+//! `Warmup` events), and every line carries its arrival time, raised where
+//! needed so it never decreases down the file. Replayed by arrival, a
+//! recording therefore starts warm and sees its events in the order and at
+//! the times they arrived.
 
-use crate::event::Event;
+use crate::event::{Event, Recorded};
 use crate::event_loop::Envelope;
 use crate::feed::run_feed;
 use anyhow::Result;
@@ -24,6 +30,8 @@ pub struct Extras {
     pub positioning_every: Duration,
     pub positioning_wallets: usize,
     pub text_feed: Option<std::path::PathBuf>,
+    /// Minutes of REST history written first, as warm-up (0 = none).
+    pub warmup_minutes: i64,
 }
 
 pub async fn run(coins: Vec<String>, out: &Path, duration: Duration, extras: Extras) -> Result<()> {
@@ -33,6 +41,25 @@ pub async fn run(coins: Vec<String>, out: &Path, duration: Duration, extras: Ext
     // Append, so restarting a recording never destroys earlier data.
     let file = OpenOptions::new().create(true).append(true).open(out)?;
     let mut w = BufWriter::new(file);
+
+    // Warm-up first, so every live arrival comes after it.
+    let mut counts: BTreeMap<&'static str, u64> = BTreeMap::new();
+    let mut last_arrival = i64::MIN;
+    let mut write = |w: &mut BufWriter<std::fs::File>, event: Event, stamp: i64| -> Result<()> {
+        last_arrival = last_arrival.max(stamp);
+        *counts.entry(event.kind()).or_default() += 1;
+        let line = serde_json::to_string(&Recorded { event, arrival_ts: Some(last_arrival) })?;
+        if let Some(kind) = crate::artifacts::find_secret(&line) {
+            anyhow::bail!("refusing to record a line containing a {kind}");
+        }
+        w.write_all(line.as_bytes())?;
+        w.write_all(b"\n")?;
+        Ok(())
+    };
+    for bar in crate::paper::fetch_warmup(&coins, extras.warmup_minutes).await {
+        let at = bar.recv_ts;
+        write(&mut w, Event::Warmup(bar), at)?;
+    }
 
     let (tx, mut rx) = mpsc::channel::<Envelope>(10_000);
     let mut tasks = vec![tokio::spawn(run_feed(coins.clone(), tx.clone()))];
@@ -48,7 +75,6 @@ pub async fn run(coins: Vec<String>, out: &Path, duration: Duration, extras: Ext
     }
     drop(tx);
 
-    let mut counts: BTreeMap<&'static str, u64> = BTreeMap::new();
     let mut flush = tokio::time::interval(Duration::from_secs(1));
     let stop = tokio::time::sleep(duration);
     tokio::pin!(stop);
@@ -71,9 +97,8 @@ pub async fn run(coins: Vec<String>, out: &Path, duration: Duration, extras: Ext
                     Event::PredictionMarket(p) => println!("kalshi: {} {} {} strikes", p.coin, p.event, p.strikes.len()),
                     _ => {}
                 }
-                serde_json::to_writer(&mut w, &env.event)?;
-                w.write_all(b"\n")?;
-                *counts.entry(env.event.kind()).or_default() += 1;
+                let at = env.arrival_ts.unwrap_or_else(|| env.event.own_arrival_ts());
+                write(&mut w, env.event, at)?;
             }
         }
     }

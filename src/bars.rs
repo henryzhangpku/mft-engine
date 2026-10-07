@@ -1,7 +1,7 @@
 //! One-minute bars: building them from trades, finding holes in a bar series,
 //! and reading and writing JSONL event files.
 
-use crate::event::{Bar, Event, Gap, Trade};
+use crate::event::{Bar, Event, Gap, Recorded, Trade};
 use anyhow::{Context, Result};
 use std::collections::BTreeMap;
 use std::fs::File;
@@ -118,6 +118,24 @@ pub fn read_events(path: &Path) -> Result<Vec<Event>> {
         events.push(ev);
     }
     Ok(events)
+}
+
+/// Read a session log: `Event` lines, each with the arrival time the live
+/// engine consumed it at, when the file recorded one. Plain event files read
+/// fine too (every arrival is then `None`).
+pub fn read_recorded(path: &Path) -> Result<Vec<Recorded>> {
+    let file = File::open(path).with_context(|| format!("opening {}", path.display()))?;
+    let mut out = Vec::new();
+    for (i, line) in BufReader::new(file).lines().enumerate() {
+        let line = line?;
+        if line.trim().is_empty() {
+            continue;
+        }
+        let rec: Recorded = serde_json::from_str(&line)
+            .with_context(|| format!("{}:{}: bad event line", path.display(), i + 1))?;
+        out.push(rec);
+    }
+    Ok(out)
 }
 
 pub fn write_events(path: &Path, events: &[Event]) -> Result<()> {

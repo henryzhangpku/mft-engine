@@ -4,8 +4,12 @@
 //! replay the clock is the timestamp of the event being processed, so a
 //! backtest of last Tuesday believes it is last Tuesday and the stale-data and
 //! daily-loss rules behave exactly as they would have live. In paper mode the
-//! clock is the wall clock. Swapping the clock is one of the only two things
-//! that differ between the modes (the other is the event source).
+//! clock is the arrival stamp of the event being processed: the wall-clock
+//! time it was received, which is recorded with it. So the live clock is
+//! itself an input in the session log, and a replay keyed by arrival runs on
+//! exactly the clock the live engine had. Swapping the clock is one of the
+//! only two things that differ between the modes (the other is the event
+//! source).
 
 use crate::event::Event;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -17,6 +21,37 @@ pub trait Clock {
     /// Called by the event loop before each event is handed to the engine.
     /// A replay clock advances here; a wall clock ignores it.
     fn observe(&mut self, _event: &Event) {}
+
+    /// The same, with the event's arrival stamp when one is known. Only a
+    /// clock keyed by arrival uses it.
+    fn observe_at(&mut self, event: &Event, _arrival_ts: Option<i64>) {
+        self.observe(event)
+    }
+}
+
+/// Which timestamp a replay orders events by and runs its clock on.
+///
+/// * `Exchange`: the event's own timestamp (exchange time for market data,
+///   close time for bars). Right for backfilled history, where there was no
+///   live receiver. Every experiment and backfill on the ledger ran on it.
+/// * `Arrival`: when the live engine received the event. Right for a session
+///   recorded live: it consumes what the live engine saw, in the order it saw
+///   it, on the clock it had.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize, clap::ValueEnum)]
+#[serde(rename_all = "lowercase")]
+pub enum TimeKey {
+    #[default]
+    Exchange,
+    Arrival,
+}
+
+impl TimeKey {
+    pub fn name(self) -> &'static str {
+        match self {
+            TimeKey::Exchange => "exchange",
+            TimeKey::Arrival => "arrival",
+        }
+    }
 }
 
 /// Event time. Never moves backwards, so an out-of-order event cannot make
@@ -24,11 +59,17 @@ pub trait Clock {
 #[derive(Debug, Default, Clone)]
 pub struct ReplayClock {
     now: i64,
+    key: TimeKey,
 }
 
 impl ReplayClock {
+    /// Keyed by exchange time, as every replay was before arrival keying.
     pub fn new(start_ms: i64) -> Self {
-        Self { now: start_ms }
+        Self::keyed(start_ms, TimeKey::Exchange)
+    }
+
+    pub fn keyed(start_ms: i64, key: TimeKey) -> Self {
+        Self { now: start_ms, key }
     }
 
     /// Move the clock forward explicitly. Used by tests to simulate silence
@@ -44,11 +85,21 @@ impl Clock for ReplayClock {
     }
 
     fn observe(&mut self, event: &Event) {
-        self.advance_to(event.ts());
+        self.observe_at(event, None);
+    }
+
+    fn observe_at(&mut self, event: &Event, arrival_ts: Option<i64>) {
+        let t = match self.key {
+            TimeKey::Exchange => event.ts(),
+            TimeKey::Arrival => arrival_ts.unwrap_or_else(|| event.own_arrival_ts()),
+        };
+        self.advance_to(t);
     }
 }
 
-/// Wall time, for live paper trading.
+/// Wall time. Live paper runs on arrival stamps instead (see the module
+/// note), so that its clock is recorded; this remains for callers that want
+/// the bare wall clock.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct WallClock;
 

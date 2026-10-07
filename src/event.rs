@@ -164,6 +164,18 @@ pub struct Gap {
     pub reason: String,
 }
 
+/// A historical bar used only to warm the strategy up before a live session,
+/// recorded at the head of the session log so a replay starts in the same
+/// state the live engine did. It reaches the strategy's window and nothing
+/// else: no market state, no clock-dependent rule, no order.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct WarmupBar {
+    /// Wall-clock time the REST history arrived (all bars of one fetch share
+    /// it). The arrival time key orders warm-up by this, before live data.
+    pub recv_ts: i64,
+    pub bar: Bar,
+}
+
 /// The single event type. Serialised with a `"type"` tag so a JSONL line is
 /// self-describing, e.g. `{"type":"Bar","coin":"BTC",...}`.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -176,6 +188,7 @@ pub enum Event {
     PredictionMarket(PredictionMarket),
     Positioning(Positioning),
     Gap(Gap),
+    Warmup(WarmupBar),
 }
 
 impl Event {
@@ -189,6 +202,21 @@ impl Event {
             Event::PredictionMarket(e) => e.ts,
             Event::Positioning(e) => e.ts,
             Event::Gap(e) => e.ts,
+            Event::Warmup(e) => e.bar.ts,
+        }
+    }
+
+    /// The best arrival time the event itself carries: our receive time for
+    /// trades, book tops and warm-up history, otherwise its own timestamp
+    /// (bars, gaps, polled ladders and positioning are stamped when we made
+    /// or received them). A session log written by `paper` or `record` also
+    /// stores the exact arrival per line (`Recorded::arrival_ts`), which wins.
+    pub fn own_arrival_ts(&self) -> i64 {
+        match self {
+            Event::Trade(e) => e.recv_ts,
+            Event::BookTop(e) => e.recv_ts,
+            Event::Warmup(e) => e.recv_ts,
+            other => other.ts(),
         }
     }
 
@@ -201,6 +229,7 @@ impl Event {
             Event::PredictionMarket(e) => &e.coin,
             Event::Positioning(e) => &e.coin,
             Event::Gap(e) => &e.coin,
+            Event::Warmup(e) => &e.bar.coin,
         }
     }
 
@@ -214,16 +243,18 @@ impl Event {
             Event::PredictionMarket(_) => "PredictionMarket",
             Event::Positioning(_) => "Positioning",
             Event::Gap(_) => "Gap",
+            Event::Warmup(_) => "Warmup",
         }
     }
 
     /// Tie-break rank for events that share a timestamp, so that sorting a
     /// merged replay is fully deterministic. Gaps first (they invalidate
     /// state), then text, prediction markets and positioning (context), then market data,
-    /// then bars (decisions).
+    /// then bars (decisions). Warm-up history goes with gaps: it only ever
+    /// precedes live data.
     pub fn sort_rank(&self) -> u8 {
         match self {
-            Event::Gap(_) => 0,
+            Event::Gap(_) | Event::Warmup(_) => 0,
             Event::TextSignal(_) => 1,
             Event::PredictionMarket(_) => 1,
             Event::Positioning(_) => 1,
@@ -243,4 +274,29 @@ pub fn sort_for_replay(events: &mut [Event]) {
             .then_with(|| a.coin().cmp(b.coin()))
             .then_with(|| a.sort_rank().cmp(&b.sort_rank()))
     });
+}
+
+/// One line of a session log: an event, plus the engine clock at the moment
+/// the live engine consumed it.
+///
+/// `arrival_ts` is the wall-clock receive stamp, made non-decreasing in the
+/// order the engine consumed events (a stamp earlier than the one before it,
+/// from a different source racing on the channel, is raised to it). So the
+/// file order *is* arrival order, and replaying by arrival gives the live
+/// engine's clock and order exactly. The field is omitted when unknown, so a
+/// line without it is a plain `Event` line, and older readers that parse
+/// `Event` directly ignore it.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Recorded {
+    #[serde(flatten)]
+    pub event: Event,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub arrival_ts: Option<i64>,
+}
+
+impl Recorded {
+    /// The arrival key: the recorded stamp, else what the event carries.
+    pub fn arrival(&self) -> i64 {
+        self.arrival_ts.unwrap_or_else(|| self.event.own_arrival_ts())
+    }
 }

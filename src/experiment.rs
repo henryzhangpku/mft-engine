@@ -22,11 +22,16 @@
 //! hypothesis = "Fewer, stronger entries survive costs."
 //! set = { "strategy.entry_z" = 3.0 }
 //! ```
+//!
+//! An optional top-level `time_key = "arrival"` replays a session recorded
+//! live by arrival time. Without it a file replays by exchange time, which is
+//! what every experiment already on the ledger ran on; new entries record
+//! the key they used in their result.
 
-use crate::backtest::{evaluate, load_events, print_table, Evaluation};
-use crate::clock::{format_utc, wall_now_ms};
+use crate::backtest::{evaluate_keyed, load_session, print_table, Evaluation};
+use crate::clock::{format_utc, wall_now_ms, TimeKey};
 use crate::engine::EngineConfig;
-use crate::ledger::{self, sha256_hex, NewEntry};
+use crate::ledger::{self, sha256_hex, NewRecord};
 use anyhow::{anyhow, bail, Context, Result};
 use serde::Deserialize;
 use std::collections::BTreeMap;
@@ -39,6 +44,9 @@ pub const VERDICT_RULE: &str =
 #[derive(Debug, Deserialize)]
 pub struct ExperimentFile {
     pub data: Vec<PathBuf>,
+    /// Replay time key; absent means exchange (the ledger's existing key).
+    #[serde(default)]
+    pub time_key: TimeKey,
     #[serde(rename = "variant")]
     pub variants: Vec<Variant>,
 }
@@ -100,20 +108,22 @@ pub async fn run(file: &Path, ledger_path: &Path) -> Result<Vec<Evaluation>> {
         data_bytes.extend(std::fs::read(p).with_context(|| format!("reading {}", p.display()))?);
     }
     let data_sha = sha256_hex(&data_bytes);
-    let events = load_events(&spec.data)?;
+    let (events, key) = load_session(&spec.data, Some(spec.time_key))?;
 
     let mut evals = Vec::new();
     let mut baseline_holdout = None;
     for v in &spec.variants {
         let config = build_config(&v.base, &v.set).with_context(|| format!("variant {}", v.name))?;
-        let (eval, _) = evaluate(&v.name, &events, config).await;
+        let (eval, _) = evaluate_keyed(&v.name, &events, config, key).await;
         let verdict = verdict(&eval, baseline_holdout);
         if baseline_holdout.is_none() {
             baseline_holdout = Some(eval.second_half.pnl_after_costs);
         }
-        let entry = ledger::append(
+        let mut result = serde_json::to_value(&eval)?;
+        result["time_key"] = serde_json::to_value(key)?;
+        let entry = ledger::append_record(
             ledger_path,
-            NewEntry {
+            NewRecord {
                 variant: &v.name,
                 hypothesis: &v.hypothesis,
                 base: &v.base,
@@ -123,7 +133,7 @@ pub async fn run(file: &Path, ledger_path: &Path) -> Result<Vec<Evaluation>> {
                 data_sha256: data_sha.clone(),
                 verdict,
                 verdict_rule: VERDICT_RULE,
-                eval: &eval,
+                result,
                 recorded_at: format_utc(wall_now_ms()),
             },
         )?;

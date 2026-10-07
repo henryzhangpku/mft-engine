@@ -4,7 +4,8 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 use mft_engine::artifacts::{write_json, write_jsonl};
-use mft_engine::backtest::{evaluate, load_events, print_table};
+use mft_engine::backtest::{evaluate_keyed, load_session, print_table};
+use mft_engine::clock::TimeKey;
 use mft_engine::engine::EngineConfig;
 use mft_engine::{demo, experiment, fetch, paper, positioning, record, universe};
 use std::path::PathBuf;
@@ -45,6 +46,9 @@ enum Command {
         /// Also record the sidecar's live TextSignal file.
         #[arg(long)]
         text_feed: Option<PathBuf>,
+        /// Minutes of REST 1m history written first as warm-up (0 = none).
+        #[arg(long, default_value_t = 90)]
+        warmup_minutes: i64,
     },
     /// Every Hyperliquid perp across all dexes (main + HIP-3 builder dexes).
     Universe {
@@ -130,12 +134,17 @@ enum Command {
         #[arg(long)]
         force: bool,
     },
-    /// Replay event files through strategies v1 and v2, side by side.
+    /// Replay event files through strategies v1, v2 and v3, side by side.
     Backtest {
         #[arg(long, default_values = DEFAULT_DATA)]
         data: Vec<PathBuf>,
         #[arg(long, default_value = "results/backtest.json")]
         out: PathBuf,
+        /// Order and clock by arrival or exchange time. Default: arrival if
+        /// the files carry recorded arrival times (live session logs),
+        /// otherwise exchange.
+        #[arg(long, value_enum)]
+        time_key: Option<TimeKey>,
     },
     /// Run the variants in a TOML file and append each to the hash-chained ledger.
     Experiment {
@@ -168,6 +177,11 @@ enum Command {
         out: PathBuf,
         #[arg(long, default_value = "results/paper_events.jsonl")]
         events_out: PathBuf,
+        #[arg(long, default_value = "results/paper_decisions.jsonl")]
+        decisions_out: PathBuf,
+        /// Minutes of REST 1m history to warm the strategy (0 = start cold).
+        #[arg(long, default_value_t = 90)]
+        warmup_minutes: i64,
     },
     /// Write docs/data/demo.json for the static web demo.
     ExportDemo {
@@ -206,12 +220,13 @@ fn strategy_config(name: &str) -> Result<EngineConfig> {
 #[tokio::main]
 async fn main() -> Result<()> {
     match Cli::parse().command {
-        Command::Record { coins, duration_secs, out, kalshi_every_secs, positioning_every_secs, positioning_wallets, text_feed } => {
+        Command::Record { coins, duration_secs, out, kalshi_every_secs, positioning_every_secs, positioning_wallets, text_feed, warmup_minutes } => {
             let extras = record::Extras {
                 kalshi_every: Duration::from_secs(kalshi_every_secs),
                 positioning_every: Duration::from_secs(positioning_every_secs),
                 positioning_wallets,
                 text_feed,
+                warmup_minutes,
             };
             record::run(coins, &out, Duration::from_secs(duration_secs), extras).await
         }
@@ -245,7 +260,7 @@ async fn main() -> Result<()> {
             let opts = mft_engine::carry_research::Options { spec: &file, ledger: &ledger, note, force, results_dir: std::path::Path::new("results") };
             mft_engine::carry_research::run(phase, opts).map(|_| ())
         }
-        Command::Backtest { data, out } => backtest(data, out).await,
+        Command::Backtest { data, out, time_key } => backtest(data, out, time_key).await,
         Command::Experiment { file, ledger, verify } => {
             if verify {
                 let n = mft_engine::ledger::verify(&mft_engine::ledger::read(&ledger)?)?;
@@ -254,20 +269,22 @@ async fn main() -> Result<()> {
             }
             experiment::run(&file, &ledger).await.map(|_| ())
         }
-        Command::Paper { coins, duration_secs, strategy, text_feed, kalshi_every_secs, positioning_every_secs, out, events_out } => {
+        Command::Paper { coins, duration_secs, strategy, text_feed, kalshi_every_secs, positioning_every_secs, out, events_out, decisions_out, warmup_minutes } => {
             let report = paper::run(paper::PaperOptions {
                 coins,
                 duration: Duration::from_secs(duration_secs),
                 config: strategy_config(&strategy)?,
                 out: out.clone(),
                 events_out: events_out.clone(),
+                decisions_out: decisions_out.clone(),
+                warmup_minutes,
                 text_feed,
                 kalshi_every: Duration::from_secs(kalshi_every_secs),
                 positioning_every: Duration::from_secs(positioning_every_secs),
             })
             .await?;
             println!("{}", serde_json::to_string_pretty(&report)?);
-            println!("wrote {} and {}", out.display(), events_out.display());
+            println!("wrote {}, {} and {}", out.display(), events_out.display(), decisions_out.display());
             Ok(())
         }
         Command::ExportDemo { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, out } => {
@@ -276,9 +293,10 @@ async fn main() -> Result<()> {
     }
 }
 
-/// v1 and v2 over the full sample and both halves, then the audit trails.
-async fn backtest(data: Vec<PathBuf>, out: PathBuf) -> Result<()> {
-    let events = load_events(&data)?;
+/// v1, v2 and v3 over the full sample and both halves, then the audit trails.
+async fn backtest(data: Vec<PathBuf>, out: PathBuf, time_key: Option<TimeKey>) -> Result<()> {
+    let (events, key) = load_session(&data, time_key)?;
+    println!("replaying {} events by {} time", events.len(), key.name());
     let mut evals = Vec::new();
     let strategies = [
         ("v1_momentum", EngineConfig::v1()),
@@ -286,7 +304,7 @@ async fn backtest(data: Vec<PathBuf>, out: PathBuf) -> Result<()> {
         ("v3_positioning_gated", EngineConfig::v3()),
     ];
     for (name, config) in strategies {
-        let (eval, run) = evaluate(name, &events, config).await;
+        let (eval, run) = evaluate_keyed(name, &events, config, key).await;
         let trail = out.with_file_name(format!("backtest_decisions_{}.jsonl", &name[..2]));
         write_jsonl(&trail, &run.decisions)?;
         evals.push(eval);
@@ -302,6 +320,7 @@ async fn backtest(data: Vec<PathBuf>, out: PathBuf) -> Result<()> {
     }
     let doc = serde_json::json!({
         "data": data,
+        "time_key": key,
         "config": { "v1": EngineConfig::v1(), "v2": EngineConfig::v2(), "v3": EngineConfig::v3() },
         "evaluations": evals,
     });

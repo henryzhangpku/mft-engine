@@ -22,11 +22,30 @@ use tokio::sync::mpsc;
 pub struct Envelope {
     pub event: Event,
     pub received: Option<Instant>,
+    /// Wall-clock arrival, Unix ms: stamped live, or read back from a
+    /// session log. Used by a clock keyed by arrival; ignored otherwise.
+    pub arrival_ts: Option<i64>,
 }
 
 impl Envelope {
     pub fn replayed(event: Event) -> Self {
-        Self { event, received: None }
+        Self { event, received: None, arrival_ts: None }
+    }
+
+    /// A replayed event with its recorded arrival time.
+    pub fn replayed_at(event: Event, arrival_ts: i64) -> Self {
+        Self { event, received: None, arrival_ts: Some(arrival_ts) }
+    }
+
+    /// An event that just arrived live: timed from `received`, clocked at
+    /// `arrival_ts`.
+    pub fn live(event: Event, received: Instant, arrival_ts: i64) -> Self {
+        Self { event, received: Some(received), arrival_ts: Some(arrival_ts) }
+    }
+
+    /// Stamped now, for sources that have no earlier receive instant.
+    pub fn now(event: Event) -> Self {
+        Self::live(event, Instant::now(), crate::clock::wall_now_ms())
     }
 }
 
@@ -47,14 +66,15 @@ pub struct LoopStats {
 }
 
 /// Run until the channel closes or `deadline` passes. `after_event` is called
-/// after every event (with the decision, if any) once it has been timed, so
-/// printing or recording an equity curve does not count towards latency.
+/// after every event (with the decision, if any, and the engine clock it was
+/// handled at) once it has been timed, so printing or recording an equity
+/// curve does not count towards latency.
 pub async fn run<C: Clock>(
     mut rx: mpsc::Receiver<Envelope>,
     engine: &mut Engine,
     clock: &mut C,
     deadline: Option<Instant>,
-    mut after_event: impl FnMut(&Event, Option<&Decision>, &Engine),
+    mut after_event: impl FnMut(&Event, Option<&Decision>, &Engine, i64),
 ) -> LoopStats {
     let mut stats = LoopStats::default();
     loop {
@@ -67,7 +87,7 @@ pub async fn run<C: Clock>(
         };
         let Some(env) = next else { break }; // source finished
 
-        clock.observe(&env.event);
+        clock.observe_at(&env.event, env.arrival_ts);
         let started = Instant::now();
         let decision = engine.on_event(&env.event, clock);
 
@@ -88,7 +108,7 @@ pub async fn run<C: Clock>(
         if decision.is_some() {
             stats.decisions += 1;
         }
-        after_event(&env.event, decision.as_ref(), engine);
+        after_event(&env.event, decision.as_ref(), engine, clock.now_ms());
     }
     stats
 }

@@ -85,7 +85,7 @@ impl EngineConfig {
 }
 
 /// What happened to a proposed order.
-#[derive(Debug, Clone, PartialEq, serde::Serialize)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum Decision {
     Filled {
         fill: Fill,
@@ -218,6 +218,12 @@ impl Engine {
 
     /// The single entry point for both modes.
     pub fn on_event(&mut self, event: &Event, clock: &dyn Clock) -> Option<Decision> {
+        // Warm-up history touches the strategy window only, exactly as
+        // `warm_up` does: not the clock, the day roll or market state.
+        if let Event::Warmup(w) = event {
+            self.warm_up(&w.bar);
+            return None;
+        }
         let now = clock.now_ms();
         self.roll_day(now);
         match event {
@@ -257,6 +263,7 @@ impl Engine {
                 None
             }
             Event::Bar(bar) => self.on_bar(bar, now),
+            Event::Warmup(_) => None, // handled above
         }
     }
 

@@ -8,7 +8,7 @@ use crate::clock::wall_now_ms;
 use crate::event::Event;
 use crate::event_loop::Envelope;
 use std::path::PathBuf;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 use tokio::sync::mpsc;
 
 /// Poll Kalshi for each coin's next-closing ladder every `every`, sending
@@ -27,7 +27,7 @@ pub async fn poll_kalshi(coins: Vec<String>, tx: mpsc::Sender<Envelope>, every: 
             match fetched {
                 Ok(Ok(Some(pm))) => {
                     let event = Event::PredictionMarket(pm);
-                    if tx.send(Envelope { event, received: Some(Instant::now()) }).await.is_err() {
+                    if tx.send(Envelope::now(event)).await.is_err() {
                         return;
                     }
                 }
@@ -56,7 +56,7 @@ pub async fn tail_text_feed(path: PathBuf, tx: mpsc::Sender<Envelope>) {
         for line in String::from_utf8_lossy(&bytes[offset..=end]).lines() {
             match serde_json::from_str::<Event>(line) {
                 Ok(event @ Event::TextSignal(_)) => {
-                    if tx.send(Envelope { event, received: Some(Instant::now()) }).await.is_err() {
+                    if tx.send(Envelope::now(event)).await.is_err() {
                         return;
                     }
                 }
@@ -102,7 +102,7 @@ pub async fn poll_positioning(coins: Vec<String>, tx: mpsc::Sender<Envelope>, ev
                 for coin in &coins {
                     let Some(p) = by_coin.get(coin) else { continue };
                     let event = Event::Positioning(p.clone());
-                    if tx.send(Envelope { event, received: Some(Instant::now()) }).await.is_err() {
+                    if tx.send(Envelope::now(event)).await.is_err() {
                         return;
                     }
                 }
