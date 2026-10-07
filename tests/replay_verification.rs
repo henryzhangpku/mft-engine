@@ -2,7 +2,7 @@
 //! bar builder, event loop, arrival clock, session and decision logs) and
 //! then replayed from its log gives the same decisions; a log missing one
 //! input the live engine saw is caught at the right place. Plus arrival
-//! keying.
+//! keying, and the ledger entries that must keep replaying by exchange time.
 
 mod common;
 
@@ -276,3 +276,30 @@ fn arrival_keying_orders_by_receipt_not_exchange_time() {
     cleanup(&[&path]);
 }
 
+#[tokio::test]
+async fn every_ledger_trial_replays_on_its_pinned_key() {
+    // Entries 0 to 13 carry no time key and were replayed by exchange time;
+    // `ledger dsr` replays each from what its entry recorded and refuses
+    // unless it reproduces the logged result (and v4 its fingerprint).
+    let entries = mft_engine::ledger::read(&root().join("results/ledger.jsonl")).unwrap();
+    for e in entries.iter().filter(|e| e.base != "v4") {
+        assert_eq!(mft_engine::trials::time_key_of(e), TimeKey::Exchange, "ledger #{}", e.seq);
+    }
+    let trials = mft_engine::trials::trials(&root(), &entries).await.unwrap();
+    // 18 entries: one pre-registration (14) and one exact rerun (7 of 0).
+    assert_eq!(trials.len(), 16);
+    assert_eq!(trials[0].entries, vec![0, 7]);
+    assert!(!trials.iter().any(|t| t.entries.contains(&14)));
+    for t in &trials {
+        let e = &entries[t.entries[0] as usize];
+        if e.base == "v4" || e.seq >= 7 {
+            assert_eq!(mft_engine::trials::logged_fingerprint(e), t.fingerprint, "ledger #{}", e.seq);
+        }
+    }
+    let d = mft_engine::trials::entry_dsr(&entries, &trials, 17).unwrap();
+    let logged = entries[17].result["report"]["sharpe_annualised"].as_f64().unwrap();
+    assert!((d.sr_annualised - logged).abs() < 1e-9, "same Sharpe as the ledger: {} vs {logged}", d.sr_annualised);
+    assert_eq!(d.n_trials, 16);
+    assert!(d.deflated.dsr <= d.deflated.psr_vs_zero);
+    assert!(mft_engine::trials::entry_dsr(&entries, &trials, 14).is_err(), "a pre-registration has no returns");
+}

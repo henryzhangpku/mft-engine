@@ -7,7 +7,7 @@ use mft_engine::artifacts::{write_json, write_jsonl};
 use mft_engine::backtest::{evaluate_keyed, load_session, print_table};
 use mft_engine::clock::TimeKey;
 use mft_engine::engine::EngineConfig;
-use mft_engine::{demo, experiment, fetch, paper, positioning, record, universe, verify};
+use mft_engine::{demo, experiment, fetch, paper, positioning, record, trials, universe, verify};
 use std::path::PathBuf;
 use std::time::Duration;
 
@@ -158,6 +158,11 @@ enum Command {
         #[arg(long, value_enum, default_value = "arrival")]
         time_key: TimeKey,
     },
+    /// Statistics over the hash-chained ledger.
+    Ledger {
+        #[command(subcommand)]
+        command: LedgerCommand,
+    },
     /// Run the variants in a TOML file and append each to the hash-chained ledger.
     Experiment {
         #[arg(long, default_value = "experiments/ideas.toml")]
@@ -217,6 +222,21 @@ enum Command {
         carry_spec: PathBuf,
         #[arg(long, default_value = "docs/data/demo.json")]
         out: PathBuf,
+    },
+}
+
+#[derive(Subcommand)]
+enum LedgerCommand {
+    /// Deflated Sharpe ratio of an entry, deflated by every trial on the ledger.
+    Dsr {
+        /// Ledger entry (seq). Omit with --all.
+        #[arg(long)]
+        entry: Option<u64>,
+        /// Every strategy evaluation on the ledger, as a table.
+        #[arg(long)]
+        all: bool,
+        #[arg(long, default_value = "results/ledger.jsonl")]
+        ledger: PathBuf,
     },
 }
 
@@ -282,6 +302,7 @@ async fn main() -> Result<()> {
             }
             Ok(())
         }
+        Command::Ledger { command: LedgerCommand::Dsr { entry, all, ledger } } => ledger_dsr(entry, all, &ledger).await,
         Command::Experiment { file, ledger, verify } => {
             if verify {
                 let n = mft_engine::ledger::verify(&mft_engine::ledger::read(&ledger)?)?;
@@ -311,6 +332,26 @@ async fn main() -> Result<()> {
         Command::ExportDemo { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, out } => {
             demo::run(demo::DemoInputs { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, out }).await
         }
+    }
+}
+
+/// `ledger dsr`: one entry in full, or every strategy evaluation as a table.
+async fn ledger_dsr(entry: Option<u64>, all: bool, ledger: &std::path::Path) -> Result<()> {
+    let entries = mft_engine::ledger::read(ledger)?;
+    mft_engine::ledger::verify(&entries)?;
+    let trials = trials::trials(std::path::Path::new("."), &entries).await?;
+    match (entry, all) {
+        (Some(seq), false) => {
+            trials::print_entry(&trials::entry_dsr(&entries, &trials, seq)?);
+            Ok(())
+        }
+        (None, true) => {
+            let seqs: Vec<u64> = trials.iter().flat_map(|t| t.entries.clone()).collect::<std::collections::BTreeSet<_>>().into_iter().collect();
+            let rows: Vec<_> = seqs.iter().map(|s| trials::entry_dsr(&entries, &trials, *s).map_err(|e| format!("{e:#}"))).collect();
+            trials::print_table(&rows, &seqs);
+            Ok(())
+        }
+        _ => anyhow::bail!("give --entry <seq> or --all"),
     }
 }
 

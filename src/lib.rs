@@ -7,7 +7,8 @@
 //! Reading order for a newcomer: `event` (the one type), `clock`, `engine`
 //! (the shared path), `risk`, `text`, `strategy`, `execution`, then
 //! `event_loop` and the two drivers `backtest` and `paper`; `verify` diffs a
-//! live session against its replay.
+//! live session against its replay, and `dsr` and `trials` deflate a ledger
+//! entry's Sharpe ratio by every trial on the ledger.
 
 pub mod artifacts;
 pub mod backtest;
@@ -16,6 +17,7 @@ pub mod carry;
 pub mod carry_research;
 pub mod clock;
 pub mod demo;
+pub mod dsr;
 pub mod engine;
 pub mod event;
 pub mod event_loop;
@@ -36,5 +38,6 @@ pub mod record;
 pub mod risk;
 pub mod strategy;
 pub mod text;
+pub mod trials;
 pub mod universe;
 pub mod verify;
