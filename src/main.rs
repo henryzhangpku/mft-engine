@@ -97,6 +97,20 @@ enum Command {
         #[arg(long, default_value = "data/kalshi_ladders.jsonl")]
         out: PathBuf,
     },
+    /// Backfill Polymarket's daily "above" ladders over the bar file's window
+    /// (public Gamma and CLOB price-history endpoints; raw responses cached).
+    FetchPolymarket {
+        #[arg(long, value_delimiter = ',', default_value = "BTC,ETH")]
+        coins: Vec<String>,
+        #[arg(long, default_value = "data/bars_1m.jsonl")]
+        bars: PathBuf,
+        #[arg(long, default_value = "data/polymarket_raw")]
+        cache: PathBuf,
+        #[arg(long, default_value = "data/polymarket_ladders.jsonl")]
+        out: PathBuf,
+        #[arg(long, default_value = "data/polymarket_markets.jsonl")]
+        markets_out: PathBuf,
+    },
     /// Download the v4 data: hourly candles and funding for a liquid universe.
     FetchCarry {
         /// Window length in days, ending at the last UTC midnight (or --end).
@@ -280,6 +294,9 @@ async fn main() -> Result<()> {
         }
         Command::FetchKalshi { coins, bars, strikes_each_side, out } => {
             tokio::task::spawn_blocking(move || fetch::run_kalshi(&coins, &bars, strikes_each_side, &out)).await?
+        }
+        Command::FetchPolymarket { coins, bars, cache, out, markets_out } => {
+            tokio::task::spawn_blocking(move || fetch::run_polymarket(&coins, &bars, &cache, &out, &markets_out)).await?
         }
         Command::FetchCarry { days, formation_days, top, benchmark, end, bars_out, funding_out, universe_out } => {
             let end = end

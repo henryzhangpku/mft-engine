@@ -14,7 +14,7 @@
 
 use crate::clock::parse_utc;
 use crate::event::PredictionMarket;
-use crate::prediction::clean_ladder;
+use crate::prediction::ladder_snapshot;
 use anyhow::{anyhow, Context, Result};
 use serde::Deserialize;
 use std::collections::{BTreeMap, BTreeSet};
@@ -106,26 +106,10 @@ pub fn mid(bid: Option<&str>, ask: Option<&str>) -> Option<f64> {
     Some((a + b) / 2.0)
 }
 
-/// Build a `PredictionMarket` from raw (strike, mid) points, keeping only the
-/// informative part of the ladder: from the last strike the market prices at
-/// 97% or more up to the first it prices at 3% or less. Fewer than three
-/// usable strikes is not a distribution, so `None`.
+/// Build a Kalshi `PredictionMarket` from raw (strike, mid) points; see
+/// `prediction::ladder_snapshot` for the cleaning and trimming.
 pub fn ladder_event(coin: &str, event: &str, ts: i64, close_ts: i64, raw: Vec<(f64, f64)>) -> Option<PredictionMarket> {
-    let (strikes, probs) = clean_ladder(raw);
-    let lo = probs.iter().rposition(|p| *p >= 0.97).unwrap_or(0);
-    let hi = probs.iter().position(|p| *p <= 0.03).unwrap_or(probs.len().saturating_sub(1));
-    if probs.is_empty() || hi < lo || hi - lo + 1 < 3 {
-        return None;
-    }
-    Some(PredictionMarket {
-        coin: coin.to_string(),
-        ts,
-        venue: "kalshi".into(),
-        event: event.to_string(),
-        close_ts,
-        strikes: strikes[lo..=hi].to_vec(),
-        prob_above: probs[lo..=hi].iter().map(|p| (p * 1000.0).round() / 1000.0).collect(),
-    })
+    ladder_snapshot("kalshi", coin, event, ts, close_ts, raw)
 }
 
 /// Live: the ladder of the open event that closes next.

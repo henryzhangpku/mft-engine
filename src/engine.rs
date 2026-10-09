@@ -74,6 +74,15 @@ impl EngineConfig {
         c
     }
 
+    /// Strategy v2b: v2, and a new entry also needs Polymarket's daily
+    /// ladder to lean the same way as Kalshi's hourly one. Pre-registered in
+    /// `experiments/polymarket_v2b.toml` before its first run.
+    pub fn v2b() -> Self {
+        let mut c = Self::v2();
+        c.prediction.require_polymarket = true;
+        c
+    }
+
     /// Strategy v3: the same momentum, entered only when the top leaderboard
     /// wallets lean the same way (more than 60% of their gross position value
     /// on our side). Positioning only, to isolate it.
@@ -190,6 +199,11 @@ impl Engine {
     /// The prediction-market view for `coin` at `spot`, for reports.
     pub fn pm_view(&self, coin: &str, spot: f64, now: i64) -> crate::prediction::PmView {
         self.prediction.view(coin, spot, now)
+    }
+
+    /// The view of one venue's ladder, for reports and the demo.
+    pub fn pm_venue_view(&self, venue: &str, coin: &str, spot: f64, now: i64) -> crate::prediction::PmView {
+        self.prediction.venue_view(venue, coin, spot, now)
     }
 
     /// The strategy's latest z-score for `coin`, for explaining decisions.
@@ -356,7 +370,12 @@ impl Engine {
         let mut out = format!("5m momentum z={z}");
         if self.config.prediction.enabled {
             let v = self.prediction.view(coin, spot, now);
-            out += &format!("; kalshi P(up)={} median={} gate x{pm_mult:.0}", fmt(v.p_up, 2), fmt(v.median, 0));
+            if self.config.prediction.require_polymarket {
+                let p = self.prediction.venue_view(crate::prediction::POLYMARKET, coin, spot, now);
+                out += &format!("; kalshi P(up)={} polymarket P(up)={} gate x{pm_mult:.0}", fmt(v.p_up, 2), fmt(p.p_up, 2));
+            } else {
+                out += &format!("; kalshi P(up)={} median={} gate x{pm_mult:.0}", fmt(v.p_up, 2), fmt(v.median, 0));
+            }
         }
         if self.config.positioning.enabled {
             let share = self.positioning.long_share(coin, now).map(|s| s * 100.0);

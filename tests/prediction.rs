@@ -14,7 +14,7 @@ fn ladder(ts: i64, close_ts: i64, strikes: &[f64], probs: &[f64]) -> PredictionM
     PredictionMarket {
         coin: "BTC".into(),
         ts,
-        venue: "test".into(),
+        venue: "kalshi".into(),
         event: "TEST".into(),
         close_ts,
         strikes: strikes.to_vec(),

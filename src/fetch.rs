@@ -97,6 +97,36 @@ pub fn run_kalshi(coins: &[String], bars_path: &Path, strikes_each_side: usize, 
     Ok(())
 }
 
+/// `fetch-polymarket`: Polymarket daily ladders over the bar file's window,
+/// one snapshot per minute, plus the markets they were built from.
+pub fn run_polymarket(coins: &[String], bars_path: &Path, cache: &Path, out: &Path, markets_out: &Path) -> Result<()> {
+    let bars = crate::bars::read_events(bars_path)?;
+    let mut events: Vec<Event> = Vec::new();
+    let mut markets = Vec::new();
+    for coin in coins {
+        let closes: Vec<i64> = bars
+            .iter()
+            .filter_map(|e| match e {
+                Event::Bar(b) if &b.coin == coin => Some(b.ts),
+                _ => None,
+            })
+            .collect();
+        let (Some(&start), Some(&end)) = (closes.iter().min(), closes.iter().max()) else {
+            println!("{coin}: no bars, skipped");
+            continue;
+        };
+        let got = crate::polymarket::backfill(coin, start, end, cache)?;
+        println!("{coin}: {} minute snapshots from {} markets", got.ladders.len(), got.markets.len());
+        events.extend(got.ladders.into_iter().map(Event::PredictionMarket));
+        markets.extend(got.markets);
+    }
+    sort_for_replay(&mut events);
+    write_events(out, &events)?;
+    crate::artifacts::write_jsonl(markets_out, &markets)?;
+    println!("wrote {} prediction-market events to {} and {} markets to {}", events.len(), out.display(), markets.len(), markets_out.display());
+    Ok(())
+}
+
 /// Retry a public read a few times with backoff: a long fetch should not die
 /// on one rate-limit reply or dropped connection.
 fn with_retry<T>(what: &str, mut f: impl FnMut() -> Result<T>) -> Result<T> {

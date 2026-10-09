@@ -31,6 +31,7 @@ pub mod kalshi;
 pub mod ledger;
 pub mod metrics;
 pub mod paper;
+pub mod polymarket;
 pub mod pollers;
 pub mod positioning;
 pub mod prediction;
