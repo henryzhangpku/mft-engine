@@ -147,6 +147,12 @@ fn there_is_no_order_path_in_the_source() {
             "kalshi-access-signature",
             "kalshi-access-key",
             "rsa_pss",
+            // Polymarket orders are signed with a wallet key and sent with
+            // L2 API credentials; the reader only GETs public endpoints.
+            "clob.polymarket.com/order",
+            "poly_api_key",
+            "poly_signature",
+            "poly_passphrase",
         ];
         for banned in banned {
             assert!(!text.contains(banned), "{} mentions {banned}", path.display());

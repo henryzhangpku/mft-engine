@@ -286,10 +286,14 @@ async fn every_ledger_trial_replays_on_its_pinned_key() {
         assert_eq!(mft_engine::trials::time_key_of(e), TimeKey::Exchange, "ledger #{}", e.seq);
     }
     let trials = mft_engine::trials::trials(&root(), &entries).await.unwrap();
-    // 18 entries: one pre-registration (14) and one exact rerun (7 of 0).
-    assert_eq!(trials.len(), 16);
+    // 24 entries: four pre-registrations (14, 18 to 20) and one exact rerun
+    // (7 of 0). Entries 21 and 22 repeat the decisions of 0 and 1 but ran on
+    // a different input set (Polymarket ladders added), so they count.
+    assert_eq!(trials.len(), 19);
     assert_eq!(trials[0].entries, vec![0, 7]);
-    assert!(!trials.iter().any(|t| t.entries.contains(&14)));
+    for pre in [14, 18, 19, 20] {
+        assert!(!trials.iter().any(|t| t.entries.contains(&pre)));
+    }
     for t in &trials {
         let e = &entries[t.entries[0] as usize];
         if e.base == "v4" || e.seq >= 7 {
@@ -299,7 +303,7 @@ async fn every_ledger_trial_replays_on_its_pinned_key() {
     let d = mft_engine::trials::entry_dsr(&entries, &trials, 17).unwrap();
     let logged = entries[17].result["report"]["sharpe_annualised"].as_f64().unwrap();
     assert!((d.sr_annualised - logged).abs() < 1e-9, "same Sharpe as the ledger: {} vs {logged}", d.sr_annualised);
-    assert_eq!(d.n_trials, 16);
+    assert_eq!(d.n_trials, 19);
     assert!(d.deflated.dsr <= d.deflated.psr_vs_zero);
     assert!(mft_engine::trials::entry_dsr(&entries, &trials, 14).is_err(), "a pre-registration has no returns");
 }

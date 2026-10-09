@@ -75,6 +75,8 @@ function drawCards() {
   }
   if (d.jev) html.push(card("Jev reasoning per post", `${d.jev.latency_ms_p50} ms`, `p50, p99 ${d.jev.latency_ms_p99} ms, ${Math.round(d.jev.input_tokens_per_post_mean)} tokens`));
   html.push(card("Kalshi ladder snapshots", v2.full.prediction_snapshots.toLocaleString(), "minute-level implied distributions, BTC and ETH"));
+  const pa = d.polymarket && d.polymarket.agreement;
+  if (pa && pa.rate != null) html.push(card("Kalshi and Polymarket agree", `${(pa.rate * 100).toFixed(0)}%`, `of ${pa.both.toLocaleString()} bars with both readings, on the side of P(up) vs 0.5`));
   html.push(card("Posts reasoned over", String(d.posts.length), `${relevant} judged relevant to BTC or ETH`));
   html.push(card("Experiments on the ledger", String(d.ledger.length), "hash-chained, kept and killed alike"));
   html.push(card("Deterministic replay", v2.full.decisions_fingerprint.slice(0, 8), "decision fingerprint, identical on every run"));
@@ -128,12 +130,15 @@ function drawPriceChart() {
 
   const byTime = new Map(decisions.map((x) => [x.t, x]));
   const bandByTime = new Map(band.map((r) => [r[0], r]));
+  const polyByTime = new Map(((d.polymarket && d.polymarket.p_up && d.polymarket.p_up[coin]) || []).map((r) => [r[0], r[1]]));
   chart.subscribeCrosshairMove((param) => {
     if (!param.time) return;
     const p = param.seriesData.get(price);
     const b = bandByTime.get(param.time);
     let html = `<b>${utc(param.time)}</b> ${esc(coin)} ${p ? p.value.toFixed(2) : ""}`;
     if (b) html += ` | Kalshi median ${b[2] ?? "n/a"}, P(close above spot) ${b[4] ?? "n/a"} for the ${utc(b[5]).slice(11)} close`;
+    const pp = polyByTime.get(param.time);
+    if (pp != null) html += ` | Polymarket P(above spot at noon ET) ${pp}`;
     const x = byTime.get(param.time);
     if (x) {
       html += `<br>${x.kind === "fill" ? `<span class="${x.side === "buy" ? "pos" : "neg"}">${x.side.toUpperCase()} ${Math.abs(x.qty).toFixed(5)} @ ${x.px}</span>` : `<span style="color:var(--warn)">BLOCKED: ${esc(x.reason)}</span>`}`;
@@ -199,7 +204,8 @@ function drawEquity() {
   if (state.equity) state.equity.remove();
   const chart = LightweightCharts.createChart(el, chartOptions(el));
   state.equity = chart;
-  for (const [name, color] of [["v1", css("--v1")], ["v2", css("--v2")]]) {
+  for (const [name, color] of [["v1", css("--v1")], ["v2", css("--v2")], ["v2b", css("--v2b")]]) {
+    if (!d.equity[name]) continue;
     const s = chart.addLineSeries({ color, lineWidth: 2, priceLineVisible: false });
     s.setData(uniqueByTime(d.equity[name].map(([t, e]) => ({ time: t, value: e }))));
   }
@@ -213,14 +219,16 @@ function table(el, head, rows) {
 
 function drawEvalTable() {
   const rows = [];
-  for (const e of state.data.evaluations) {
+  const evals = [...state.data.evaluations];
+  if (state.data.polymarket && state.data.polymarket.v2b) evals.push(state.data.polymarket.v2b);
+  for (const e of evals) {
     for (const r of [e.full, e.first_half, e.second_half]) {
       rows.push(`<tr><td>${esc(e.name)}</td><td>${esc(r.window)}</td><td class="num">${r.fills}</td><td class="num">${pct(r.hit_rate)}</td>` +
         `<td class="num ${signClass(r.pnl_after_costs)}">${usd(r.pnl_after_costs)}</td><td class="num">${usd(r.pnl_before_costs)}</td>` +
         `<td class="num">${usd(r.fees + r.slippage)}</td><td class="num">${usd(r.max_drawdown)}</td><td class="num">${r.pm_vetoes}</td></tr>`);
     }
   }
-  table($("evals"), [["strategy"], ["window"], ["fills", "num"], ["hit rate", "num"], ["PnL after costs", "num"], ["before costs", "num"], ["costs", "num"], ["max drawdown", "num"], ["Kalshi vetoes", "num"]], rows);
+  table($("evals"), [["strategy"], ["window"], ["fills", "num"], ["hit rate", "num"], ["PnL after costs", "num"], ["before costs", "num"], ["costs", "num"], ["max drawdown", "num"], ["market vetoes", "num"]], rows);
 }
 
 function drawDecisions() {
