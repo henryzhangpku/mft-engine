@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261009c">
+  <link rel="stylesheet" href="style.css?v=20261009d">
   <script>try { if (localStorage.getItem("mft-theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}</script>
   <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 </head>
@@ -162,8 +162,8 @@
 
     <section id="results" aria-labelledby="h-equity">
       <div class="section-head">
-        <h2 id="h-equity">Results after costs, reported as they came out</h2>
-        <p class="intro">Every strategy was written down before any run. On three and a half days of data all lose after costs; the gated versions lose less, mostly by trading less (v2b, which needs Kalshi and Polymarket to agree, trades half as often as v2). That sample is too small to call an edge either way. The engine's job is to find that out fast and safely, and to keep the result whatever it says.</p>
+        <h2 id="h-equity">Baseline strategies: what the engine measured</h2>
+        <p class="intro">These are deliberately simple baselines whose job is to exercise the engine end to end: one alpha signal, overlays that can only cut, real costs. Each was written down before its first run. The finding the engine surfaced is about <b>turnover</b>: 5-minute momentum trades the book about 300 times in three and a half days, so even its sign flipped (+$35 before costs) cannot pay $163 of costs. Overlays cut trading roughly in half (v2b) but do not pick better trades. On this sample nothing survives costs, and the engine reports that instead of tuning it away; the next test is a lower-turnover signal, pre-registered and run forward on paper.</p>
       </div>
       <div class="panel">
         <div class="legend">
@@ -279,6 +279,6 @@
   </footer>
 
   <div id="tip" class="tip" hidden></div>
-  <script src="app.js?v=20261009c"></script>
+  <script src="app.js?v=20261009d"></script>
 </body>
 </html>
