@@ -4,7 +4,7 @@ A deterministic mid-frequency research and paper-trading engine in Rust, with
 one event loop for backtest and live: point-in-time data → features → signals
 → overlays → portfolio and risk → paper execution → a research ledger (the
 pipeline is laid out below). Concretely, it takes live crypto prices (Hyperliquid),
-prediction-market strike ladders (Kalshi), social posts scored by a
+prediction-market strike ladders (Kalshi, and Polymarket), social posts scored by a
 reasoning classifier (TypeSafe's Jev, on Hacker News) and the positioning of
 the top wallets on Hyperliquid's public leaderboard, turns them into one
 stream of events, and runs one strategy and one risk layer over that stream.
@@ -16,15 +16,16 @@ cannot disagree.
 
 **Paper only.** There is no order router, no request signing and no exchange
 key handling anywhere in the crate. A test fails the build if the source ever
-mentions an order endpoint or signing code for Hyperliquid or Kalshi, and
+mentions an order endpoint or signing code for Hyperliquid, Kalshi or
+Polymarket (Polymarket is read from public GET endpoints only), and
 another fails if anything secret-shaped appears in `data/`, `results/`,
 `docs/` or `experiments/`.
 
 **What it proves, measured on live data:** the engine decides in about
 2 microseconds (p99 47), a live feed frame reaches a decision in about
 0.4 ms, Jev reasons over a post in about 120 ms, and replay reproduces every
-decision to the same fingerprint. Kalshi ladders (9,222 minute snapshots) and
-259 real posts flow through the same event loop as prices.
+decision to the same fingerprint. Kalshi ladders (9,222 minute snapshots),
+Polymarket ladders (9,490) and 259 real posts flow through the same event loop as prices.
 
 **Results, as they came out:** both pre-registered strategies lose after
 costs on 3.5 days of data; v2 loses less than v1, mostly by trading less.
@@ -32,6 +33,11 @@ v3, gated by what the top Hyperliquid wallets hold, can only be tested on
 data recorded live (positioning has no history); on one 85-minute session it
 took 4 fills and lost $3.06, against v1's 12 fills and $9.79. All of that is
 far too short a sample to call an edge, and the numbers are below in full.
+v2b adds Polymarket: a new entry needs Kalshi's hourly and Polymarket's
+daily ladder to agree. Pre-registered, then run once: it halves the trades
+(134 fills against v2's 267) and the costs, and loses $82.76 against v2's
+$152.97, still a loss, and killed by the ledger's rule. The two markets put
+P(up) on the same side of 0.5 at only 54% of the bars where both read.
 v4, a cross-sectional funding-carry strategy across 30 Hyperliquid perps, was
 pre-registered on the ledger and tested on 90 days of hourly data, with a
 sealed out-of-sample window run once: **it was killed**, losing $478.69 on
@@ -46,13 +52,13 @@ target, and execution is paper. The same code replays history, and every
 idea goes through the ledger before it counts.
 
 ```
- 1. DATA             Hyperliquid trades & book · Kalshi ladders · HN posts       feed.rs · kalshi.rs
-    (point-in-time)  · top-trader positions · funding rates                       pollers.rs · event.rs
+ 1. DATA             Hyperliquid trades & book · Kalshi ladders · Polymarket      feed.rs · kalshi.rs
+    (point-in-time)  ladders · HN posts · top-trader positions · funding rates    polymarket.rs · event.rs
                      every record stamped with when it was KNOWABLE, merged
                      into one time-ordered stream
         │
  2. FEATURES         1-min bars, 60-min volatility · implied P(close > spot)      bars.rs · prediction.rs
-                     from the ladder · post direction & relevance (Jev)           text.rs · positioning.rs
+                     from each ladder · post direction & relevance (Jev)          text.rs · positioning.rs
                      · crowd long share · funding-rate ranks
         │
  3. SIGNALS (alpha)  momentum z-score, 5-min, vol-normalised    (v1, v2, v3)      strategy.rs
@@ -78,7 +84,8 @@ idea goes through the ledger before it counts.
 | strategy | signal (layer 3) | overlays (layer 4) |
 |---|---|---|
 | v1 | momentum | none |
-| v2 | momentum | prediction-market agreement + news caution |
+| v2 | momentum | prediction-market agreement (Kalshi) + news caution |
+| v2b | momentum | Kalshi AND Polymarket agreement + news caution |
 | v3 | momentum | crowd positioning |
 | v4 | funding carry | none |
 
@@ -158,6 +165,28 @@ and a separate check blocks any order whose target the gates made larger or
 flipped. Text and prediction markets can make a decision more cautious, never
 less.
 
+**v2b, two prediction markets must agree.** v2, plus one condition on new
+entries: Polymarket's daily ladder must lean the same way as Kalshi's hourly
+one. Polymarket lists, for BTC and ETH, a daily event "above ___ on
+<date>?": 11 binary markets, one per strike ($2,000 apart for BTC, $100 for
+ETH), each resolving on the Binance 1-minute candle at 12:00 ET (16:00 UTC
+in October). The Yes price is P(close > K), so the event is the same kind of
+ladder as Kalshi's and is read by the same code (`clean_ladder`, the same
+97%/3% trim, linear interpolation, no extrapolation), from the event
+resolving next. **A new long needs P(close > spot) above 0.5 on both
+ladders; a new short, below 0.5 on both.** Either one missing, older than 3
+minutes, past its resolution, or not spanning spot means no entry. Held
+positions are not re-gated, as in v2. It is the same `Caution`, so it can
+only remove exposure. The mapping is honest but not like for like: Kalshi's
+horizon is the top of the next hour, Polymarket's is noon ET, anywhere from
+a minute to 24 hours away, and the two settle on different prices (Kalshi's
+index, Binance spot), both compared with Hyperliquid's perpetual. With
+strikes $2,000 apart, a Polymarket ladder that is near-certain on both sides
+of spot has fewer than three informative strikes and gives no reading; v2b
+then cannot enter. v2b was written in `experiments/polymarket_v2b.toml` and
+on the ledger (entries 18 to 20, `experiment --preregister`) and committed
+before its first run; `experiment` refuses to run that file without them.
+
 **v3, positioning-gated.** The same v1 targets, entered only when the crowd
 of top Hyperliquid traders leans the same way: in the latest positioning
 snapshot (under 15 minutes old), the top 100 leaderboard wallets by 30-day
@@ -185,13 +214,16 @@ Data, all committed under `data/`:
 | source | what | real or not |
 |---|---|---|
 | `bars_1m.jsonl` | Hyperliquid 1-minute candles, BTC and ETH, 2026-10-02 14:47 to 10-06 03:17 UTC, 10,139 bars | real (all the 1m history the endpoint keeps) |
+| `polymarket_ladders.jsonl` | 9,490 one-minute ladder snapshots (BTC 4,584, ETH 4,906) from 10 daily Polymarket events (Oct 2 to 6, BTC and ETH, 11 strikes each), built from the public CLOB price history at 1-minute fidelity; `polymarket_markets.jsonl` lists the 110 markets (question, strike, resolution time, Yes/No token ids); `polymarket_raw/` holds every raw Gamma and CLOB response | real |
 | `kalshi_ladders.jsonl` | 9,222 one-minute ladder snapshots from 80 hourly BTC events and 80 hourly ETH events over the same window, backfilled from Kalshi's public 1-minute candlesticks (bid/ask at each minute's close, 10 strikes either side of spot) | real |
 | `hn_posts.jsonl` | 259 Hacker News items in the window (20 stories, 239 comments) matching bitcoin, ethereum, crypto, stablecoin or coinbase | real |
 | `text_signals.jsonl` | those 259 posts scored by Jev (518 signals, one per coin per post) | real model output |
 | `tests/fixtures/synthetic_*` | 60 invented posts, mock-scored | synthetic, tests only |
 
 Point in time: a bar is stamped with its close; a Kalshi snapshot with the end
-of its minute; a post becomes usable at publication plus a 60 s poll delay
+of its minute; a Polymarket snapshot with the end of the minute its prices
+were printed in (each strike's last price at or before that instant, dropped
+if older than 5 minutes); a post becomes usable at publication plus a 60 s poll delay
 plus the measured Jev latency. Only the post's text is scored; HN points and
 comment counts, which accrue later, are not stored.
 
@@ -236,6 +268,52 @@ What this says, plainly:
 * Determinism: decision fingerprints `5ccac06aa73491d6` (v1) and
   `ce040be98f47646d` (v2) repeat on every run; the tests check that two
   replays give identical decisions, reports and equity curves.
+
+### v2b: Kalshi and Polymarket must both agree (ledger 18 to 23)
+
+Pre-registered on the ledger (entries 18 to 20) and committed before any
+run, then run once with `mft-engine experiment --file
+experiments/polymarket_v2b.toml`, same window, same costs, same verdict rule.
+The file reruns v1 and v2 with the Polymarket ladders in the stream as
+controls: both repeat entries 0 and 1 to the decision fingerprint
+(`5ccac06aa73491d6`, `ce040be98f47646d`), so adding the second venue changed
+nothing for the strategies that do not read it.
+
+```
+strategy                   window        fills     hit    pnl_net  pnl_gross     costs   turn_x   max_dd  vetoes
+v1_momentum                full            294    2.0%    -197.78     -34.97    162.81    296.0   198.00       0
+v2_reasoning_gated         full            267    5.2%    -152.97      -5.80    147.17    267.6   153.20     823
+v2b_kalshi_and_polymarket  full            134    4.5%     -82.76      -9.21     73.55    133.7    82.76    1236
+v2b_kalshi_and_polymarket  first_half       65    0.0%     -40.58      -5.53     35.05     63.7    40.58     619
+v2b_kalshi_and_polymarket  second_half      65    9.1%     -40.13      -3.83     36.30     66.0    40.13     588
+```
+
+(v1 and v2 halves as in the table above. "vetoes" counts bars where either
+market vetoed an entry.)
+
+What this says:
+
+* **Fewer trades, as predicted, and no edge.** v2b takes half of v2's fills
+  and pays half its costs, so it loses $70 less. Before costs it is slightly
+  *worse* than v2 (-$9.21 against -$5.80): the second market removed trades,
+  not bad trades. Both halves lose about the same. Killed by the verdict rule
+  (holdout PnL negative), as the hypothesis expected.
+* **Too short a sample to call anything.** 3.5 days, 65 fills a half.
+* **The two markets often disagree.** At the 8,815 bars where both ladders
+  gave a reading (the gate's own view: fresh, unexpired, spanning spot),
+  Kalshi's and Polymarket's P(close > spot) were on the same side of 0.5 at
+  54.2% of them: 62.8% for BTC (4,263 bars), 46.0% for ETH (4,552 bars),
+  barely better than a coin for BTC and worse than one for ETH. That is less
+  a verdict on either market than on the comparison: different horizons (the
+  next hour against noon ET), different settlement prices (Kalshi's index,
+  Binance spot), both read against Hyperliquid's perpetual, so a few dollars
+  of basis decide the side when P is near 0.5. A gate that needs both is
+  mostly a gate that trades less.
+* **Coverage.** Polymarket gave a reading at 8,815 of the 10,139 bars. With
+  strikes $2,000 apart, BTC had two stretches (about 3 and 4 hours before a
+  noon resolution) where the ladder was near-certain on both sides of spot
+  and had fewer than three informative strikes: no reading, so v2b could not
+  enter there. That is the fail-closed rule working, not missing data.
 
 ## Hyperliquid universe and crowd positioning
 
@@ -468,6 +546,12 @@ positive and beats the baseline's.
 | 15 | v4_funding_carry | in_sample | -820.98 | | 397 trades |
 | 16 | v4_funding_carry | design_choice | -475.42 | | 127 trades |
 | 17 | v4_funding_carry | killed | | -478.69 | 112 trades |
+| 18 | v1_momentum_with_polymarket_data | preregistered | | | |
+| 19 | v2_reasoning_gated_with_polymarket_data | preregistered | | | |
+| 20 | v2b_kalshi_and_polymarket | preregistered | | | |
+| 21 | v1_momentum_with_polymarket_data | baseline | -197.78 | -110.95 | 294 |
+| 22 | v2_reasoning_gated_with_polymarket_data | killed | -152.97 | -71.23 | 267 |
+| 23 | v2b_kalshi_and_polymarket | killed | -82.76 | -40.13 | 134 |
 
 Entries 7 to 9 (`experiments/positioning.toml`) are v3 on the backfilled
 window, where no positioning exists: zero trades, as predicted, recorded
@@ -477,6 +561,12 @@ session; each file's first variant is its own baseline.
 Entries 14 to 17 are v4 (above), recorded by `mft-engine carry` on the same
 chain, each carrying v4's kill rule as its verdict rule. For v4, "PnL" is the
 in-sample result and "holdout" the sealed out-of-sample one.
+
+Entries 18 to 23 are v2b (`experiments/polymarket_v2b.toml`): the
+specification first (`experiment --preregister`, verdict "preregistered",
+with the fully resolved config), then the one run. The file sets
+`require_preregistration`, so `experiment` refuses to run it unless those
+entries exist for its exact SHA-256.
 
 A note on fingerprints: entries 0 to 6 logged decision fingerprints that no
 committed build gives back (the builds of c77ede1, which added the ledger, of
@@ -529,6 +619,12 @@ moments; with N = 1, SR0 = 0 and the DSR is the PSR against zero
 (All rows: `ledger dsr --all`. Entries 2 to 4, 7, 10, 11 and 13 look like
 their neighbours; 8 and 9 never traded, so their Sharpe is undefined and they
 enter V as 0.) With N = 16, V = 3,242 and SR0 = +102.5 annualised.
+
+The table was computed before v2b. Entries 21 to 23 raise N to 19 (21 and 22
+repeat the decisions of 0 and 1, but ran on a different input set, so they
+count; that only makes the deflation stricter): V = 2,763, SR0 = +98.7, and
+every DSR above is still 0.0000. v2b itself (entry 23): SR -76.8 annualised
+over 5,071 minutes, PSR against zero 0.0000, DSR 0.0000.
 
 What it says, plainly: **nothing on the ledger needed deflating to be
 rejected.** Every entry has a negative Sharpe ratio, so the PSR against zero
@@ -667,6 +763,7 @@ cargo test
 ./target/release/mft-engine backtest                 # v1, v2, v3 side by side -> results/backtest.json
 ./target/release/mft-engine experiment               # experiments/ideas.toml -> results/ledger.jsonl
 ./target/release/mft-engine experiment --verify      # check the hash chain
+./target/release/mft-engine experiment --file experiments/polymarket_v2b.toml   # v2b; refuses unless pre-registered (it is: ledger 18-20)
 ./target/release/mft-engine ledger dsr --all         # deflated Sharpe of every ledger trial
 ./target/release/mft-engine ledger dsr --entry 17
 ./target/release/mft-engine verify-replay            # replay results/paper_events.jsonl, diff its decisions
@@ -684,6 +781,7 @@ cargo test
 ./target/release/mft-engine record --duration-secs 120   # feed + Kalshi + positioning (+ --text-feed)
 ./target/release/mft-engine fetch-bars --days 4
 ./target/release/mft-engine fetch-kalshi             # backfill ladders over the bar window
+./target/release/mft-engine fetch-polymarket         # Polymarket daily ladders over the bar window (cached raw in data/polymarket_raw/)
 ./target/release/mft-engine paper --duration-secs 600 --text-feed results/live_text_signals.jsonl
 ```
 
@@ -749,12 +847,13 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
 | `src/event.rs` | the one `Event` enum: Trade, BookTop, Bar, TextSignal, PredictionMarket, Positioning, Gap |
 | `src/engine.rs` | the shared decision path: one event in, at most one decision out |
 | `src/strategy.rs` | v1 momentum and its position state machine |
-| `src/prediction.rs` | ladder cleaning, P(close > x), implied quantiles, the v2 gate |
+| `src/prediction.rs` | ladder cleaning, P(close > x), implied quantiles, ladders kept per venue, the v2 and v2b gates |
 | `src/text.rs` | the social gate: a [0, 1] multiplier and the "never riskier" check |
 | `src/risk.rs` | risk rules as trait objects; the fail-closed `RiskEngine` |
 | `src/execution.rs` | paper fill model, cash-based PnL, round trips |
 | `src/event_loop.rs` | the single loop both modes run, with latency measurement |
 | `src/kalshi.rs` | Kalshi public markets and candlesticks; live ladder and backfill |
+| `src/polymarket.rs` | Polymarket public daily ladders (Gamma events, CLOB price history), raw-response cache, point-in-time minute ladders |
 | `src/positioning.rs` | leaderboard wallet set, public wallet reads, per-coin aggregates, the v3 gate |
 | `src/universe.rs` | every Hyperliquid perp on every dex, with funding, OI and mark |
 | `src/carry.rs` | v4: hourly panel, funding ranking, dollar-neutral rebalancing, hourly funding accrual, bootstrap |
@@ -775,9 +874,18 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
 * **No real orders.** No order endpoint, no signing, no exchange keys. Paper
   fills only. Anyone acting on a paper SIGNAL line does so by hand.
 * **Venues:** Hyperliquid (BTC and ETH perpetuals) for prices; Kalshi hourly
-  KXBTCD and KXETHD ladders for prediction markets. Kalshi's KXBTC range
-  series and Polymarket are not used: the threshold ladder already gives the
-  distribution directly.
+  KXBTCD and KXETHD ladders and, for v2b only, Polymarket's daily BTC and ETH
+  "above" ladders for prediction markets. Kalshi's KXBTC range series is not
+  used: the threshold ladder already gives the distribution directly.
+* **Polymarket is backfill only.** `fetch-polymarket` reads it after the fact
+  (public Gamma and CLOB price-history endpoints); there is no live
+  Polymarket poller, so `paper` and `record` do not offer v2b, and the
+  recorded live session has no Polymarket data. Polymarket's hourly "up or
+  down" and 5/15-minute markets exist but ask a different question (close
+  above the period's open, not above a strike) and are not used. Its daily
+  ladder has 11 strikes ($2,000 apart for BTC), so near a resolution it is
+  often too coarse to read; the price history is Polymarket's own minute
+  series, not the order book.
 * **Positioning has no history** and only what was recorded live (one
   session here) can test v3. It reads the main dex only, not builder-dex
   positions. Choosing wallets by 30-day PnL favours whoever was on the right
