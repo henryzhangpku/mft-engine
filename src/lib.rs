@@ -25,6 +25,7 @@ pub mod execution;
 pub mod experiment;
 pub mod feed;
 pub mod fetch;
+pub mod forward;
 pub mod gap;
 pub mod hyperliquid;
 pub mod kalshi;

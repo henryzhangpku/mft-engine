@@ -126,7 +126,8 @@ fn data_sha(root: &Path, files: &[String]) -> Result<String> {
     Ok(sha256_hex(&bytes))
 }
 
-/// Replay an engine (v1 to v3) entry over its full window; per-minute P&L.
+/// Replay an engine (v1 to v3, v5) entry over its full window; per-minute
+/// P&L, or per-day for the hourly strategy v5.
 async fn replay_engine(root: &Path, e: &LedgerEntry) -> Result<(Vec<f64>, String)> {
     if data_sha(root, &e.data_files)? != e.data_sha256 {
         bail!("ledger #{}: the data files differ from the ones it ran on", e.seq);
@@ -155,7 +156,8 @@ async fn replay_engine(root: &Path, e: &LedgerEntry) -> Result<(Vec<f64>, String
     if let Some(&(t, _)) = curve.last() {
         curve.push((t, run.report.pnl_after_costs)); // the final mark
     }
-    Ok((minute_pnl(&curve), run.report.decisions_fingerprint))
+    let returns = if e.base == "v5" { crate::metrics::daily_pnl(&curve) } else { minute_pnl(&curve) };
+    Ok((returns, run.report.decisions_fingerprint))
 }
 
 /// The v4 context, loaded once.
@@ -214,6 +216,8 @@ pub async fn trials(root: &Path, entries: &[LedgerEntry]) -> Result<Vec<Trial>> 
         }
         let (period, ppy, (returns, fingerprint)) = if e.base == "v4" {
             ("day", DAYS_PER_YEAR, replay_v4(root, &mut v4, e)?)
+        } else if e.base == "v5" {
+            ("day", DAYS_PER_YEAR, replay_engine(root, e).await?)
         } else {
             ("minute", MINUTES_PER_YEAR, replay_engine(root, e).await?)
         };

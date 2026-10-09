@@ -1,0 +1,57 @@
+# Strategy v5: the baselines' momentum family, at a 24-hour horizon on
+# 1-hour bars, with about 1/50th of the trading. Written, and written to the
+# ledger with `--preregister`, before its first run. Nothing below may change
+# after a result exists: `run` refuses unless this exact file (same SHA-256)
+# was pre-registered.
+#
+# Pre-register:  mft-engine experiment --file experiments/hourly_trend_v5.toml --preregister
+# Run (once):    mft-engine experiment --file experiments/hourly_trend_v5.toml
+#
+# Rationale. The baselines (v1 to v3) lost because 5-minute momentum's
+# turnover (about 300x the book in 3.5 days) cannot clear costs: 4.5 bp taker
+# plus 1 bp slippage on every fill, whatever the signal. v5 tests the same
+# family (a volatility-normalised trailing return, entered at a threshold,
+# exited on a sign change or a time stop) at a 24-hour horizon on hourly bars,
+# where a position lives for days rather than minutes, with roughly 1/50th of
+# the trading. If momentum in BTC and ETH has any edge at all, this is the
+# horizon where costs stop being the whole story.
+#
+# Spec (fixed before any data was looked at; implemented as
+# `EngineConfig::v5()`, see `MomentumParams::v5_hourly` in src/strategy.rs):
+#   * coins: BTC and ETH, Hyperliquid perpetuals;
+#   * bars: 1-hour candles from the public candleSnapshot endpoint, each
+#     stamped at its close (point in time), the latest closed hour last;
+#   * r24 = ln(close_t / close_{t-24}); sigma = std of the last 168 hourly log
+#     returns; z = r24 / (sigma * sqrt(24));
+#   * entry: long if z >= 1.0, short if z <= -1.0;
+#   * exit: when z crosses 0 against the position, or after 72 bars held
+#     (v1's state machine: a cross straight through the opposite threshold
+#     exits and enters the other way on the same bar);
+#   * size: $1,000 target per coin; target-minus-position differences under
+#     $50 are not traded;
+#   * costs: 4.5 bp taker fee + 1 bp slippage per fill (the repo standard);
+#   * no overlays (no prediction-market, social or positioning gate); the same
+#     risk layer as v1 (fails closed: $1,500 max position, $2,500 max order,
+#     $50 daily loss stops new risk, 90 s stale data blocks).
+#
+# Data: the longest hourly history the endpoint gives (about 5,000 candles,
+# 208 days, 2026-03-15 to 2026-10-09 16:00 UTC), fetched with
+#   mft-engine fetch-bars --interval 1h --days 240 --out data/bars_1h.jsonl
+# Evaluated as every experiment is: the full window, then the first and second
+# half (split at the midpoint in time, each half replayed from flat with its
+# own 168-hour warm-up). Reported: net PnL after costs, hit rate, turnover,
+# max drawdown, Sharpe of daily PnL (annualised with sqrt(365)).
+#
+# Verdict rule (fixed here, before running): kept only if net PnL after costs
+# > 0 on the full window AND on the first half AND on the second half;
+# otherwise killed. "Kept" means not refuted on this sample, not proven. The
+# historical test is run once; whatever comes out is recorded.
+
+data = ["data/bars_1h.jsonl"]
+require_preregistration = true
+verdict = "positive_all_windows"
+
+[[variant]]
+name = "v5_hourly_trend"
+base = "v5"
+hypothesis = "The baselines lost because 5-minute momentum's turnover (about 300x the book in 3.5 days) cannot clear 5.5 bp per fill. The same family at a 24-hour horizon on 1-hour bars (z = 24h log return over its 168-hour noise, enter at |z| >= 1, exit on a sign change against or after 72 bars, $1,000 per coin, BTC and ETH) trades about 1/50th as much. Kept only if net PnL after costs is positive on the full window and in both halves; otherwise killed."

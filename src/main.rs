@@ -84,6 +84,9 @@ enum Command {
         end: Option<String>,
         #[arg(long, default_value = "data/bars_1m.jsonl")]
         out: PathBuf,
+        /// Candle interval: 1m, or 1h (Hyperliquid keeps about 5,000 of each).
+        #[arg(long, default_value = "1m")]
+        interval: String,
     },
     /// Backfill Kalshi hourly strike ladders over the bar file's window.
     FetchKalshi {
@@ -217,6 +220,23 @@ enum Command {
         #[arg(long, default_value_t = 90)]
         warmup_minutes: i64,
     },
+    /// Live paper run of an hourly strategy (v5): one closed 1-hour candle per
+    /// coin per hour from the public endpoint, paper fills, logs appended to
+    /// --dir. Resumes from its own session log after a restart.
+    PaperHourly {
+        #[arg(long, value_delimiter = ',', default_value = "BTC,ETH")]
+        coins: Vec<String>,
+        #[arg(long, default_value = "v5")]
+        strategy: String,
+        #[arg(long, default_value = "results/forward_v5")]
+        dir: PathBuf,
+        /// Seconds after each hour boundary to fetch the closed candle.
+        #[arg(long, default_value_t = 15)]
+        poll_after_close_secs: u64,
+        /// Stop after this many hourly polls (0 = run until stopped).
+        #[arg(long, default_value_t = 0)]
+        max_polls: u64,
+    },
     /// Write docs/data/demo.json for the static web demo.
     ExportDemo {
         #[arg(long, default_values = DEFAULT_DATA)]
@@ -264,7 +284,8 @@ fn strategy_config(name: &str) -> Result<EngineConfig> {
         "v1" => Ok(EngineConfig::v1()),
         "v2" => Ok(EngineConfig::v2()),
         "v3" => Ok(EngineConfig::v3()),
-        other => anyhow::bail!("unknown strategy {other:?}; use v1, v2 or v3"),
+        "v5" => Ok(EngineConfig::v5()),
+        other => anyhow::bail!("unknown strategy {other:?}; use v1, v2, v3 or v5"),
     }
 }
 
@@ -285,7 +306,7 @@ async fn main() -> Result<()> {
         Command::Positioning { coins, wallets, min_account_value, out } => {
             tokio::task::spawn_blocking(move || positioning::run(&coins, wallets, min_account_value, &out)).await?
         }
-        Command::FetchBars { coins, days, start, end, out } => {
+        Command::FetchBars { coins, days, start, end, out, interval } => {
             let window = match (start, end) {
                 (Some(s), Some(e)) => {
                     let parse = |t: &str| mft_engine::clock::parse_utc(t).ok_or_else(|| anyhow::anyhow!("bad UTC time {t:?}"));
@@ -295,7 +316,7 @@ async fn main() -> Result<()> {
                 _ => anyhow::bail!("--start and --end go together"),
             };
             // Blocking HTTP; run it off the async workers.
-            tokio::task::spawn_blocking(move || fetch::run(&coins, days, window, &out)).await?
+            tokio::task::spawn_blocking(move || fetch::run_interval(&coins, &interval, days, window, &out)).await?
         }
         Command::FetchKalshi { coins, bars, strikes_each_side, out } => {
             tokio::task::spawn_blocking(move || fetch::run_kalshi(&coins, &bars, strikes_each_side, &out)).await?
@@ -353,6 +374,17 @@ async fn main() -> Result<()> {
             println!("{}", serde_json::to_string_pretty(&report)?);
             println!("wrote {}, {} and {}", out.display(), events_out.display(), decisions_out.display());
             Ok(())
+        }
+        Command::PaperHourly { coins, strategy, dir, poll_after_close_secs, max_polls } => {
+            let opts = mft_engine::forward::ForwardOptions {
+                coins,
+                config: strategy_config(&strategy)?,
+                strategy,
+                dir,
+                poll_after_close: Duration::from_secs(poll_after_close_secs),
+                max_polls: (max_polls > 0).then_some(max_polls),
+            };
+            tokio::task::spawn_blocking(move || mft_engine::forward::run(opts)).await?
         }
         Command::ExportDemo { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, polymarket, out } => {
             demo::run(demo::DemoInputs { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, polymarket, out }).await

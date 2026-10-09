@@ -42,3 +42,42 @@ pub fn fnv1a(bytes: &[u8]) -> u64 {
     }
     h
 }
+
+const DAY_MS: i64 = 86_400_000;
+
+/// P&L per UTC day from (time, equity) samples: the last equity of each day,
+/// differenced from a flat start (equity 0 before the first sample). A sample
+/// stamped exactly at midnight (an hourly bar closing then) belongs to the day
+/// that just ended. Days with no sample carry the equity, so give zero P&L.
+pub fn daily_pnl(curve: &[(i64, f64)]) -> Vec<f64> {
+    let mut last: std::collections::BTreeMap<i64, f64> = std::collections::BTreeMap::new();
+    for (ts, eq) in curve {
+        last.insert((ts - 1).div_euclid(DAY_MS), *eq);
+    }
+    let (Some(&first), Some(&end)) = (last.keys().next(), last.keys().next_back()) else {
+        return vec![];
+    };
+    let (mut prev, mut held, mut out) = (0.0, 0.0, Vec::new());
+    for d in first..=end {
+        if let Some(eq) = last.get(&d) {
+            held = *eq;
+        }
+        out.push(held - prev);
+        prev = held;
+    }
+    out
+}
+
+/// Sharpe ratio of daily P&L, annualised with sqrt(365) (crypto trades every
+/// day). `None` with fewer than 5 days or no variation: too short to mean
+/// anything, so no number is invented.
+pub fn sharpe_daily(daily: &[f64]) -> Option<f64> {
+    if daily.len() < 5 {
+        return None;
+    }
+    let n = daily.len() as f64;
+    let mean = daily.iter().sum::<f64>() / n;
+    let var = daily.iter().map(|x| (x - mean).powi(2)).sum::<f64>() / (n - 1.0);
+    let sd = var.sqrt();
+    (sd > 0.0 && sd.is_finite()).then(|| mean / sd * 365f64.sqrt())
+}

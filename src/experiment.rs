@@ -41,8 +41,37 @@ use std::path::{Path, PathBuf};
 pub const VERDICT_RULE: &str =
     "kept if second-half (holdout) PnL after costs > 0 and > the baseline's second-half PnL; else killed. The first variant is the baseline.";
 
+/// The rule for a file that sets `verdict = "positive_all_windows"`: a single
+/// strategy judged on its own, with no baseline to beat.
+pub const VERDICT_RULE_ALL_WINDOWS: &str =
+    "kept if PnL after costs > 0 on the full window AND on the first half AND on the second half; else killed.";
+
+/// Which fixed verdict rule a file is judged by.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum VerdictKind {
+    /// `VERDICT_RULE`: the holdout must beat the first variant (the baseline).
+    #[default]
+    HoldoutVsBaseline,
+    /// `VERDICT_RULE_ALL_WINDOWS`: every variant stands alone.
+    PositiveAllWindows,
+}
+
+impl VerdictKind {
+    pub fn rule(self) -> &'static str {
+        match self {
+            VerdictKind::HoldoutVsBaseline => VERDICT_RULE,
+            VerdictKind::PositiveAllWindows => VERDICT_RULE_ALL_WINDOWS,
+        }
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct ExperimentFile {
+    /// The verdict rule; absent means `VERDICT_RULE`, as for every file
+    /// already on the ledger.
+    #[serde(default)]
+    pub verdict: VerdictKind,
     pub data: Vec<PathBuf>,
     /// Replay time key; absent means exchange (the ledger's existing key).
     #[serde(default)]
@@ -74,7 +103,8 @@ pub fn build_config(base: &str, set: &BTreeMap<String, toml::Value>) -> Result<E
         "v2" => EngineConfig::v2(),
         "v2b" => EngineConfig::v2b(),
         "v3" => EngineConfig::v3(),
-        other => bail!("unknown base {other:?}; use \"v1\", \"v2\", \"v2b\" or \"v3\""),
+        "v5" => EngineConfig::v5(),
+        other => bail!("unknown base {other:?}; use \"v1\", \"v2\", \"v2b\", \"v3\" or \"v5\""),
     };
     let mut json = serde_json::to_value(base_config)?;
     for (path, value) in set {
@@ -91,6 +121,21 @@ pub fn build_config(base: &str, set: &BTreeMap<String, toml::Value>) -> Result<E
         *node = new;
     }
     serde_json::from_value(json).context("overrides produced an invalid config")
+}
+
+/// The verdict for `eval` under `kind`.
+pub fn verdict_for(kind: VerdictKind, eval: &Evaluation, baseline_holdout: Option<f64>) -> &'static str {
+    match kind {
+        VerdictKind::HoldoutVsBaseline => verdict(eval, baseline_holdout),
+        VerdictKind::PositiveAllWindows => {
+            let all = [&eval.full, &eval.first_half, &eval.second_half].iter().all(|r| r.pnl_after_costs > 0.0);
+            if all {
+                "kept"
+            } else {
+                "killed"
+            }
+        }
+    }
 }
 
 fn verdict(eval: &Evaluation, baseline_holdout: Option<f64>) -> &'static str {
@@ -132,7 +177,7 @@ pub fn preregister(file: &Path, ledger_path: &Path) -> Result<()> {
                 data_files: spec.data.iter().map(|p| p.display().to_string()).collect(),
                 data_sha256: data_sha.clone(),
                 verdict: "preregistered",
-                verdict_rule: VERDICT_RULE,
+                verdict_rule: spec.verdict.rule(),
                 result: serde_json::json!({ "phase": "preregistered", "config": config, "time_key": spec.time_key }),
                 recorded_at: format_utc(wall_now_ms()),
             },
@@ -173,7 +218,7 @@ pub async fn run(file: &Path, ledger_path: &Path) -> Result<Vec<Evaluation>> {
     for v in &spec.variants {
         let config = build_config(&v.base, &v.set).with_context(|| format!("variant {}", v.name))?;
         let (eval, _) = evaluate_keyed(&v.name, &events, config, key).await;
-        let verdict = verdict(&eval, baseline_holdout);
+        let verdict = verdict_for(spec.verdict, &eval, baseline_holdout);
         if baseline_holdout.is_none() {
             baseline_holdout = Some(eval.second_half.pnl_after_costs);
         }
@@ -190,7 +235,7 @@ pub async fn run(file: &Path, ledger_path: &Path) -> Result<Vec<Evaluation>> {
                 data_files: spec.data.iter().map(|p| p.display().to_string()).collect(),
                 data_sha256: data_sha.clone(),
                 verdict,
-                verdict_rule: VERDICT_RULE,
+                verdict_rule: spec.verdict.rule(),
                 result,
                 recorded_at: format_utc(wall_now_ms()),
             },

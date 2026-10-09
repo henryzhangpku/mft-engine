@@ -9,6 +9,20 @@ use std::io::{BufRead, BufReader};
 use std::path::Path;
 
 pub const BAR_MS: i64 = 60_000;
+pub const HOUR_MS: i64 = 3_600_000;
+
+/// The length of a bar: one hour for an hourly REST candle (stamped at its
+/// close, exactly one hour after its open, on an hour boundary), otherwise
+/// one minute. A minute bar built from trades is stamped with the trade that
+/// closed it, so its span is an exact, aligned hour only if that trade landed
+/// on the very millisecond an hour after the bar opened.
+pub fn bar_step(b: &Bar) -> i64 {
+    if b.ts - b.open_ts == HOUR_MS && b.open_ts.rem_euclid(HOUR_MS) == 0 {
+        HOUR_MS
+    } else {
+        BAR_MS
+    }
+}
 
 /// Aggregates trades into 1-minute bars, one in progress per coin.
 ///
@@ -85,15 +99,17 @@ pub fn detect_bar_gaps(events: &[Event]) -> Vec<Gap> {
     let mut gaps = Vec::new();
     for ev in events {
         if let Event::Bar(b) = ev {
+            let step = bar_step(b);
             if let Some(prev) = last_open.get(b.coin.as_str()) {
-                if b.open_ts > prev + BAR_MS {
+                if b.open_ts > prev + step {
+                    let unit = if step == HOUR_MS { "1h" } else { "1m" };
                     gaps.push(Gap {
                         coin: b.coin.clone(),
                         stream: "bars".into(),
                         ts: b.ts,
-                        from_ts: prev + BAR_MS,
+                        from_ts: prev + step,
                         to_ts: b.open_ts,
-                        reason: format!("{} missing 1m bars", (b.open_ts - prev) / BAR_MS - 1),
+                        reason: format!("{} missing {unit} bars", (b.open_ts - prev) / step - 1),
                     });
                 }
             }

@@ -25,6 +25,17 @@ use std::collections::{BTreeMap, VecDeque};
 
 const BAR_MS: i64 = 60_000;
 
+/// One hour, the bar length of strategy v5.
+pub const HOUR_MS: i64 = 3_600_000;
+
+fn default_bar_ms() -> i64 {
+    BAR_MS
+}
+
+fn is_minute(ms: &i64) -> bool {
+    *ms == BAR_MS
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct MomentumParams {
     pub lookback_bars: usize,
@@ -32,6 +43,12 @@ pub struct MomentumParams {
     pub entry_z: f64,
     pub max_hold_bars: u32,
     pub target_notional: f64,
+    /// Bar length the strategy expects, in ms; a bar that does not follow
+    /// the previous one by exactly this much is a gap. One minute unless set
+    /// (and then left out of the serialised config, so every config already
+    /// on the ledger serialises, and hashes, exactly as before).
+    #[serde(default = "default_bar_ms", skip_serializing_if = "is_minute")]
+    pub bar_ms: i64,
 }
 
 impl Default for MomentumParams {
@@ -42,6 +59,24 @@ impl Default for MomentumParams {
             entry_z: 2.0,
             max_hold_bars: 15,
             target_notional: 1_000.0,
+            bar_ms: BAR_MS,
+        }
+    }
+}
+
+impl MomentumParams {
+    /// Strategy v5's signal: the same rules on 1-hour bars at a 24-hour
+    /// horizon. r24 = ln(close_t / close_{t-24}), sigma = std of the last 168
+    /// hourly log returns, z = r24 / (sigma * sqrt(24)); enter at |z| >= 1,
+    /// exit when z crosses 0 against the position or after 72 bars.
+    pub fn v5_hourly() -> Self {
+        Self {
+            lookback_bars: 24,
+            vol_window_bars: 168,
+            entry_z: 1.0,
+            max_hold_bars: 72,
+            target_notional: 1_000.0,
+            bar_ms: HOUR_MS,
         }
     }
 }
@@ -105,7 +140,7 @@ impl Momentum {
 
         // A missing minute is a gap even if nobody sent a Gap event.
         if let Some(prev) = state.last_open_ts {
-            if bar.open_ts != prev + BAR_MS {
+            if bar.open_ts != prev + p.bar_ms {
                 state.reset();
             }
         }

@@ -13,23 +13,40 @@ use std::time::Duration;
 /// requests a second is far inside the limit and costs nothing here.
 const REQUEST_PAUSE: Duration = Duration::from_millis(300);
 
-/// Fetch `[start_ms, end_ms)` for one coin, paging forward until done.
+/// Fetch `[start_ms, end_ms)` of 1-minute bars for one coin.
 pub fn fetch_coin(coin: &str, start_ms: i64, end_ms: i64) -> Result<Vec<Bar>> {
+    fetch_coin_interval(coin, "1m", start_ms, end_ms)
+}
+
+/// Bar length of a `candleSnapshot` interval this program uses.
+pub fn interval_ms(interval: &str) -> Result<i64> {
+    match interval {
+        "1m" => Ok(BAR_MS),
+        "1h" => Ok(crate::bars::HOUR_MS),
+        other => bail!("unsupported interval {other:?}; use 1m or 1h"),
+    }
+}
+
+/// Fetch `[start_ms, end_ms)` for one coin at `interval`, paging forward
+/// until done. Every bar is stamped at its close (`ts` = open + length), the
+/// moment it became known; the bar still forming is dropped.
+pub fn fetch_coin_interval(coin: &str, interval: &str, start_ms: i64, end_ms: i64) -> Result<Vec<Bar>> {
+    let step = interval_ms(interval)?;
     // Keyed by open time so overlapping pages cannot create duplicates.
     let mut by_open: BTreeMap<i64, Bar> = BTreeMap::new();
     let mut cursor = start_ms;
     while cursor < end_ms {
-        let page = fetch_candles(coin, "1m", cursor, end_ms)?;
+        let page = fetch_candles(coin, interval, cursor, end_ms)?;
         let Some(last_open) = page.iter().map(|b| b.open_ts).max() else {
             break; // nothing more available
         };
         for bar in page {
             by_open.insert(bar.open_ts, bar);
         }
-        if last_open + BAR_MS <= cursor {
+        if last_open + step <= cursor {
             bail!("pagination did not advance past {cursor}");
         }
-        cursor = last_open + BAR_MS;
+        cursor = last_open + step;
         std::thread::sleep(REQUEST_PAUSE);
     }
     let now = wall_now_ms();
@@ -39,13 +56,21 @@ pub fn fetch_coin(coin: &str, start_ms: i64, end_ms: i64) -> Result<Vec<Bar>> {
 
 /// `window`: an explicit [start, end) in Unix ms; otherwise the last `days`.
 pub fn run(coins: &[String], days: f64, window: Option<(i64, i64)>, out: &Path) -> Result<()> {
+    run_interval(coins, "1m", days, window, out)
+}
+
+/// `fetch-bars --interval`: as `run`, at any supported interval. Without a
+/// window the end is the latest bar boundary, so the last bar is the latest
+/// closed one.
+pub fn run_interval(coins: &[String], interval: &str, days: f64, window: Option<(i64, i64)>, out: &Path) -> Result<()> {
+    let step = interval_ms(interval)?;
     let (start, end) = window.unwrap_or_else(|| {
-        let end = wall_now_ms().div_euclid(BAR_MS) * BAR_MS;
+        let end = wall_now_ms().div_euclid(step) * step;
         (end - (days * 86_400_000.0) as i64, end)
     });
     let mut events: Vec<Event> = Vec::new();
     for coin in coins {
-        let bars = fetch_coin(coin, start, end)?;
+        let bars = fetch_coin_interval(coin, interval, start, end)?;
         match (bars.first(), bars.last()) {
             (Some(f), Some(l)) => println!(
                 "{coin}: {} bars, {} to {}",

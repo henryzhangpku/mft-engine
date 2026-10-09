@@ -2,3 +2,6 @@
 /data/recorded_*.jsonl
 __pycache__/
 *.pyc
+/results/forward_v5/*
+!/results/forward_v5/daily_summary.csv
+!/results/forward_v5/status.json

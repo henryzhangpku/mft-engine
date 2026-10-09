@@ -83,6 +83,14 @@ impl EngineConfig {
         c
     }
 
+    /// Strategy v5: v1's signal and state machine on 1-hour bars at a 24-hour
+    /// horizon (`MomentumParams::v5_hourly`), no overlays, the same risk
+    /// layer, fills and $50 minimum trade. Pre-registered in
+    /// `experiments/hourly_trend_v5.toml` before its first run.
+    pub fn v5() -> Self {
+        Self { strategy: MomentumParams::v5_hourly(), ..Self::default() }
+    }
+
     /// Strategy v3: the same momentum, entered only when the top leaderboard
     /// wallets lean the same way (more than 60% of their gross position value
     /// on our side). Positioning only, to isolate it.
@@ -367,7 +375,11 @@ impl Engine {
     fn explain(&self, coin: &str, spot: f64, now: i64, pm_mult: f64, crowd_mult: f64, text_mult: f64) -> String {
         let fmt = |v: Option<f64>, digits: usize| v.map_or("n/a".to_string(), |x| format!("{x:.digits$}"));
         let z = self.strategy.last_z(coin).map_or("n/a".to_string(), |z| format!("{z:+.2}"));
-        let mut out = format!("5m momentum z={z}");
+        let mut out = if self.config.strategy.bar_ms == crate::strategy::HOUR_MS {
+            format!("24h trend z={z}")
+        } else {
+            format!("5m momentum z={z}")
+        };
         if self.config.prediction.enabled {
             let v = self.prediction.view(coin, spot, now);
             if self.config.prediction.require_polymarket {

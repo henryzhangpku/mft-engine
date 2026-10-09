@@ -36,6 +36,10 @@ pub struct BacktestReport {
     /// Traded notional divided by the per-coin target notional.
     pub turnover_multiple: f64,
     pub max_drawdown: f64,
+    /// Sharpe ratio of daily P&L after costs, annualised with sqrt(365);
+    /// absent for windows under 5 days.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sharpe_daily: Option<f64>,
     pub blocked_orders: BTreeMap<String, u64>,
     pub text_reductions: u64,
     pub pm_vetoes: u64,
@@ -245,6 +249,9 @@ pub async fn run_replay(window: &str, envelopes: Vec<Envelope>, config: EngineCo
         traded_notional: p.traded_notional,
         turnover_multiple: p.traded_notional / engine.config().strategy.target_notional,
         max_drawdown: max_drawdown(&equity_curve.iter().map(|(_, e)| *e).chain([pnl]).collect::<Vec<_>>()),
+        sharpe_daily: crate::metrics::sharpe_daily(&crate::metrics::daily_pnl(
+            &equity_curve.iter().copied().chain(equity_curve.last().map(|&(t, _)| (t, pnl))).collect::<Vec<_>>(),
+        )),
         blocked_orders: blocked,
         text_reductions: engine.text_reductions,
         pm_vetoes: engine.pm_vetoes,
