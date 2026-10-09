@@ -68,6 +68,7 @@ idea goes through the ledger before it counts.
                      · crowd long share · funding-rate ranks
         │
  3. SIGNALS (alpha)  momentum z-score, 5-min, vol-normalised    (v1, v2, v3)      strategy.rs
+                     momentum z-score, 24-hour on hourly bars   (v5)
                      momentum z-score, 24-hour, hourly bars     (v5)              strategy.rs
                      funding-carry rank across 30 perps         (v4)              carry.rs
                      the only two things that can open a position
