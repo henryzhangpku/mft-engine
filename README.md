@@ -1,7 +1,9 @@
 # mft-engine
 
-Reasoning signals from social and prediction-market data, gated by code, at
-mid frequency. A small Rust engine takes live crypto prices (Hyperliquid),
+A deterministic mid-frequency research and paper-trading engine in Rust, with
+one event loop for backtest and live: point-in-time data → features → signals
+→ overlays → portfolio and risk → paper execution → a research ledger (the
+pipeline is laid out below). Concretely, it takes live crypto prices (Hyperliquid),
 prediction-market strike ladders (Kalshi), social posts scored by a
 reasoning classifier (TypeSafe's Jev, on Hacker News) and the positioning of
 the top wallets on Hyperliquid's public leaderboard, turns them into one
@@ -36,7 +38,55 @@ sealed out-of-sample window run once: **it was killed**, losing $478.69 on
 $10,000 gross over the sealed 36 days (Sharpe -1.91). It collected the
 funding it was built to collect and lost far more on the price leg.
 
-## What it does, in one picture
+## The pipeline: from data to a trade
+
+Point-in-time data becomes features, features become two alpha signals,
+overlays can only cut them, the portfolio layer sizes and risk-checks the
+target, and execution is paper. The same code replays history, and every
+idea goes through the ledger before it counts.
+
+```
+ 1. DATA             Hyperliquid trades & book · Kalshi ladders · HN posts       feed.rs · kalshi.rs
+    (point-in-time)  · top-trader positions · funding rates                       pollers.rs · event.rs
+                     every record stamped with when it was KNOWABLE, merged
+                     into one time-ordered stream
+        │
+ 2. FEATURES         1-min bars, 60-min volatility · implied P(close > spot)      bars.rs · prediction.rs
+                     from the ladder · post direction & relevance (Jev)           text.rs · positioning.rs
+                     · crowd long share · funding-rate ranks
+        │
+ 3. SIGNALS (alpha)  momentum z-score, 5-min, vol-normalised    (v1, v2, v3)      strategy.rs
+                     funding-carry rank across 30 perps         (v4)              carry.rs
+                     the only two things that can open a position
+        │
+ 4. OVERLAYS         prediction-market agreement · news caution · crowd          engine.rs (gates)
+                     positioning; each a multiplier in [0, 1]:
+                     can shrink or veto, never add or flip
+        │
+ 5. PORTFOLIO        target $ per coin → target − position = order intent        engine.rs · risk.rs
+    & RISK           every risk rule must approve; missing or stale
+                     input, or an error → no trade (fails closed)
+        │
+ 6. EXECUTION        paper fill: fees + slippage, P&L; every decision logged     execution.rs · paper.rs
+                     with its inputs; no order code anywhere in the repo
+        │
+ 7. FEEDBACK         replay = same code on history → results → hash-chained      experiment.rs · ledger.rs
+    (research loop)  ledger; ideas written down before the test, judged once     verify.rs
+                     on sealed data, kept or killed
+```
+
+| strategy | signal (layer 3) | overlays (layer 4) |
+|---|---|---|
+| v1 | momentum | none |
+| v2 | momentum | prediction-market agreement + news caution |
+| v3 | momentum | crowd positioning |
+| v4 | funding carry | none |
+
+**No combination layer, by design:** one alpha source per strategy keeps each
+test clean. Combining signals into a weighted composite under risk
+constraints would be the next layer.
+
+## Event flow in the code
 
 ```
  Hyperliquid ws        Kalshi REST (KXBTCD, KXETHD)      Hacker News (Algolia)

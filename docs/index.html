@@ -34,11 +34,12 @@
     <div class="wrap nav-inner">
       <a class="brand" href="#top" aria-label="mft-engine, back to top"><span class="mono" aria-hidden="true">m</span><span>mft-engine</span></a>
       <div class="nav-links">
+        <a href="#pipeline">Pipeline</a>
         <a href="#replay">Replay</a>
         <a href="#results">Results</a>
         <a href="#carry">Carry</a>
         <a href="#ledger-section">Research ledger</a>
-        <a href="#how">How it works</a>
+        <a href="#how">Design rules</a>
       </div>
       <div class="nav-actions">
         <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark theme" title="Toggle dark theme">
@@ -57,7 +58,7 @@
         through the same code path that runs live on paper, with reasoning signals that can only brake and a risk layer that fails closed.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="https://github.com/henryzhangpku/mft-engine" target="_blank" rel="noopener"><svg class="gh" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>View source</span></a>
-        <a class="btn btn-ghost" href="#replay">See the replay <span aria-hidden="true">&darr;</span></a>
+        <a class="btn btn-ghost" href="#pipeline">How it works <span aria-hidden="true">&darr;</span></a>
       </div>
       <p class="badge" id="notice">This page replays recorded data. Paper only: the engine has no order code and sent no orders.</p>
     </div>
@@ -71,6 +72,58 @@
       </div>
       <div class="cards" id="cards"></div>
       <p class="muted small" id="window"></p>
+    </section>
+
+    <section id="pipeline" aria-labelledby="h-pipeline">
+      <div class="section-head">
+        <h2 id="h-pipeline">From data to a trade: the pipeline</h2>
+        <p class="intro">Point-in-time data becomes features, features become two alpha signals, overlays can only cut them, the portfolio layer sizes and risk-checks the target, and execution is paper. The same code replays history, and every idea goes through the ledger before it counts.</p>
+      </div>
+      <ol class="pipeline">
+        <li class="pl-row">
+          <div class="pl-num">1</div>
+          <div class="pl-name">Data<span class="pl-tag">point-in-time</span></div>
+          <div class="pl-what">Hyperliquid trades and book tops · Kalshi hourly strike ladders · Hacker News posts · top-100 trader positions · funding rates. Every record is stamped with when it became <em>knowable</em> and merged into one time-ordered stream.</div>
+          <div class="pl-code"><code>feed.rs · kalshi.rs · pollers.rs · event.rs</code></div>
+        </li>
+        <li class="pl-row">
+          <div class="pl-num">2</div>
+          <div class="pl-name">Features</div>
+          <div class="pl-what">1-minute bars and 60-minute volatility · implied P(close&nbsp;&gt;&nbsp;spot) from the prediction-market ladder · post direction and relevance scored by a reasoning classifier · crowd long share · funding-rate ranks.</div>
+          <div class="pl-code"><code>bars.rs · prediction.rs · text.rs · positioning.rs</code></div>
+        </li>
+        <li class="pl-row">
+          <div class="pl-num">3</div>
+          <div class="pl-name">Signals<span class="pl-tag">alpha</span></div>
+          <div class="pl-what"><b>Momentum:</b> 5-minute return z-score, volatility-normalised (v1–v3). <b>Carry:</b> cross-sectional funding rank across 30 perps (v4). These are the only two things that can open a position.</div>
+          <div class="pl-code"><code>strategy.rs · carry.rs</code></div>
+        </li>
+        <li class="pl-row">
+          <div class="pl-num">4</div>
+          <div class="pl-name">Overlays<span class="pl-tag">can only cut</span></div>
+          <div class="pl-what">Prediction-market agreement · news caution · crowd positioning. Each is a multiplier in [0,&nbsp;1]: it can shrink or veto a target, never add to or flip it.</div>
+          <div class="pl-code"><code>engine.rs (gates)</code></div>
+        </li>
+        <li class="pl-row">
+          <div class="pl-num">5</div>
+          <div class="pl-name">Portfolio &amp; risk</div>
+          <div class="pl-what">Target dollars per coin → target minus position = order intent. Every risk rule must approve (max position, max order, daily loss, stale data); a missing input or an error means no trade.</div>
+          <div class="pl-code"><code>engine.rs · risk.rs</code></div>
+        </li>
+        <li class="pl-row">
+          <div class="pl-num">6</div>
+          <div class="pl-name">Execution<span class="pl-tag">paper</span></div>
+          <div class="pl-what">Simulated fill with fees and slippage, P&amp;L, and every decision logged with the inputs that produced it. No order code exists in the repo.</div>
+          <div class="pl-code"><code>execution.rs · paper.rs</code></div>
+        </li>
+        <li class="pl-row">
+          <div class="pl-num">7</div>
+          <div class="pl-name">Feedback<span class="pl-tag">research loop</span></div>
+          <div class="pl-what">Replay runs the same code on history. Each idea is written to a hash-chained ledger before it is tested, judged once on sealed data, then kept or killed.</div>
+          <div class="pl-code"><code>experiment.rs · ledger.rs · verify.rs</code></div>
+        </li>
+      </ol>
+      <p class="muted small pl-note"><b>No combination layer, by design:</b> one alpha source per strategy keeps each test clean. Combining signals into a weighted composite under risk constraints would be the next layer.</p>
     </section>
 
     <section id="replay" aria-labelledby="h-chart">
@@ -196,7 +249,7 @@
 
     <section id="how" aria-labelledby="h-how">
       <div class="section-head">
-        <h2 id="h-how">How it works</h2>
+        <h2 id="h-how">Design rules</h2>
       </div>
       <ol class="how">
         <li><b>One event type.</b> Trades, book tops, 1-minute bars, Kalshi ladders, scored posts, top-wallet positioning and detected gaps all become one Rust enum, in time order.</li>
