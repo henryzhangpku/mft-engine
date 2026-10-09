@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261009b">
   <script>try { if (localStorage.getItem("mft-theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}</script>
   <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 </head>
@@ -79,50 +79,50 @@
         <h2 id="h-pipeline">From data to a trade: the pipeline</h2>
         <p class="intro">Point-in-time data becomes features, features become two alpha signals, overlays can only cut them, the portfolio layer sizes and risk-checks the target, and execution is paper. The same code replays history, and every idea goes through the ledger before it counts.</p>
       </div>
-      <ol class="pipeline">
-        <li class="pl-row">
+      <div class="pipeline" role="list">
+        <div class="pl-row" role="listitem">
           <div class="pl-num">1</div>
-          <div class="pl-name">Data<span class="pl-tag">point-in-time</span></div>
+          <div class="pl-name"><div>Data</div><div class="pl-tag">point-in-time</div></div>
           <div class="pl-what">Hyperliquid trades and book tops · Kalshi hourly strike ladders · Hacker News posts · top-100 trader positions · funding rates. Every record is stamped with when it became <em>knowable</em> and merged into one time-ordered stream.</div>
-          <div class="pl-code"><code>feed.rs · kalshi.rs · pollers.rs · event.rs</code></div>
-        </li>
-        <li class="pl-row">
+          <div class="pl-code"><code>feed.rs</code> <code>kalshi.rs</code> <code>pollers.rs</code> <code>event.rs</code></div>
+        </div>
+        <div class="pl-row" role="listitem">
           <div class="pl-num">2</div>
-          <div class="pl-name">Features</div>
+          <div class="pl-name"><div>Features</div></div>
           <div class="pl-what">1-minute bars and 60-minute volatility · implied P(close&nbsp;&gt;&nbsp;spot) from the prediction-market ladder · post direction and relevance scored by a reasoning classifier · crowd long share · funding-rate ranks.</div>
-          <div class="pl-code"><code>bars.rs · prediction.rs · text.rs · positioning.rs</code></div>
-        </li>
-        <li class="pl-row">
+          <div class="pl-code"><code>bars.rs</code> <code>prediction.rs</code> <code>text.rs</code> <code>positioning.rs</code></div>
+        </div>
+        <div class="pl-row" role="listitem">
           <div class="pl-num">3</div>
-          <div class="pl-name">Signals<span class="pl-tag">alpha</span></div>
+          <div class="pl-name"><div>Signals</div><div class="pl-tag">alpha</div></div>
           <div class="pl-what"><b>Momentum:</b> 5-minute return z-score, volatility-normalised (v1–v3). <b>Carry:</b> cross-sectional funding rank across 30 perps (v4). These are the only two things that can open a position.</div>
-          <div class="pl-code"><code>strategy.rs · carry.rs</code></div>
-        </li>
-        <li class="pl-row">
+          <div class="pl-code"><code>strategy.rs</code> <code>carry.rs</code></div>
+        </div>
+        <div class="pl-row" role="listitem">
           <div class="pl-num">4</div>
-          <div class="pl-name">Overlays<span class="pl-tag">can only cut</span></div>
+          <div class="pl-name"><div>Overlays</div><div class="pl-tag">can only cut</div></div>
           <div class="pl-what">Prediction-market agreement · news caution · crowd positioning. Each is a multiplier in [0,&nbsp;1]: it can shrink or veto a target, never add to or flip it.</div>
           <div class="pl-code"><code>engine.rs (gates)</code></div>
-        </li>
-        <li class="pl-row">
+        </div>
+        <div class="pl-row" role="listitem">
           <div class="pl-num">5</div>
-          <div class="pl-name">Portfolio &amp; risk</div>
+          <div class="pl-name"><div>Portfolio &amp; risk</div></div>
           <div class="pl-what">Target dollars per coin → target minus position = order intent. Every risk rule must approve (max position, max order, daily loss, stale data); a missing input or an error means no trade.</div>
-          <div class="pl-code"><code>engine.rs · risk.rs</code></div>
-        </li>
-        <li class="pl-row">
+          <div class="pl-code"><code>engine.rs</code> <code>risk.rs</code></div>
+        </div>
+        <div class="pl-row" role="listitem">
           <div class="pl-num">6</div>
-          <div class="pl-name">Execution<span class="pl-tag">paper</span></div>
+          <div class="pl-name"><div>Execution</div><div class="pl-tag">paper</div></div>
           <div class="pl-what">Simulated fill with fees and slippage, P&amp;L, and every decision logged with the inputs that produced it. No order code exists in the repo.</div>
-          <div class="pl-code"><code>execution.rs · paper.rs</code></div>
-        </li>
-        <li class="pl-row">
+          <div class="pl-code"><code>execution.rs</code> <code>paper.rs</code></div>
+        </div>
+        <div class="pl-row" role="listitem">
           <div class="pl-num">7</div>
-          <div class="pl-name">Feedback<span class="pl-tag">research loop</span></div>
+          <div class="pl-name"><div>Feedback</div><div class="pl-tag">research loop</div></div>
           <div class="pl-what">Replay runs the same code on history. Each idea is written to a hash-chained ledger before it is tested, judged once on sealed data, then kept or killed.</div>
-          <div class="pl-code"><code>experiment.rs · ledger.rs · verify.rs</code></div>
-        </li>
-      </ol>
+          <div class="pl-code"><code>experiment.rs</code> <code>ledger.rs</code> <code>verify.rs</code></div>
+        </div>
+      </div>
       <p class="muted small pl-note"><b>No combination layer, by design:</b> one alpha source per strategy keeps each test clean. Combining signals into a weighted composite under risk constraints would be the next layer.</p>
     </section>
 
@@ -276,6 +276,6 @@
   </footer>
 
   <div id="tip" class="tip" hidden></div>
-  <script src="app.js"></script>
+  <script src="app.js?v=20261009b"></script>
 </body>
 </html>
