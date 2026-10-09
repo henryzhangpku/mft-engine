@@ -259,6 +259,8 @@ enum Command {
         carry_spec: PathBuf,
         #[arg(long, default_value = "data/polymarket_ladders.jsonl")]
         polymarket: PathBuf,
+        #[arg(long, default_value = "results/forward_v5/status.json")]
+        forward_status: PathBuf,
         #[arg(long, default_value = "docs/data/demo.json")]
         out: PathBuf,
     },
@@ -386,8 +388,8 @@ async fn main() -> Result<()> {
             };
             tokio::task::spawn_blocking(move || mft_engine::forward::run(opts)).await?
         }
-        Command::ExportDemo { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, polymarket, out } => {
-            demo::run(demo::DemoInputs { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, polymarket, out }).await
+        Command::ExportDemo { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, polymarket, forward_status, out } => {
+            demo::run(demo::DemoInputs { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, polymarket, forward_status, out }).await
         }
     }
 }

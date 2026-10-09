@@ -85621,7 +85621,28 @@
       }
     }
   ],
-  "generated_at": "2026-10-09T15:43:53Z",
+  "forward_v5": {
+    "decisions": 0,
+    "equity_usd": 0.0,
+    "events": 386,
+    "fees_usd": 0.0,
+    "fills": 0,
+    "last_bar": {
+      "BTC": "2026-10-09T16:00:00Z",
+      "ETH": "2026-10-09T16:00:00Z"
+    },
+    "mode": "paper (simulated fills; no orders, no keys)",
+    "next_poll": "2026-10-09T17:00:15Z",
+    "pid": 27080,
+    "positions_usd": {},
+    "round_trips": 0,
+    "slippage_usd": 0.0,
+    "started": "2026-10-09T16:11:16Z",
+    "stop": "powershell -File scripts/forward_v5.ps1 stop (README, v5)",
+    "strategy": "v5",
+    "updated": "2026-10-09T16:16:51Z"
+  },
+  "generated_at": "2026-10-09T16:17:13Z",
   "jev": {
     "input_tokens_per_post_mean": 545.7,
     "input_tokens_total": 141333,
@@ -85919,6 +85940,30 @@
       "recorded_at": "2026-10-09T15:42:26Z",
       "seq": 23,
       "variant": "v2b_kalshi_and_polymarket",
+      "verdict": "killed"
+    },
+    {
+      "fills": null,
+      "full_pnl": null,
+      "hash": "946d2e55e4f4",
+      "holdout_pnl": null,
+      "hypothesis": "The baselines lost because 5-minute momentum's turnover (about 300x the book in 3.5 days) cannot clear 5.5 bp per fill. The same family at a 24-hour horizon on 1-hour bars (z = 24h log return over its 168-hour noise, enter at |z| >= 1, exit on a sign change against or after 72 bars, $1,000 per coin, BTC and ETH) trades about 1/50th as much. Kept only if net PnL after costs is positive on the full window and in both halves; otherwise killed.",
+      "prev": "0adf426763b4",
+      "recorded_at": "2026-10-09T16:09:21Z",
+      "seq": 24,
+      "variant": "v5_hourly_trend",
+      "verdict": "preregistered"
+    },
+    {
+      "fills": 391,
+      "full_pnl": 269.5092285355081,
+      "hash": "2ad0adbed806",
+      "holdout_pnl": 208.14936375254774,
+      "hypothesis": "The baselines lost because 5-minute momentum's turnover (about 300x the book in 3.5 days) cannot clear 5.5 bp per fill. The same family at a 24-hour horizon on 1-hour bars (z = 24h log return over its 168-hour noise, enter at |z| >= 1, exit on a sign change against or after 72 bars, $1,000 per coin, BTC and ETH) trades about 1/50th as much. Kept only if net PnL after costs is positive on the full window and in both halves; otherwise killed.",
+      "prev": "946d2e55e4f4",
+      "recorded_at": "2026-10-09T16:09:41Z",
+      "seq": 25,
+      "variant": "v5_hourly_trend",
       "verdict": "killed"
     }
   ],
@@ -204858,6 +204903,99 @@
         "zone": "mild long"
       }
     ]
+  },
+  "v5": {
+    "evaluation": {
+      "first_half": {
+        "bars": 5002,
+        "blocked_orders": {
+          "max_daily_loss": 28
+        },
+        "crowd_vetoes": 0,
+        "decisions_fingerprint": "11262fbf5482452c",
+        "end": "2026-06-27T11:00:00Z",
+        "fees": 87.4062288875877,
+        "fills": 203,
+        "gaps": 0,
+        "hit_rate": 0.32989690721649484,
+        "max_drawdown": 559.8543656399911,
+        "pm_vetoes": 0,
+        "pnl_after_costs": -54.65646127465675,
+        "pnl_before_costs": 52.173374554126,
+        "positioning_snapshots": 0,
+        "prediction_snapshots": 0,
+        "round_trips": 97,
+        "sharpe_daily": -0.3361618881518139,
+        "slippage": 19.423606941195047,
+        "start": "2026-03-15T07:00:00Z",
+        "text_reductions": 0,
+        "text_signals": 0,
+        "traded_notional": 194236.0641946391,
+        "turnover_multiple": 194.23606419463908,
+        "window": "first_half"
+      },
+      "full": {
+        "bars": 10004,
+        "blocked_orders": {
+          "max_daily_loss": 38
+        },
+        "crowd_vetoes": 0,
+        "decisions_fingerprint": "86ef2d39a6813b01",
+        "end": "2026-10-09T16:00:00Z",
+        "fees": 170.0166459689161,
+        "fills": 391,
+        "gaps": 0,
+        "hit_rate": 0.34574468085106386,
+        "max_drawdown": 559.8543656399911,
+        "pm_vetoes": 0,
+        "pnl_after_costs": 269.5092285355081,
+        "pnl_before_costs": 477.3073461594745,
+        "positioning_snapshots": 0,
+        "prediction_snapshots": 0,
+        "round_trips": 188,
+        "sharpe_daily": 0.7413443499706973,
+        "slippage": 37.78147165505027,
+        "start": "2026-03-15T07:00:00Z",
+        "text_reductions": 0,
+        "text_signals": 0,
+        "traded_notional": 377814.7688198144,
+        "turnover_multiple": 377.8147688198144,
+        "window": "full"
+      },
+      "name": "v5_hourly_trend",
+      "second_half": {
+        "bars": 5002,
+        "blocked_orders": {
+          "max_daily_loss": 10
+        },
+        "crowd_vetoes": 0,
+        "decisions_fingerprint": "f5d110ee6148a07f",
+        "end": "2026-10-09T16:00:00Z",
+        "fees": 80.75560758282863,
+        "fills": 183,
+        "gaps": 0,
+        "hit_rate": 0.34831460674157305,
+        "max_drawdown": 228.58005637145857,
+        "pm_vetoes": 0,
+        "pnl_after_costs": 208.14936375254774,
+        "pnl_before_costs": 306.85065497784296,
+        "positioning_snapshots": 0,
+        "prediction_snapshots": 0,
+        "round_trips": 89,
+        "sharpe_daily": 1.0652726145579243,
+        "slippage": 17.945683642466594,
+        "start": "2026-06-27T12:00:00Z",
+        "text_reductions": 0,
+        "text_signals": 0,
+        "traded_notional": 179456.90573961884,
+        "turnover_multiple": 179.45690573961883,
+        "window": "second_half"
+      }
+    },
+    "recorded_at": "2026-10-09T16:09:41Z",
+    "seq": 25,
+    "verdict": "killed",
+    "verdict_rule": "kept if PnL after costs > 0 on the full window AND on the first half AND on the second half; else killed."
   },
   "window": {
     "end": "2026-10-06T03:17:00Z",

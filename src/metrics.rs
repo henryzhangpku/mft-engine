@@ -69,10 +69,10 @@ pub fn daily_pnl(curve: &[(i64, f64)]) -> Vec<f64> {
 }
 
 /// Sharpe ratio of daily P&L, annualised with sqrt(365) (crypto trades every
-/// day). `None` with fewer than 5 days or no variation: too short to mean
+/// day). `None` with fewer than 20 days or no variation: too short to mean
 /// anything, so no number is invented.
 pub fn sharpe_daily(daily: &[f64]) -> Option<f64> {
-    if daily.len() < 5 {
+    if daily.len() < 20 {
         return None;
     }
     let n = daily.len() as f64;

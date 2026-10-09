@@ -1,0 +1,21 @@
+{
+  "strategy": "v5",
+  "mode": "paper (simulated fills; no orders, no keys)",
+  "pid": 27080,
+  "started": "2026-10-09T16:11:16Z",
+  "updated": "2026-10-09T16:16:51Z",
+  "last_bar": {
+    "BTC": "2026-10-09T16:00:00Z",
+    "ETH": "2026-10-09T16:00:00Z"
+  },
+  "positions_usd": {},
+  "equity_usd": 0.0,
+  "fills": 0,
+  "fees_usd": 0.0,
+  "slippage_usd": 0.0,
+  "round_trips": 0,
+  "events": 386,
+  "decisions": 0,
+  "next_poll": "2026-10-09T17:00:15Z",
+  "stop": "powershell -File scripts/forward_v5.ps1 stop (README, v5)"
+}

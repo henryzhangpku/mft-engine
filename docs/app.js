@@ -79,6 +79,8 @@ function drawCards() {
   if (pa && pa.rate != null) html.push(card("Kalshi and Polymarket agree", `${(pa.rate * 100).toFixed(0)}%`, `of ${pa.both.toLocaleString()} bars with both readings, on the side of P(up) vs 0.5`));
   html.push(card("Posts reasoned over", String(d.posts.length), `${relevant} judged relevant to BTC or ETH`));
   html.push(card("Experiments on the ledger", String(d.ledger.length), "hash-chained, kept and killed alike"));
+  const fw = d.forward_v5;
+  if (fw && fw.started) html.push(card("Forward paper run: v5", `live since ${fw.started.slice(0, 10)}`, `${fw.started.slice(11, 16)} UTC, hourly bars, ${fw.fills} paper fills so far`));
   html.push(card("Deterministic replay", v2.full.decisions_fingerprint.slice(0, 8), "decision fingerprint, identical on every run"));
   html.push(card("Live sources, one loop", "3", "Hyperliquid, Kalshi, Hacker News"));
   $("cards").innerHTML = html.join("");
@@ -221,6 +223,7 @@ function drawEvalTable() {
   const rows = [];
   const evals = [...state.data.evaluations];
   if (state.data.polymarket && state.data.polymarket.v2b) evals.push(state.data.polymarket.v2b);
+  if (state.data.v5 && state.data.v5.evaluation) evals.push({ ...state.data.v5.evaluation, name: "v5 hourly trend (208 days, 1h bars)" });
   for (const e of evals) {
     for (const r of [e.full, e.first_half, e.second_half]) {
       rows.push(`<tr><td>${esc(e.name)}</td><td>${esc(r.window)}</td><td class="num">${r.fills}</td><td class="num">${pct(r.hit_rate)}</td>` +

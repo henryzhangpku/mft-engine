@@ -37,6 +37,8 @@ pub struct DemoInputs {
     /// replays above are exactly the ledger's; used for v2b and the
     /// Kalshi/Polymarket agreement. Missing file means no Polymarket section.
     pub polymarket: PathBuf,
+    /// The v5 forward paper run's status file; missing means no card.
+    pub forward_status: PathBuf,
     pub out: PathBuf,
 }
 
@@ -267,6 +269,22 @@ pub async fn run(inputs: DemoInputs) -> Result<()> {
         })
         .collect();
 
+    // v5 (hourly trend) as recorded on the ledger: its one historical run,
+    // read from the entry itself (the 208-day hourly window is not replayed
+    // here), and the forward paper run's status, if it is running.
+    let v5 = ledger::read(&inputs.ledger)?
+        .iter()
+        .rev()
+        .find(|e| e.base == "v5" && e.result.get("full").is_some())
+        .map(|e| {
+            json!({
+                "seq": e.seq, "verdict": e.verdict, "verdict_rule": e.verdict_rule, "recorded_at": e.recorded_at,
+                "evaluation": { "name": e.variant, "full": e.result["full"], "first_half": e.result["first_half"], "second_half": e.result["second_half"] },
+            })
+        })
+        .unwrap_or(Value::Null);
+    let forward_v5 = read_json_or_null(&inputs.forward_status);
+
     let carry = carry_section(&inputs.carry_spec, &inputs.ledger).unwrap_or_else(|e| {
         println!("no v4 section: {e:#}");
         Value::Null
@@ -290,6 +308,8 @@ pub async fn run(inputs: DemoInputs) -> Result<()> {
         "universe": universe,
         "carry": carry,
         "polymarket": polymarket,
+        "v5": v5,
+        "forward_v5": forward_v5,
     });
     write_json(&inputs.out, &doc)?;
     let size = std::fs::metadata(&inputs.out).map(|m| m.len()).unwrap_or(0);

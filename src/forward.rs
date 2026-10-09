@@ -243,7 +243,7 @@ fn write_status(run: &ForwardRun, strategy: &str, files: &RunFiles, next_poll: i
         events: run.events,
         decisions: run.decisions,
         next_poll: format_utc(next_poll),
-        stop: "Stop-ScheduledTask -TaskName mft-engine-v5-forward (see README, v5)",
+        stop: "powershell -File scripts/forward_v5.ps1 stop (README, v5)",
     };
     write_json(&files.status, &status)?;
     write_text(&files.daily, &run.daily_csv())

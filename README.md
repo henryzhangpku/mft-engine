@@ -43,6 +43,12 @@ pre-registered on the ledger and tested on 90 days of hourly data, with a
 sealed out-of-sample window run once: **it was killed**, losing $478.69 on
 $10,000 gross over the sealed 36 days (Sharpe -1.91). It collected the
 funding it was built to collect and lost far more on the price leg.
+v5 takes the momentum family to a 24-hour horizon on hourly bars, to cut
+turnover: pre-registered, then run once on 208 days of BTC and ETH. It
+traded about 1/47th as much per day as v1 and made +$269.51 after costs
+(Sharpe +0.74), but lost $54.66 in the first half, so **it was killed** by
+its own pre-registered rule (positive on the full window and both halves).
+A forward paper run of v5 on live hourly candles started 2026-10-09 16:11 UTC.
 
 ## The pipeline: from data to a trade
 
@@ -62,6 +68,7 @@ idea goes through the ledger before it counts.
                      · crowd long share · funding-rate ranks
         │
  3. SIGNALS (alpha)  momentum z-score, 5-min, vol-normalised    (v1, v2, v3)      strategy.rs
+                     momentum z-score, 24-hour, hourly bars     (v5)              strategy.rs
                      funding-carry rank across 30 perps         (v4)              carry.rs
                      the only two things that can open a position
         │
@@ -88,6 +95,7 @@ idea goes through the ledger before it counts.
 | v2b | momentum | Kalshi AND Polymarket agreement + news caution |
 | v3 | momentum | crowd positioning |
 | v4 | funding carry | none |
+| v5 | momentum, 24-hour horizon on 1-hour bars | none |
 
 **No combination layer, by design:** one alpha source per strategy keeps each
 test clean. Combining signals into a weighted composite under risk
@@ -314,6 +322,96 @@ What this says:
   noon resolution) where the ladder was near-certain on both sides of spot
   and had fewer than three informative strikes: no reading, so v2b could not
   enter there. That is the fail-closed rule working, not missing data.
+
+## v5: lower turnover, pre-registered (ledger 24 and 25)
+
+The baselines lost because 5-minute momentum's turnover (about 300x the book
+in 3.5 days) cannot clear 5.5 bp per fill, whatever the signal. v5 tests the
+same family at a 24-hour horizon with about 1/50th of the trading. The spec
+was written in `experiments/hourly_trend_v5.toml` and put on the ledger
+(entry 24, `experiment --preregister`, commit 62ba778) before any result
+existed; the file sets `require_preregistration`, so it cannot be run from
+an edited copy.
+
+| item | value |
+|---|---|
+| coins | BTC and ETH, Hyperliquid perpetuals |
+| bars | 1-hour candles from the public `candleSnapshot` endpoint, stamped at their close |
+| signal | `r24 = ln(close_t / close_{t-24})`, `sigma` = std of the last 168 hourly log returns, `z = r24 / (sigma * sqrt(24))` |
+| entry | long if `z >= 1.0`, short if `z <= -1.0` |
+| exit | when `z` crosses 0 against the position, or after 72 bars |
+| size | $1,000 target per coin; differences under $50 not traded |
+| costs | 4.5 bp taker + 1 bp slippage per fill |
+| overlays | none; the same risk layer as v1 (fails closed) |
+| data | all the hourly history the endpoint keeps: 5,002 bars per coin, 2026-03-15 06:00 to 10-09 16:00 UTC (208 days), `data/bars_1h.jsonl` |
+| verdict rule | kept only if net PnL after costs > 0 on the full window AND in both halves; otherwise killed |
+
+It is `EngineConfig::v5()`: v1's code and state machine with
+`MomentumParams::v5_hourly()`, on the same engine, risk layer and fills.
+
+### Historical result, run once (ledger 25)
+
+`mft-engine experiment --file experiments/hourly_trend_v5.toml`:
+
+```
+strategy                   window        fills     hit    pnl_net  pnl_gross     costs   turn_x   max_dd  vetoes
+v5_hourly_trend            full            391   34.6%     269.51     477.31    207.80    377.8   559.85       0
+v5_hourly_trend            first_half      203   33.0%     -54.66      52.17    106.83    194.2   559.85       0
+v5_hourly_trend            second_half     183   34.8%     208.15     306.85     98.70    179.5   228.58       0
+```
+
+| window | net PnL | Sharpe (daily, annualised) | hit rate (round trips) | turnover | max drawdown |
+|---|---|---|---|---|---|
+| full, 208 days | +$269.51 | +0.74 | 34.6% of 188 | 378x ($378k traded) | $559.85 |
+| first half | **-$54.66** | -0.34 | 33.0% of 97 | 194x | $559.85 |
+| second half | +$208.15 | +1.07 | 34.8% of 89 | 180x | $228.58 |
+
+**Killed.** The first half loses after costs, so the pre-registered rule
+says killed, whatever the full window says.
+
+What this says:
+
+* **Turnover came down as designed.** 1.8x the book per day against v1's
+  85x: about 1/47th. v1 paid $162.81 in costs on a $34.97 gross loss in
+  3.5 days; v5 paid $207.80 on a $477.31 gross gain in 208 days.
+* **The edge, if there is one, is not stable.** A 35% hit rate with a
+  positive full window is the trend-following shape (small losses, a few
+  large wins). It made +$52 before costs in the first half and +$307 in the
+  second: one half is nearly flat before costs, and costs then take it below
+  zero. Two halves of about 100 days, BTC and ETH only, are not enough to
+  tell a horizon effect from a few big moves.
+* **Deflated:** `ledger dsr --entry 25` gives PSR against zero 0.72 over 209
+  days (skew +2.4, kurtosis 15), DSR 0.0000 against all 20 trials on the
+  ledger, 0.28 against the 4 daily ones. Not evidence of an edge.
+* **The risk layer bit.** The $50 daily-loss stop blocked 38 risk-adding
+  orders over the 208 days (28 in the first half), as designed.
+
+### Forward paper run (live since 2026-10-09 16:11 UTC)
+
+A pre-registered strategy that is killed on history can still be watched
+forward at no cost, on paper. `mft-engine paper-hourly` is the live paper
+mode for an hourly strategy: the same engine, fed each closed 1-hour candle
+from the public endpoint 15 seconds after the hour, clocked by its arrival
+time, paper fills only (no orders, no keys; the paper-only guard tests pass).
+It appends every event it consumes to `results/forward_v5/session.jsonl`
+(warm-up first) and every decision to `decisions.jsonl` and `signals.log`; on
+a restart it replays its own session log on the recorded clocks to rebuild
+its exact state, then fetches any hours it missed (late bars are blocked by
+the stale-data rule: fails closed). Each hour it rewrites `status.json` and
+`daily_summary.csv` (committed; the logs are not).
+
+On this machine it runs as a Windows scheduled task, `mft-engine-v5-forward`
+(at logon, restart on failure, no admin), started 2026-10-09 16:11:16 UTC:
+
+```
+powershell -File scriptsorward_v5.ps1 status   # task state, status.json, last signals
+powershell -File scriptsorward_v5.ps1 stop     # stop (state kept); "start" resumes
+powershell -File scriptsorward_v5.ps1 remove   # stop and unregister the task
+powershell -File scriptsorward_v5.ps1 install  # build, copy the binary, register, start
+```
+
+The task runs a copy of the binary in `results/forward_v5/bin`, so
+rebuilding the repo never collides with the running process.
 
 ## Hyperliquid universe and crowd positioning
 
@@ -552,6 +650,8 @@ positive and beats the baseline's.
 | 21 | v1_momentum_with_polymarket_data | baseline | -197.78 | -110.95 | 294 |
 | 22 | v2_reasoning_gated_with_polymarket_data | killed | -152.97 | -71.23 | 267 |
 | 23 | v2b_kalshi_and_polymarket | killed | -82.76 | -40.13 | 134 |
+| 24 | v5_hourly_trend | preregistered | | | |
+| 25 | v5_hourly_trend | killed | 269.51 | 208.15 | 391 |
 
 Entries 7 to 9 (`experiments/positioning.toml`) are v3 on the backfilled
 window, where no positioning exists: zero trades, as predicted, recorded
@@ -567,6 +667,11 @@ specification first (`experiment --preregister`, verdict "preregistered",
 with the fully resolved config), then the one run. The file sets
 `require_preregistration`, so `experiment` refuses to run it unless those
 entries exist for its exact SHA-256.
+
+Entries 24 and 25 are v5 (`experiments/hourly_trend_v5.toml`), the same way.
+Its file sets `verdict = "positive_all_windows"`: one strategy judged on its
+own (net PnL after costs positive on the full window and in both halves),
+with no baseline to beat; the rule is copied into both entries.
 
 A note on fingerprints: entries 0 to 6 logged decision fingerprints that no
 committed build gives back (the builds of c77ede1, which added the ledger, of
@@ -638,7 +743,9 @@ series are far from normal (kurtosis 23 to 267: mostly flat minutes, a few
 fills), which the PSR's denominator accounts for. The 175-minute session
 windows include the 90 warm-up minutes, in which v1 can already trade.
 
-Every non-baseline entry was killed: nothing has a positive holdout. On the
+Every non-baseline entry was killed. Before v5 nothing had a positive
+holdout; v5 (entry 25) has one (+$208.15) and a positive full window, and
+was killed by its own rule because its first half lost. On the
 backfilled window the two that lose least (strict Kalshi agreement, and a
 higher momentum threshold) do so by trading a quarter to a third as often;
 neither is positive before costs in its holdout.

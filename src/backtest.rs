@@ -37,7 +37,7 @@ pub struct BacktestReport {
     pub turnover_multiple: f64,
     pub max_drawdown: f64,
     /// Sharpe ratio of daily P&L after costs, annualised with sqrt(365);
-    /// absent for windows under 5 days.
+    /// absent for windows under 20 days.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sharpe_daily: Option<f64>,
     pub blocked_orders: BTreeMap<String, u64>,

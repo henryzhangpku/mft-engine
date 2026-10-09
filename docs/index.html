@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261009d">
+  <link rel="stylesheet" href="style.css?v=20261009e">
   <script>try { if (localStorage.getItem("mft-theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}</script>
   <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 </head>
@@ -163,7 +163,7 @@
     <section id="results" aria-labelledby="h-equity">
       <div class="section-head">
         <h2 id="h-equity">Baseline strategies: what the engine measured</h2>
-        <p class="intro">These are deliberately simple baselines whose job is to exercise the engine end to end: one alpha signal, overlays that can only cut, real costs. Each was written down before its first run. The finding the engine surfaced is about <b>turnover</b>: 5-minute momentum trades the book about 300 times in three and a half days, so even its sign flipped (+$35 before costs) cannot pay $163 of costs. Overlays cut trading roughly in half (v2b) but do not pick better trades. On this sample nothing survives costs, and the engine reports that instead of tuning it away; the next test is a lower-turnover signal, pre-registered and run forward on paper.</p>
+        <p class="intro">These are deliberately simple baselines whose job is to exercise the engine end to end: one alpha signal, overlays that can only cut, real costs. Each was written down before its first run. The finding the engine surfaced is about <b>turnover</b>: 5-minute momentum trades the book about 300 times in three and a half days, so even its sign flipped (+$35 before costs) cannot pay $163 of costs. Overlays cut trading roughly in half (v2b) but do not pick better trades. On this sample nothing survives costs, and the engine reports that instead of tuning it away; the next test was a lower-turnover signal, pre-registered and run forward on paper. That is <b>v5</b> (last three rows): the same momentum family at a 24-hour horizon on hourly bars, over the 208 days of hourly history the exchange keeps. It trades about 1/47th as much per day as v1 and made +$270 after costs, but lost $55 in the first half, so its pre-registered rule (positive on the full window and in both halves) killed it. It now runs forward on paper, live.</p>
       </div>
       <div class="panel">
         <div class="legend">
@@ -205,7 +205,7 @@
         <h2 id="h-ledger">Research ledger: every idea, kept or killed</h2>
         <p class="intro">Every idea run through <code>mft-engine experiment</code> is appended to a hash-chained log.
           Each entry carries the hash of the one before it, so a result cannot be edited or dropped without breaking the chain.
-          An idea is kept only if its second-half (holdout) PnL after costs is positive and beats the baseline. Killed ideas stay on the record.</p>
+          An idea is kept only if its second-half (holdout) PnL after costs is positive and beats the baseline (v5, which stands alone: only if it is positive on the full window and in both halves). Killed ideas stay on the record.</p>
       </div>
       <div class="ledger-stats" id="ledger-stats"></div>
       <div class="table-wrap"><table id="ledger"></table></div>
@@ -260,7 +260,8 @@
           v2 takes the same entries only when the Kalshi hourly ladder says the price is more likely to close above spot (for a long) or below it (for a short),
           and lets opposing Jev-scored posts shrink or veto a position.
           v2b also needs Polymarket's daily "above" ladder to lean the same way: pre-registered, run once, half the trades of v2, still a loss.
-          v3 takes the same entries only when the top Hyperliquid wallets hold more than 60% of their position value on the same side.</li>
+          v3 takes the same entries only when the top Hyperliquid wallets hold more than 60% of their position value on the same side.
+          v5 is the same rules on 1-hour bars at a 24-hour horizon (enter at 1 standard deviation, exit on a sign change or after 72 hours), to cut turnover.</li>
         <li><b>Reasoning features can only brake.</b> All gates are multipliers between 0 and 1, and a check blocks any order the gates made larger or flipped.</li>
         <li><b>Risk fails closed.</b> Max position, max order, max daily loss, stale data. A rule that errors blocks the order. Every block is logged with its reason.</li>
         <li><b>Honest results.</b> Both strategies lose money after costs on this sample. The sample is a few days, so none of this is evidence of an edge.</li>
@@ -279,6 +280,6 @@
   </footer>
 
   <div id="tip" class="tip" hidden></div>
-  <script src="app.js?v=20261009d"></script>
+  <script src="app.js?v=20261009e"></script>
 </body>
 </html>
