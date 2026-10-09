@@ -33,7 +33,52 @@ pub struct DemoInputs {
     /// The v4 (funding carry) specification; its data and ledger entries
     /// feed the v4 section. Missing files mean no v4 section.
     pub carry_spec: PathBuf,
+    /// Polymarket daily ladders. Loaded apart from `data` so the v1 and v2
+    /// replays above are exactly the ledger's; used for v2b and the
+    /// Kalshi/Polymarket agreement. Missing file means no Polymarket section.
+    pub polymarket: PathBuf,
     pub out: PathBuf,
+}
+
+/// How often Kalshi's hourly and Polymarket's daily ladders put P(close >
+/// spot) on the same side of 0.5, at every bar where both have a usable
+/// reading (the gate's own view: fresh, unexpired, spanning spot).
+fn agreement(events: &[Event]) -> (Value, BTreeMap<String, Vec<Value>>) {
+    use crate::prediction::{PredictionParams, PredictionState, KALSHI, POLYMARKET};
+    let mut state = PredictionState::new(PredictionParams { enabled: true, ..PredictionParams::default() });
+    let mut per_coin: BTreeMap<String, (u64, u64, u64)> = BTreeMap::new(); // bars, both, agree
+    let mut series: BTreeMap<String, Vec<Value>> = BTreeMap::new();
+    for e in events {
+        match e {
+            Event::PredictionMarket(p) => state.on_snapshot(p),
+            Event::Bar(b) => {
+                let k = state.venue_view(KALSHI, &b.coin, b.close, b.ts).p_up;
+                let p = state.venue_view(POLYMARKET, &b.coin, b.close, b.ts).p_up;
+                let c = per_coin.entry(b.coin.clone()).or_default();
+                c.0 += 1;
+                if let Some(pp) = p {
+                    series.entry(b.coin.clone()).or_default().push(json!([b.ts / 1000, round(pp, 3)]));
+                }
+                if let (Some(k), Some(p)) = (k, p) {
+                    c.1 += 1;
+                    if (k > 0.5) == (p > 0.5) && k != 0.5 && p != 0.5 {
+                        c.2 += 1;
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+    let rows: serde_json::Map<String, Value> = per_coin
+        .iter()
+        .map(|(coin, (bars, both, agree))| {
+            let rate = if *both > 0 { Some(round(*agree as f64 / *both as f64, 3)) } else { None };
+            (coin.clone(), json!({ "bars": bars, "both": both, "agree": agree, "rate": rate }))
+        })
+        .collect();
+    let (both, agree): (u64, u64) = per_coin.values().fold((0, 0), |a, c| (a.0 + c.1, a.1 + c.2));
+    let rate = if both > 0 { Some(round(agree as f64 / both as f64, 3)) } else { None };
+    (json!({ "per_coin": rows, "both": both, "agree": agree, "rate": rate }), series)
 }
 
 fn round(x: f64, digits: i32) -> f64 {
@@ -78,7 +123,7 @@ pub async fn run(inputs: DemoInputs) -> Result<()> {
                 bars.entry(b.coin.clone()).or_default().push(json!([b.ts / 1000, b.close]));
                 last_close.insert(b.coin.clone(), b.close);
             }
-            Event::PredictionMarket(p) => {
+            Event::PredictionMarket(p) if p.venue == crate::prediction::KALSHI => {
                 let q = |x| quantile(&p.strikes, &p.prob_above, x).map(|v| round(v, 1));
                 let p_up = last_close.get(&p.coin).and_then(|s| prob_above(&p.strikes, &p.prob_above, *s));
                 band.entry(p.coin.clone()).or_default().push(json!([
@@ -123,6 +168,22 @@ pub async fn run(inputs: DemoInputs) -> Result<()> {
         let curve: Vec<Value> = run.equity.iter().step_by(5).map(|(t, e)| json!([t / 1000, round(*e, 2)])).collect();
         equity.insert(name.into(), curve.into());
         evaluations.push(eval);
+    }
+
+    // Polymarket: v2b on the same inputs plus the Polymarket ladders, and
+    // how often the two markets agree.
+    let mut polymarket = Value::Null;
+    if inputs.polymarket.exists() {
+        let mut files = inputs.data.clone();
+        files.push(inputs.polymarket.clone());
+        let with_poly = load_events(&files)?;
+        let (agree, series) = agreement(&with_poly);
+        let (eval, run) = evaluate("v2b", &with_poly, EngineConfig::v2b()).await;
+        decisions.insert("v2b".into(), run.decisions.iter().map(decision_json).collect());
+        let curve: Vec<Value> = run.equity.iter().step_by(5).map(|(t, e)| json!([t / 1000, round(*e, 2)])).collect();
+        equity.insert("v2b".into(), curve.into());
+        println!("Kalshi/Polymarket agreement: {agree}");
+        polymarket = json!({ "agreement": agree, "p_up": series, "v2b": eval });
     }
 
     // The live-recorded session: positioning over time, and the three
@@ -228,6 +289,7 @@ pub async fn run(inputs: DemoInputs) -> Result<()> {
         "session": { "window": session_window, "positioning": positioning, "evaluations": session_evals },
         "universe": universe,
         "carry": carry,
+        "polymarket": polymarket,
     });
     write_json(&inputs.out, &doc)?;
     let size = std::fs::metadata(&inputs.out).map(|m| m.len()).unwrap_or(0);
