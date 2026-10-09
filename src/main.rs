@@ -186,6 +186,9 @@ enum Command {
         /// Only verify the ledger's hash chain; run nothing.
         #[arg(long)]
         verify: bool,
+        /// Write the variants' specification to the ledger without running.
+        #[arg(long)]
+        preregister: bool,
     },
     /// Run live on Hyperliquid + Kalshi (+ the sidecar's social feed) with paper fills.
     Paper {
@@ -320,7 +323,10 @@ async fn main() -> Result<()> {
             Ok(())
         }
         Command::Ledger { command: LedgerCommand::Dsr { entry, all, ledger } } => ledger_dsr(entry, all, &ledger).await,
-        Command::Experiment { file, ledger, verify } => {
+        Command::Experiment { file, ledger, verify, preregister } => {
+            if preregister {
+                return experiment::preregister(&file, &ledger);
+            }
             if verify {
                 let n = mft_engine::ledger::verify(&mft_engine::ledger::read(&ledger)?)?;
                 println!("ledger {}: {n} entries, chain verified", ledger.display());

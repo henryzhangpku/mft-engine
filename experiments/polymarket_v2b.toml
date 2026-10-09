@@ -1,0 +1,46 @@
+# Strategy v2b: two prediction markets must agree. Written, and written to
+# the ledger with `--preregister`, before its first run.
+#
+# Pre-register:  mft-engine experiment --file experiments/polymarket_v2b.toml --preregister
+# Run:           mft-engine experiment --file experiments/polymarket_v2b.toml
+#
+# v2b = v2 (v1 momentum targets; Kalshi gate; social caution), and a new
+# position is opened only if Polymarket ALSO leans our way:
+#   * Kalshi hourly ladder: P(close > spot) > 0.5 for a long, < 0.5 for a
+#     short (unchanged from v2);
+#   * Polymarket daily "above" ladder (the event resolving next, at 12:00 ET
+#     on Binance BTC/USDT or ETH/USDT): P(close > spot) > 0.5 for a long,
+#     < 0.5 for a short, read the same way (cleaned, trimmed to its
+#     informative strikes, linear between strikes, no extrapolation).
+# Either ladder missing, older than 3 minutes, past its resolution, or not
+# spanning spot means no entry (fail closed). Held positions are not
+# re-gated, exactly as in v2. Both gates are a Caution in [0, 1]: they can
+# only shrink a target, never grow or flip it.
+#
+# The two markets differ in horizon (top of the hour against noon ET, up to
+# 24 hours away) and in settlement source (Kalshi's index against Binance),
+# and both are compared with Hyperliquid's perpetual price. Nothing was
+# tuned: same 0.5 line, same 3-minute staleness as v2.
+#
+# Verdict rule as for every experiment file (src/experiment.rs): kept only if
+# the second-half PnL after costs is positive and beats the baseline's. The
+# first variant is the baseline. v2 is rerun on the same inputs as a control:
+# adding the Polymarket file must not change v1 or v2 at all.
+
+data = ["data/bars_1m.jsonl", "data/kalshi_ladders.jsonl", "data/polymarket_ladders.jsonl", "data/text_signals.jsonl"]
+require_preregistration = true
+
+[[variant]]
+name = "v1_momentum_with_polymarket_data"
+base = "v1"
+hypothesis = "Baseline for this file. Same as ledger entry 0; Polymarket snapshots are in the stream but v1 ignores them, so its result and fingerprint must repeat entry 0's."
+
+[[variant]]
+name = "v2_reasoning_gated_with_polymarket_data"
+base = "v2"
+hypothesis = "Control. v2 reads Kalshi only (ladders are kept per venue), so its result and fingerprint must repeat ledger entry 1's."
+
+[[variant]]
+name = "v2b_kalshi_and_polymarket"
+base = "v2b"
+hypothesis = "Requiring Polymarket's daily ladder to agree with Kalshi's hourly one removes more entries than v2: fewer fills and lower costs than v2. With 3.5 days of data the PnL difference will be too small to call; expected still negative after costs, and killed by the verdict rule."

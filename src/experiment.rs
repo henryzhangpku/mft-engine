@@ -47,6 +47,11 @@ pub struct ExperimentFile {
     /// Replay time key; absent means exchange (the ledger's existing key).
     #[serde(default)]
     pub time_key: TimeKey,
+    /// If true, `run` refuses unless every variant was first written to the
+    /// ledger by `--preregister` from this exact file (same SHA-256), so the
+    /// rule provably existed before any result.
+    #[serde(default)]
+    pub require_preregistration: bool,
     #[serde(rename = "variant")]
     pub variants: Vec<Variant>,
 }
@@ -97,11 +102,63 @@ fn verdict(eval: &Evaluation, baseline_holdout: Option<f64>) -> &'static str {
     }
 }
 
+/// `experiment --preregister`: write every variant's specification (base,
+/// overrides, the full resolved config, hypothesis, data hash, verdict rule)
+/// to the ledger with verdict "preregistered", without running anything.
+pub fn preregister(file: &Path, ledger_path: &Path) -> Result<()> {
+    let text = std::fs::read_to_string(file).with_context(|| format!("reading {}", file.display()))?;
+    let spec: ExperimentFile = toml::from_str(&text).context("parsing experiment TOML")?;
+    let existing = ledger::read(ledger_path)?;
+    ledger::verify(&existing)?;
+    let file_sha = sha256_hex(text.as_bytes());
+    if existing.iter().any(|e| e.verdict == "preregistered" && e.experiment_file_sha256 == file_sha) {
+        bail!("{} is already pre-registered on the ledger", file.display());
+    }
+    let mut data_bytes = Vec::new();
+    for p in &spec.data {
+        data_bytes.extend(std::fs::read(p).with_context(|| format!("reading {}", p.display()))?);
+    }
+    let data_sha = sha256_hex(&data_bytes);
+    for v in &spec.variants {
+        let config = build_config(&v.base, &v.set).with_context(|| format!("variant {}", v.name))?;
+        let entry = ledger::append_record(
+            ledger_path,
+            NewRecord {
+                variant: &v.name,
+                hypothesis: &v.hypothesis,
+                base: &v.base,
+                overrides: serde_json::to_value(&v.set)?,
+                experiment_file_sha256: file_sha.clone(),
+                data_files: spec.data.iter().map(|p| p.display().to_string()).collect(),
+                data_sha256: data_sha.clone(),
+                verdict: "preregistered",
+                verdict_rule: VERDICT_RULE,
+                result: serde_json::json!({ "phase": "preregistered", "config": config, "time_key": spec.time_key }),
+                recorded_at: format_utc(wall_now_ms()),
+            },
+        )?;
+        println!("ledger #{} {} -> preregistered ({})", entry.seq, v.name, &entry.hash[..12]);
+    }
+    Ok(())
+}
+
 pub async fn run(file: &Path, ledger_path: &Path) -> Result<Vec<Evaluation>> {
     let text = std::fs::read_to_string(file).with_context(|| format!("reading {}", file.display()))?;
     let spec: ExperimentFile = toml::from_str(&text).context("parsing experiment TOML")?;
     if spec.variants.is_empty() {
         bail!("no [[variant]] entries in {}", file.display());
+    }
+    if spec.require_preregistration {
+        let file_sha = sha256_hex(text.as_bytes());
+        let entries = ledger::read(ledger_path)?;
+        for v in &spec.variants {
+            let found = entries
+                .iter()
+                .any(|e| e.verdict == "preregistered" && e.variant == v.name && e.experiment_file_sha256 == file_sha);
+            if !found {
+                bail!("variant {} is not pre-registered from this exact file; run --preregister first", v.name);
+            }
+        }
     }
 
     let mut data_bytes = Vec::new();
