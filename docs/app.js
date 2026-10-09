@@ -44,8 +44,15 @@ async function main() {
   drawUniverse();
   drawCarry();
 
-  // Redraw charts when the colour scheme changes so they pick up new tokens.
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { drawPriceChart(); drawEquity(); drawPosts(); drawCrowd(); drawCarry(); });
+  // Light is the default; the nav toggle switches to dark and redraws the
+  // charts so they pick up the new colour tokens.
+  $("theme-toggle").addEventListener("click", () => {
+    const dark = document.documentElement.getAttribute("data-theme") !== "dark";
+    if (dark) document.documentElement.setAttribute("data-theme", "dark");
+    else document.documentElement.removeAttribute("data-theme");
+    try { localStorage.setItem("mft-theme", dark ? "dark" : "light"); } catch (e) { /* storage unavailable */ }
+    drawPriceChart(); drawEquity(); drawPosts(); drawCrowd(); drawCarry();
+  });
   window.addEventListener("resize", () => drawPosts());
 }
 
@@ -80,8 +87,9 @@ function chartOptions(el) {
     width: el.clientWidth,
     height: el.clientHeight,
     autoSize: true,
-    layout: { background: { type: "solid", color: css("--card") }, textColor: css("--muted"), fontSize: 11 },
-    grid: { vertLines: { color: css("--border") }, horzLines: { color: css("--border") } },
+    layout: { background: { type: "solid", color: css("--card") }, textColor: css("--muted"), fontSize: 12,
+      fontFamily: getComputedStyle(document.body).fontFamily },
+    grid: { vertLines: { visible: false }, horzLines: { color: css("--grid") } },
     rightPriceScale: { borderColor: css("--border") },
     timeScale: { borderColor: css("--border"), timeVisible: true, secondsVisible: false },
     crosshair: { mode: 0 },
@@ -234,6 +242,14 @@ function drawLedger() {
   const rows = state.data.ledger.map((e) => `<tr><td class="num">${e.seq}</td><td>${esc(e.variant)}</td><td><span class="tag ${esc(e.verdict)}">${esc(e.verdict)}</span></td>` +
     `<td class="num ${signClass(e.full_pnl)}">${usd(e.full_pnl)}</td><td class="num ${signClass(e.holdout_pnl)}">${usd(e.holdout_pnl)}</td><td class="num">${e.fills}</td>` +
     `<td>${esc(e.hypothesis)}</td><td><code>${esc(e.prev)}</code> to <code>${esc(e.hash)}</code></td></tr>`);
+  const count = (v) => state.data.ledger.filter((e) => e.verdict === v).length;
+  const stat = (n, l) => `<div class="stat"><span class="n">${esc(n)}</span><span class="l">${esc(l)}</span></div>`;
+  $("ledger-stats").innerHTML = [
+    stat(state.data.ledger.length, "entries on the chain"),
+    stat(count("killed"), "ideas killed, still on the record"),
+    stat(count("kept"), "ideas kept (passed the holdout)"),
+    stat(count("preregistered"), "specs pre-registered before a run"),
+  ].join("");
   table($("ledger"), [["#", "num"], ["variant"], ["verdict"], ["PnL", "num"], ["holdout PnL", "num"], ["fills", "num"], ["hypothesis"], ["hash chain"]], rows);
 }
 
@@ -270,12 +286,21 @@ function drawCrowd() {
     s.setData(uniqueByTime(rows.map(([t, share]) => ({ time: t, value: +(share * 100).toFixed(1) }))));
     legend.push(`<span><i class="sw" style="background:${colors[i % colors.length]}"></i>${esc(coin)} % long by value</span>`);
   });
-  const sixty = chart.addLineSeries({ color: css("--border"), lineWidth: 1, lineStyle: 2, priceLineVisible: false, lastValueVisible: false });
+  const sixty = chart.addLineSeries({ color: css("--muted"), lineWidth: 1, lineStyle: 2, priceLineVisible: false, lastValueVisible: false });
   const anyRows = Object.values(session.positioning)[0];
   sixty.setData(uniqueByTime(anyRows.map(([t]) => ({ time: t, value: 60 }))));
-  legend.push('<span><i class="sw" style="background:var(--border)"></i>60% threshold</span>');
+  legend.push('<span><i class="sw" style="background:var(--muted)"></i>60% threshold</span>');
   $("crowd-legend").innerHTML = legend.join("");
   chart.timeScale().fitContent();
+
+  // Say plainly when the recorded share never moved, so a flat line reads as data.
+  const flat = Object.entries(session.positioning).filter(([, r]) => r.length && r.every(([, v]) => v === r[0][1]));
+  const crowdVetoes = (session.evaluations || []).reduce((n, r) => n + (r.crowd_vetoes || 0), 0);
+  if (flat.length) {
+    $("crowd-caption").textContent = `Flat by observation, not by construction: over this ${Math.round((Date.parse(session.window.end) - Date.parse(session.window.start)) / 60000)}-minute session ` +
+      `the top wallets' long share did not change between snapshots (${flat.map(([c, r]) => `${c} ${(r[0][1] * 100).toFixed(1)}%`).join(", ")}). ` +
+      (flat.every(([, r]) => r[0][1] > 0.6) ? `All sit above the 60% threshold, so v3 could only go long here` + (crowdVetoes ? `; it vetoed ${crowdVetoes} entries on the short side.` : ".") : "");
+  }
 
   const rows = (session.evaluations || []).map((r, i) => `<tr><td>${["v1", "v2", "v3"][i]}</td><td class="num">${r.bars}</td>` +
     `<td class="num">${r.positioning_snapshots}</td><td class="num">${r.prediction_snapshots}</td><td class="num">${r.fills}</td>` +
@@ -331,7 +356,7 @@ function drawCarry() {
     $("carry-verdict").innerHTML = `<b>Sealed out-of-sample: <span class="${killed ? "neg" : "pos"}">${killed ? "killed" : "kept (not refuted)"}</span></b> ` +
       `(ledger #${oos.seq}, fingerprint <code>${esc(oos.report.fingerprint)}</code>). ` +
       `${choices.length} logged in-sample design choice${choices.length === 1 ? "" : "s"}` +
-      (choices.length ? `: ${choices.map((e) => esc(e.note)).join("; ")}` : "") + "." +
+      (choices.length ? `: ${choices.map((e) => esc(e.note).replace(/\.+$/, "")).join("; ")}` : "") + "." +
       (c.oos_reruns ? ` ${c.oos_reruns} forced rerun(s) recorded on the ledger.` : "");
   } else {
     $("carry-verdict").textContent = "The sealed out-of-sample window has not been run yet.";

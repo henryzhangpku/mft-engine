@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>mft-engine replay</title>
+  <title>mft-engine</title>
   <meta name="description" content="A Rust mid-frequency trading engine: prediction-market and social reasoning signals, gated by code, one code path for replay and live paper.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -22,44 +22,81 @@
   <meta name="twitter:description" content="One code path for backtest and live paper. Kalshi probability ladders and Jev-scored posts as reasoning signals, gated by code. Decisions in about 2 µs; 331 live Hyperliquid perps.">
   <meta name="twitter:image" content="https://henryzhangpku.github.io/mft-engine/og.png">
   <meta name="author" content="Henry Zhang">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script>try { if (localStorage.getItem("mft-theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}</script>
   <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
-  <header class="wrap">
-    <h1>mft-engine</h1>
-    <p class="lede">Reasoning signals from social and prediction-market data, gated by code, at mid frequency.
-      A Rust engine replays recorded Hyperliquid prices, Kalshi strike ladders and Jev-scored Hacker News posts
-      through one code path, with a risk layer that fails closed.</p>
-    <p class="notice" id="notice">This page replays recorded data. Paper only: the engine has no order code and sent no orders.</p>
+  <nav class="topnav" aria-label="Primary">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#top" aria-label="mft-engine, back to top"><span class="mono" aria-hidden="true">m</span><span>mft-engine</span></a>
+      <div class="nav-links">
+        <a href="#replay">Replay</a>
+        <a href="#results">Results</a>
+        <a href="#carry">Carry</a>
+        <a href="#ledger-section">Research ledger</a>
+        <a href="#how">How it works</a>
+      </div>
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark theme" title="Toggle dark theme">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <a class="btn btn-primary btn-sm" href="https://github.com/henryzhangpku/mft-engine" target="_blank" rel="noopener"><svg class="gh" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>Code</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="wrap">
+      <p class="eyebrow">Open-source research engine &middot; Rust</p>
+      <h1>A deterministic mid-frequency research and paper-trading engine, with one event loop for backtest and live.</h1>
+      <p class="lede">It replays recorded Hyperliquid prices, Kalshi strike ladders and Jev-scored Hacker News posts
+        through the same code path that runs live on paper, with reasoning signals that can only brake and a risk layer that fails closed.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://github.com/henryzhangpku/mft-engine" target="_blank" rel="noopener"><svg class="gh" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>View source</span></a>
+        <a class="btn btn-ghost" href="#replay">See the replay <span aria-hidden="true">&darr;</span></a>
+      </div>
+      <p class="badge" id="notice">This page replays recorded data. Paper only: the engine has no order code and sent no orders.</p>
+    </div>
   </header>
 
   <main class="wrap">
-    <section aria-labelledby="h-headline">
-      <h2 id="h-headline">What the engine does</h2>
+    <section id="overview" aria-labelledby="h-headline">
+      <div class="section-head">
+        <h2 id="h-headline">What the engine does</h2>
+        <p class="intro">Measured on the live feed and the recorded replay. Every number below is read from the exported run.</p>
+      </div>
       <div class="cards" id="cards"></div>
       <p class="muted small" id="window"></p>
     </section>
 
-    <section aria-labelledby="h-chart">
-      <h2 id="h-chart">Price, decisions and the Kalshi implied band</h2>
-      <div class="controls">
-        <label>Coin <select id="coin"></select></label>
-        <label>Strategy <select id="strategy">
-          <option value="v2">v2: reasoning-gated</option>
-          <option value="v1">v1: momentum only</option>
-        </select></label>
+    <section id="replay" aria-labelledby="h-chart">
+      <div class="section-head">
+        <h2 id="h-chart">Replay: price, decisions and the Kalshi implied band</h2>
+        <p class="intro">Each marker is a decision the engine made on recorded data. Switch coin or strategy; hover for the inputs behind each decision.</p>
       </div>
-      <div class="legend">
-        <span><i class="sw sw-price"></i>price (1m close)</span>
-        <span><i class="sw sw-band"></i>Kalshi implied 25 to 75% at the hourly close</span>
-        <span><i class="sw sw-median"></i>implied median</span>
-        <span><i class="mk mk-buy"></i>buy</span>
-        <span><i class="mk mk-sell"></i>sell</span>
-        <span><i class="mk mk-block"></i>risk block</span>
+      <div class="panel">
+        <div class="controls">
+          <label>Coin <select id="coin"></select></label>
+          <label>Strategy <select id="strategy">
+            <option value="v2">v2: reasoning-gated</option>
+            <option value="v1">v1: momentum only</option>
+          </select></label>
+        </div>
+        <div class="legend">
+          <span><i class="sw sw-price"></i>price (1m close)</span>
+          <span><i class="sw sw-band"></i>Kalshi implied 25 to 75% at the hourly close</span>
+          <span><i class="sw sw-median"></i>implied median</span>
+          <span><i class="mk mk-buy"></i>buy</span>
+          <span><i class="mk mk-sell"></i>sell</span>
+          <span><i class="mk mk-block"></i>risk block</span>
+        </div>
+        <div id="price" class="chart" role="img" aria-label="Price chart with entries, exits, risk blocks and the prediction-market band"></div>
+        <div id="hover" class="hover muted small">Hover the chart for the inputs behind each decision.</div>
       </div>
-      <div id="price" class="chart" role="img" aria-label="Price chart with entries, exits, risk blocks and the prediction-market band"></div>
-      <div id="hover" class="hover muted small">Hover the chart for the inputs behind each decision.</div>
 
       <h3>Scored posts</h3>
       <p class="muted small">Real Hacker News stories and comments, scored by Jev. Each dot is placed when the score became
@@ -69,15 +106,70 @@
       <div id="post-detail" class="post-detail small"></div>
     </section>
 
-    <section aria-labelledby="h-crowd">
-      <h2 id="h-crowd">Crowd positioning on Hyperliquid (recorded live)</h2>
-      <p class="muted small">What the 100 best recent traders on Hyperliquid's public leaderboard (by 30-day PnL, account value at least $100k)
-        hold in each coin, read from public wallet state and aggregated: the share of their gross position value that is long.
-        Hyperliquid only exposes current positions, so this exists only where it was recorded live; there is no backfill.
-        Strategy v3 enters only when more than 60% of that value is on its side. No addresses are stored.</p>
+    <section id="results" aria-labelledby="h-equity">
+      <div class="section-head">
+        <h2 id="h-equity">Results after costs, reported as they came out</h2>
+        <p class="intro">Both strategies were written down before any run. On three and a half days of data both lose after costs; the reasoning-gated version loses less, mostly by trading less. That sample is too small to call an edge either way. The engine's job is to find that out fast and safely, and to keep the result whatever it says.</p>
+      </div>
+      <div class="panel">
+        <div class="legend">
+          <span><i class="sw sw-v1"></i>v1 momentum</span>
+          <span><i class="sw sw-v2"></i>v2 reasoning-gated</span>
+        </div>
+        <div id="equity" class="chart short" role="img" aria-label="Equity curves for v1 and v2"></div>
+      </div>
+      <div class="table-wrap"><table id="evals"></table></div>
+    </section>
+
+    <section id="carry" aria-labelledby="h-carry">
+      <div class="section-head">
+        <h2 id="h-carry">Strategy v4: funding carry across Hyperliquid perps</h2>
+        <p class="kicker">Pre-registered, sealed out-of-sample</p>
+        <p class="intro">Hyperliquid perpetuals settle funding every hour: when the rate is positive, longs pay shorts that share of position value.
+          v4 ranks a fixed universe of liquid perps by their trailing funding once a day, shorts the coins whose longs pay the most,
+          buys the coins whose longs pay the least, and stays dollar-neutral. It earns funding every hour and pays fees and slippage on every rebalance.
+          The risk is the price leg: crowded longs are often in coins that keep rising.</p>
+      </div>
+      <p class="muted small" id="carry-protocol"></p>
+      <div class="table-wrap"><table id="carry-spec"></table></div>
+      <p class="verdict" id="carry-verdict"></p>
+      <div class="table-wrap"><table id="carry-results"></table></div>
+      <div class="panel">
+        <div class="legend">
+          <span><i class="sw sw-v2"></i>v4 in-sample (design window)</span>
+          <span><i class="sw" style="background:var(--median)"></i>v4 sealed out-of-sample</span>
+          <span><i class="sw sw-v1"></i>buy and hold BTC perp, same notional</span>
+        </div>
+        <div id="carry-equity" class="chart short" role="img" aria-label="Equity of v4 in-sample and out-of-sample against holding BTC"></div>
+      </div>
+      <p class="muted small" id="carry-book"></p>
+    </section>
+
+    <section id="ledger-section" class="feature" aria-labelledby="h-ledger">
+      <div class="section-head">
+        <h2 id="h-ledger">Research ledger: every idea, kept or killed</h2>
+        <p class="intro">Every idea run through <code>mft-engine experiment</code> is appended to a hash-chained log.
+          Each entry carries the hash of the one before it, so a result cannot be edited or dropped without breaking the chain.
+          An idea is kept only if its second-half (holdout) PnL after costs is positive and beats the baseline. Killed ideas stay on the record.</p>
+      </div>
+      <div class="ledger-stats" id="ledger-stats"></div>
+      <div class="table-wrap"><table id="ledger"></table></div>
+    </section>
+
+    <section id="crowd-section" aria-labelledby="h-crowd">
+      <div class="section-head">
+        <h2 id="h-crowd">Crowd positioning on Hyperliquid, recorded live</h2>
+        <p class="intro">What the 100 best recent traders on Hyperliquid's public leaderboard (by 30-day PnL, account value at least $100k)
+          hold in each coin, read from public wallet state and aggregated: the share of their gross position value that is long.
+          Hyperliquid only exposes current positions, so this exists only where it was recorded live; there is no backfill.
+          Strategy v3 enters only when more than 60% of that value is on its side. No addresses are stored.</p>
+      </div>
       <p class="muted small" id="session-window"></p>
-      <div class="legend" id="crowd-legend"></div>
-      <div id="crowd" class="chart short" role="img" aria-label="Long share of top wallets over the recorded session"></div>
+      <div class="panel">
+        <div class="legend" id="crowd-legend"></div>
+        <div id="crowd" class="chart mini" role="img" aria-label="Long share of top wallets over the recorded session"></div>
+        <p class="caption" id="crowd-caption"></p>
+      </div>
       <div class="table-wrap"><table id="session-evals"></table></div>
 
       <h3>The Hyperliquid universe</h3>
@@ -85,57 +177,27 @@
       <div class="table-wrap"><table id="universe"></table></div>
     </section>
 
-    <section aria-labelledby="h-equity">
-      <h2 id="h-equity">Results after costs, reported as they came out</h2>
-      <p class="muted">Both strategies were written down before any run. On three and a half days of data both lose after costs; the reasoning-gated version loses less, mostly by trading less. That sample is too small to call an edge either way. The engine's job is to find that out fast and safely, and to keep the result whatever it says.</p>
-      <div class="legend">
-        <span><i class="sw sw-v1"></i>v1 momentum</span>
-        <span><i class="sw sw-v2"></i>v2 reasoning-gated</span>
+    <section id="decisions-section" aria-labelledby="h-decisions">
+      <div class="section-head">
+        <h2 id="h-decisions">Decisions and risk blocks</h2>
+        <p class="intro">Every fill and every blocked order for the coin and strategy selected in the replay above, with its reason.</p>
       </div>
-      <div id="equity" class="chart short" role="img" aria-label="Equity curves for v1 and v2"></div>
-      <div class="table-wrap"><table id="evals"></table></div>
-    </section>
-
-    <section aria-labelledby="h-carry">
-      <h2 id="h-carry">Strategy v4: funding carry across Hyperliquid perps (pre-registered, sealed out-of-sample)</h2>
-      <p class="muted">Hyperliquid perpetuals settle funding every hour: when the rate is positive, longs pay shorts that share of position value.
-        v4 ranks a fixed universe of liquid perps by their trailing funding once a day, shorts the coins whose longs pay the most,
-        buys the coins whose longs pay the least, and stays dollar-neutral. It earns funding every hour and pays fees and slippage on every rebalance.
-        The risk is the price leg: crowded longs are often in coins that keep rising.</p>
-      <p class="muted small" id="carry-protocol"></p>
-      <div class="table-wrap"><table id="carry-spec"></table></div>
-      <p id="carry-verdict"></p>
-      <div class="table-wrap"><table id="carry-results"></table></div>
-      <div class="legend">
-        <span><i class="sw sw-v2"></i>v4 in-sample (design window)</span>
-        <span><i class="sw" style="background:var(--median)"></i>v4 sealed out-of-sample</span>
-        <span><i class="sw sw-v1"></i>buy and hold BTC perp, same notional</span>
-      </div>
-      <div id="carry-equity" class="chart short" role="img" aria-label="Equity of v4 in-sample and out-of-sample against holding BTC"></div>
-      <p class="muted small" id="carry-book"></p>
-    </section>
-
-    <section aria-labelledby="h-decisions">
-      <h2 id="h-decisions">Decisions and risk blocks</h2>
       <p class="muted small" id="decision-summary"></p>
       <div class="table-wrap tall"><table id="decisions"></table></div>
     </section>
 
-    <section aria-labelledby="h-ledger">
-      <h2 id="h-ledger">Experiment ledger</h2>
-      <p class="muted small">Every idea run through <code>mft-engine experiment</code>, appended to a hash-chained log.
-        Each entry carries the hash of the one before it, so a result cannot be edited or dropped without breaking the chain.
-        Kept only if the second-half (holdout) PnL after costs is positive and beats the baseline. Killed ideas stay.</p>
-      <div class="table-wrap"><table id="ledger"></table></div>
-    </section>
-
-    <section aria-labelledby="h-latency">
-      <h2 id="h-latency">Measured latency</h2>
+    <section id="latency-section" aria-labelledby="h-latency">
+      <div class="section-head">
+        <h2 id="h-latency">Measured latency</h2>
+        <p class="intro">Timed on a live paper run against the Hyperliquid websocket feed.</p>
+      </div>
       <div class="table-wrap"><table id="latency"></table></div>
     </section>
 
-    <section aria-labelledby="h-how">
-      <h2 id="h-how">How it works</h2>
+    <section id="how" aria-labelledby="h-how">
+      <div class="section-head">
+        <h2 id="h-how">How it works</h2>
+      </div>
       <ol class="how">
         <li><b>One event type.</b> Trades, book tops, 1-minute bars, Kalshi ladders, scored posts, top-wallet positioning and detected gaps all become one Rust enum, in time order.</li>
         <li><b>One code path.</b> The same <code>Engine::on_event</code> runs in this replay and live on paper. Only the event source and the clock differ.</li>
@@ -147,10 +209,18 @@
         <li><b>Risk fails closed.</b> Max position, max order, max daily loss, stale data. A rule that errors blocks the order. Every block is logged with its reason.</li>
         <li><b>Honest results.</b> Both strategies lose money after costs on this sample. The sample is a few days, so none of this is evidence of an edge.</li>
       </ol>
-      <p class="muted small">Source: <a href="https://github.com/henryzhangpku/mft-engine">github.com/henryzhangpku/mft-engine</a>.
-        Data generated by <code>mft-engine export-demo</code> at <span id="generated"></span>.</p>
     </section>
   </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div>
+        <div class="brand"><span class="mono" aria-hidden="true">m</span><span>mft-engine</span></div>
+        <p class="muted small">Data generated by <code>mft-engine export-demo</code> at <span id="generated"></span>. Paper only.</p>
+      </div>
+      <a class="btn btn-ghost" href="https://github.com/henryzhangpku/mft-engine" target="_blank" rel="noopener"><svg class="gh" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>Source on GitHub</span></a>
+    </div>
+  </footer>
 
   <div id="tip" class="tip" hidden></div>
   <script src="app.js"></script>
