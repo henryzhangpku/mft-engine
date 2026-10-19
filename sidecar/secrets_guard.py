@@ -11,6 +11,7 @@ import re
 
 SECRET_ENV_VARS = [
     "CLASSIFIER_API_KEY",
+    "TYPESAFE_API_KEY",  # pre-rename name, still read as a fallback for one release
     "LAYA_API_KEY",
     "IMPOSSIBL_API_KEY",
     "REDDIT_CLIENT_ID",

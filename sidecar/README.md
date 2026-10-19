@@ -14,7 +14,7 @@ python -m venv .venv
 .venv/Scripts/pip install -r sidecar/requirements.txt      # .venv/bin/pip off Windows
 export CLASSIFIER_URL=...                                    # the classifier endpoint
 export CLASSIFIER_API_KEY=...                                # in your shell only
-export CLASSIFIER_MODEL=...                                  # optional; endpoint default otherwise
+export CLASSIFIER_MODEL=...                                  # required; the endpoint has no default
 ```
 
 The key is read from the environment only to send it. These scripts never print

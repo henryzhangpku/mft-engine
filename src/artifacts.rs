@@ -17,6 +17,7 @@ use std::path::Path;
 /// Environment variables whose values must never appear in an output file.
 pub const SECRET_ENV_VARS: &[&str] = &[
     "CLASSIFIER_API_KEY",
+    "TYPESAFE_API_KEY", // pre-rename name, still read as a fallback for one release
     "LAYA_API_KEY",
     "IMPOSSIBL_API_KEY",
     "REDDIT_CLIENT_ID",

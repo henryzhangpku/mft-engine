@@ -16,7 +16,7 @@ The scorer sees only the post's text.
 
 Two scorers:
   classifier  A fast text classifier at CLASSIFIER_URL (bearer CLASSIFIER_API_KEY,
-        optional CLASSIFIER_MODEL), used when both are set. The key is read
+        model CLASSIFIER_MODEL), used when all three are set. The key is read
         from the environment only to send it; it is never printed or stored.
   mock  A deterministic keyword scorer, labelled "mock-keyword-v1". Used when
         there is no key, or with --scorer mock.
@@ -64,8 +64,13 @@ def mock_score(text):
     return out
 
 
+def classifier_key():
+    """CLASSIFIER_API_KEY, else the pre-rename name (fallback removed after one release)."""
+    return os.environ.get("CLASSIFIER_API_KEY") or os.environ.get("TYPESAFE_API_KEY") or None
+
+
 def classifier_configured():
-    return bool(os.environ.get("CLASSIFIER_URL") and os.environ.get("CLASSIFIER_API_KEY"))
+    return bool(os.environ.get("CLASSIFIER_URL") and classifier_key() and os.environ.get("CLASSIFIER_MODEL"))
 
 
 class ClassifierScorer:
@@ -75,9 +80,10 @@ class ClassifierScorer:
 
     def __init__(self):
         self.url = os.environ.get("CLASSIFIER_URL")
-        if not self.url or not os.environ.get("CLASSIFIER_API_KEY"):
-            raise RuntimeError("set CLASSIFIER_URL and CLASSIFIER_API_KEY for the classifier scorer")
         self.model = os.environ.get("CLASSIFIER_MODEL")
+        if not self.url or not classifier_key() or not self.model:
+            # the endpoint has no default model: a request without one is rejected (HTTP 422)
+            raise RuntimeError("set CLASSIFIER_URL, CLASSIFIER_API_KEY and CLASSIFIER_MODEL for the classifier scorer")
 
     @staticmethod
     def questions():
@@ -98,16 +104,14 @@ class ClassifierScorer:
     def _post(self, body):
         req = urllib.request.Request(
             self.url, data=json.dumps(body).encode("utf-8"), method="POST",
-            headers={"Authorization": f"Bearer {os.environ.get('CLASSIFIER_API_KEY', '')}",
+            headers={"Authorization": f"Bearer {classifier_key() or ''}",
                      "Content-Type": "application/json"})
         with urllib.request.urlopen(req, timeout=30) as r:
             return json.loads(r.read().decode("utf-8"))
 
     async def score(self, text):
         """Returns (scores per coin, latency ms, input tokens)."""
-        body = {"state": f"Post: {text}", "questions": self.questions()}
-        if self.model:
-            body["model"] = self.model
+        body = {"model": self.model, "state": f"Post: {text}", "questions": self.questions()}
         t0 = time.perf_counter()
         resp = await asyncio.to_thread(self._post, body)
         latency_ms = (time.perf_counter() - t0) * 1000.0
@@ -133,7 +137,7 @@ class MockScorer:
 
 
 def make_scorer(choice):
-    """classifier, mock, or auto (classifier if CLASSIFIER_URL and CLASSIFIER_API_KEY are set)."""
+    """classifier, mock, or auto (classifier if CLASSIFIER_URL, CLASSIFIER_API_KEY and CLASSIFIER_MODEL are set)."""
     if choice == "classifier" or (choice == "auto" and classifier_configured()):
         return ClassifierScorer()
     return MockScorer()

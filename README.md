@@ -906,7 +906,7 @@ python -m venv .venv
 .venv/Scripts/pip install -r sidecar/requirements.txt     # .venv/bin/pip off Windows
 export CLASSIFIER_URL=...                                   # the classifier endpoint
 export CLASSIFIER_API_KEY=...                               # in your shell only
-export CLASSIFIER_MODEL=...                                 # optional
+export CLASSIFIER_MODEL=...                                 # required
 
 python sidecar/fetch_hn.py                                  # real HN posts over the bar window
 .venv/Scripts/python sidecar/score_posts.py                 # classifier scores -> data/text_signals.jsonl
