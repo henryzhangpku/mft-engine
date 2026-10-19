@@ -23,7 +23,7 @@ pub struct DemoInputs {
     pub posts: PathBuf,
     pub ledger: PathBuf,
     pub paper: PathBuf,
-    pub jev_stats: PathBuf,
+    pub scorer_stats: PathBuf,
     /// A live-recorded session (feed + Kalshi + positioning + social), if any.
     pub session: PathBuf,
     /// REST bars just before the session, so momentum starts warm (the same
@@ -303,7 +303,7 @@ pub async fn run(inputs: DemoInputs) -> Result<()> {
         "equity": equity,
         "ledger": ledger_rows,
         "paper": read_json_or_null(&inputs.paper),
-        "jev": read_json_or_null(&inputs.jev_stats),
+        "scorer_stats": read_json_or_null(&inputs.scorer_stats),
         "session": { "window": session_window, "positioning": positioning, "evaluations": session_evals },
         "universe": universe,
         "carry": carry,

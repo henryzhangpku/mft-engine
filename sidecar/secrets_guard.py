@@ -10,7 +10,7 @@ import os
 import re
 
 SECRET_ENV_VARS = [
-    "TYPESAFE_API_KEY",
+    "CLASSIFIER_API_KEY",
     "LAYA_API_KEY",
     "IMPOSSIBL_API_KEY",
     "REDDIT_CLIENT_ID",

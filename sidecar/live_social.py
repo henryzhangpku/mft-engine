@@ -1,5 +1,5 @@
 """Live social feed for `mft-engine paper`: poll Hacker News, score new posts
-with Jev (or the mock), append TextSignal lines to a file the engine tails.
+with the classifier (or the mock), append TextSignal lines to a file the engine tails.
 
 The file is the interface between the two processes. The Rust engine reads
 new lines as they appear (`paper --text-feed`), so neither side needs to know
@@ -58,7 +58,7 @@ async def run(a):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default="data/live_text_signals.jsonl")
-    ap.add_argument("--scorer", choices=["auto", "jev", "mock"], default="auto")
+    ap.add_argument("--scorer", choices=["auto", "classifier", "mock"], default="auto")
     ap.add_argument("--interval", type=int, default=60)
     ap.add_argument("--minutes", type=float, default=6)
     ap.add_argument("--lookback-minutes", type=int, default=30,

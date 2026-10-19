@@ -123,7 +123,7 @@ fn scan(dir: &Path, found: &mut Vec<String>) {
 #[test]
 fn no_secret_in_any_committed_output() {
     // data/, results/, docs/ and experiments/ hold everything the programs
-    // write. Also checks for the live values of TYPESAFE_API_KEY etc. when
+    // write. Also checks for the live values of CLASSIFIER_API_KEY etc. when
     // they are set in this shell. (Source files are not scanned: the guard's
     // own patterns would match themselves.)
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));

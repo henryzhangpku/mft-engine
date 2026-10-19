@@ -66,7 +66,7 @@ pub struct Bar {
 
 /// A scored news or social post, produced by the Python sidecar.
 ///
-/// The probabilities come from Jev (or the offline keyword mock). `ts` is when
+/// The probabilities come from the classifier (or the offline keyword mock). `ts` is when
 /// the score became available to the engine: publication time plus scoring
 /// latency. The strategy may only use this to reduce exposure; see `text.rs`.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -85,7 +85,7 @@ pub struct TextSignal {
     pub bearish: f64,
     /// Probability the post is new information rather than a repost.
     pub novelty: f64,
-    /// Which scorer produced it, e.g. "jev" or "mock-keyword-v1".
+    /// Which scorer produced it, e.g. "classifier" or "mock-keyword-v1".
     pub scorer: String,
 }
 

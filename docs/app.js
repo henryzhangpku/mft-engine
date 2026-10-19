@@ -73,7 +73,8 @@ function drawCards() {
     html.push(card("Engine decision time", `${d.paper.engine_compute_only.p50_us} µs`, `p50 on the live feed, p99 ${d.paper.engine_compute_only.p99_us} µs`));
     html.push(card("Feed frame to decision", `${(d.paper.event_to_decision_all_events.p50_us / 1000).toFixed(2)} ms`, `p50 over ${d.paper.event_to_decision_all_events.samples} live events`));
   }
-  if (d.jev) html.push(card("Jev reasoning per post", `${d.jev.latency_ms_p50} ms`, `p50, p99 ${d.jev.latency_ms_p99} ms, ${Math.round(d.jev.input_tokens_per_post_mean)} tokens`));
+  const sc = d.scorer_stats || d.jev;  // older demo.json exports use the second key
+  if (sc) html.push(card("Classifier reasoning per post", `${sc.latency_ms_p50} ms`, `p50, p99 ${sc.latency_ms_p99} ms, ${Math.round(sc.input_tokens_per_post_mean)} tokens`));
   html.push(card("Kalshi ladder snapshots", v2.full.prediction_snapshots.toLocaleString(), "minute-level implied distributions, BTC and ETH"));
   const pa = d.polymarket && d.polymarket.agreement;
   if (pa && pa.rate != null) html.push(card("Kalshi and Polymarket agree", `${(pa.rate * 100).toFixed(0)}%`, `of ${pa.both.toLocaleString()} bars with both readings, on the side of P(up) vs 0.5`));

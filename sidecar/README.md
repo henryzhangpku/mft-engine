@@ -1,22 +1,23 @@
 # Social sidecar
 
-Fetches real social posts, scores them with TypeSafe's Jev (or an offline
+Fetches real social posts, scores them with a fast text classifier (or an offline
 keyword mock), and writes `TextSignal` events (JSONL) that the Rust engine
 reads. The engine may only use them to reduce or veto exposure; see
 `src/text.rs`.
 
 ## Setup
 
-Use a virtual environment (the build machine's global Python hit a TLS
-`RecursionError` inside `truststore` with `typesafe-sdk`):
+Use a virtual environment (the sidecar needs only the standard library):
 
 ```
 python -m venv .venv
 .venv/Scripts/pip install -r sidecar/requirements.txt      # .venv/bin/pip off Windows
-export TYPESAFE_API_KEY=...                                  # in your shell only
+export CLASSIFIER_URL=...                                    # the classifier endpoint
+export CLASSIFIER_API_KEY=...                                # in your shell only
+export CLASSIFIER_MODEL=...                                  # optional; endpoint default otherwise
 ```
 
-The SDK reads the key from the environment. These scripts never read, print
+The key is read from the environment only to send it. These scripts never print
 or write it, and every write goes through `secrets_guard.write_lines`, which
 refuses any payload containing the key's value or a token-shaped string.
 
@@ -24,7 +25,7 @@ refuses any payload containing the key's value or a token-shaped string.
 
 ```
 python sidecar/fetch_hn.py                                   # data/hn_posts.jsonl, window = data/bars_1m.jsonl
-.venv/Scripts/python sidecar/score_posts.py --stats sidecar/scoring_stats_jev.json
+.venv/Scripts/python sidecar/score_posts.py --stats sidecar/scoring_stats.json
 ```
 
 Only the post's id, creation time and text are kept: HN points and comment
@@ -65,8 +66,8 @@ any reported result.
 |---|---|
 | `fetch_hn.py` | real HN stories and comments via the public Algolia API |
 | `fetch_reddit.py` | Reddit via OAuth, when credentials are set |
-| `score_posts.py` | Jev or mock scoring into `TextSignal` JSONL |
+| `score_posts.py` | classifier or mock scoring into `TextSignal` JSONL |
 | `live_social.py` | live poll, score, append |
 | `secrets_guard.py` | refuses to write anything secret-shaped |
 | `make_posts.py` | synthetic test posts (tests only) |
-| `scoring_stats_jev.json` | latency and tokens from the real Jev backfill |
+| `scoring_stats.json` | latency and tokens from the real classifier backfill |

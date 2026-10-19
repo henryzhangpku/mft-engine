@@ -22,7 +22,7 @@ struct Cli {
     command: Command,
 }
 
-/// The default replay inputs: bars, Kalshi ladders, Jev-scored HN posts.
+/// The default replay inputs: bars, Kalshi ladders, classifier-scored HN posts.
 const DEFAULT_DATA: [&str; 3] = ["data/bars_1m.jsonl", "data/kalshi_ladders.jsonl", "data/text_signals.jsonl"];
 
 #[derive(Subcommand)]
@@ -247,8 +247,8 @@ enum Command {
         ledger: PathBuf,
         #[arg(long, default_value = "results/paper.json")]
         paper: PathBuf,
-        #[arg(long, default_value = "sidecar/scoring_stats_jev.json")]
-        jev_stats: PathBuf,
+        #[arg(long, default_value = "sidecar/scoring_stats.json")]
+        scorer_stats: PathBuf,
         #[arg(long, default_value = "data/live_session.jsonl")]
         session: PathBuf,
         #[arg(long, default_value = "data/live_session_warmup.jsonl")]
@@ -388,8 +388,8 @@ async fn main() -> Result<()> {
             };
             tokio::task::spawn_blocking(move || mft_engine::forward::run(opts)).await?
         }
-        Command::ExportDemo { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, polymarket, forward_status, out } => {
-            demo::run(demo::DemoInputs { data, posts, ledger, paper, jev_stats, session, session_warmup, universe, carry_spec, polymarket, forward_status, out }).await
+        Command::ExportDemo { data, posts, ledger, paper, scorer_stats, session, session_warmup, universe, carry_spec, polymarket, forward_status, out } => {
+            demo::run(demo::DemoInputs { data, posts, ledger, paper, scorer_stats, session, session_warmup, universe, carry_spec, polymarket, forward_status, out }).await
         }
     }
 }

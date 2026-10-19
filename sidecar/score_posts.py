@@ -5,19 +5,19 @@ format:
 
     {"type":"TextSignal","coin":"BTC","ts":...,"published_ts":...,
      "post_id":...,"source":...,"relevance":...,"bullish":...,"bearish":...,
-     "novelty":...,"scorer":"jev"}
+     "novelty":...,"scorer":"classifier"}
 
 Point in time. `ts` is when the engine is allowed to see the score:
 publication time, plus how long until our poller would have fetched the post
 (`--poll-delay-ms`, 60 s by default, matching the live sidecar), plus the
-scoring latency (measured for Jev, an assumed 1 s for the mock). A backtest
+scoring latency (measured for the classifier, an assumed 1 s for the mock). A backtest
 therefore never acts on a post before it could have been fetched and scored.
 The scorer sees only the post's text.
 
 Two scorers:
-  jev   TypeSafe's Jev via typesafe-sdk, used when TYPESAFE_API_KEY is set.
-        The SDK reads the key from the environment; this script never reads,
-        prints or stores it.
+  classifier  A fast text classifier at CLASSIFIER_URL (bearer CLASSIFIER_API_KEY,
+        optional CLASSIFIER_MODEL), used when both are set. The key is read
+        from the environment only to send it; it is never printed or stored.
   mock  A deterministic keyword scorer, labelled "mock-keyword-v1". Used when
         there is no key, or with --scorer mock.
 
@@ -32,6 +32,7 @@ import math
 import os
 import statistics
 import time
+import urllib.request
 from pathlib import Path
 
 from secrets_guard import write_lines
@@ -63,47 +64,64 @@ def mock_score(text):
     return out
 
 
-class JevScorer:
-    """One Jev system_one call per post, asking about both coins at once."""
+def classifier_configured():
+    return bool(os.environ.get("CLASSIFIER_URL") and os.environ.get("CLASSIFIER_API_KEY"))
 
-    name = "jev"
+
+class ClassifierScorer:
+    """One classifier call per post, asking about both coins at once."""
+
+    name = "classifier"
 
     def __init__(self):
-        from typesafe_sdk import AsyncTypeSafeClient
-        self.client = AsyncTypeSafeClient()  # reads TYPESAFE_API_KEY itself
+        self.url = os.environ.get("CLASSIFIER_URL")
+        if not self.url or not os.environ.get("CLASSIFIER_API_KEY"):
+            raise RuntimeError("set CLASSIFIER_URL and CLASSIFIER_API_KEY for the classifier scorer")
+        self.model = os.environ.get("CLASSIFIER_MODEL")
 
     @staticmethod
     def questions():
-        from typesafe_sdk import Choice, Noul
-        q = {"novelty": Noul(instructions="Is this post new information, rather than a repost or a rehash of older news?")}
+        q = {"novelty": {"type": "noul", "instructions": "Is this post new information, rather than a repost or a rehash of older news?"}}
         for coin, name in COINS.items():
-            q[f"about_{coin}"] = Noul(instructions=f"Is this post about {name}?")
-            q[f"dir_{coin}"] = Choice(
-                instructions=f"What does the post imply for the {name} price over the next hour?",
-                criteria={
+            q[f"about_{coin}"] = {"type": "noul", "instructions": f"Is this post about {name}?"}
+            q[f"dir_{coin}"] = {
+                "type": "choice",
+                "instructions": f"What does the post imply for the {name} price over the next hour?",
+                "criteria": {
                     "bullish": "likely to push the price up",
                     "bearish": "likely to push the price down",
                     "neither": "no clear price implication",
                 },
-            )
+            }
         return q
+
+    def _post(self, body):
+        req = urllib.request.Request(
+            self.url, data=json.dumps(body).encode("utf-8"), method="POST",
+            headers={"Authorization": f"Bearer {os.environ.get('CLASSIFIER_API_KEY', '')}",
+                     "Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.loads(r.read().decode("utf-8"))
 
     async def score(self, text):
         """Returns (scores per coin, latency ms, input tokens)."""
+        body = {"state": f"Post: {text}", "questions": self.questions()}
+        if self.model:
+            body["model"] = self.model
         t0 = time.perf_counter()
-        resp = await self.client.system_one(state=f"Post: {text}", questions=self.questions())
+        resp = await asyncio.to_thread(self._post, body)
         latency_ms = (time.perf_counter() - t0) * 1000.0
-        a = resp.answers
+        a = resp["answers"]
         out = {}
         for coin in COINS:
-            probs = dict(a[f"dir_{coin}"].probabilities)
+            probs = dict(a[f"dir_{coin}"].get("probabilities", {}))
             out[coin] = {
-                "relevance": float(a[f"about_{coin}"].noul),
+                "relevance": float(a[f"about_{coin}"]["noul"]),
                 "bullish": float(probs.get("bullish", 0.0)),
                 "bearish": float(probs.get("bearish", 0.0)),
-                "novelty": float(a["novelty"].noul),
+                "novelty": float(a["novelty"]["noul"]),
             }
-        tokens = getattr(resp.usage, "input_tokens", None) or 0
+        tokens = (resp.get("usage") or {}).get("input_tokens") or 0
         return out, latency_ms, tokens
 
 
@@ -115,9 +133,9 @@ class MockScorer:
 
 
 def make_scorer(choice):
-    """jev, mock, or auto (jev if TYPESAFE_API_KEY is set)."""
-    if choice == "jev" or (choice == "auto" and os.environ.get("TYPESAFE_API_KEY")):
-        return JevScorer()
+    """classifier, mock, or auto (classifier if CLASSIFIER_URL and CLASSIFIER_API_KEY are set)."""
+    if choice == "classifier" or (choice == "auto" and classifier_configured()):
+        return ClassifierScorer()
     return MockScorer()
 
 
@@ -146,7 +164,7 @@ def pct(values, p):
 
 def summary(name, n_posts, latencies, tokens):
     stats = {"scorer": name, "posts": n_posts}
-    if name == "jev" and latencies:
+    if name == ClassifierScorer.name and latencies:
         stats.update({
             "latency_ms_p50": round(pct(latencies, 50), 1),
             "latency_ms_p99": round(pct(latencies, 99), 1),
@@ -163,7 +181,7 @@ def summary(name, n_posts, latencies, tokens):
 async def run(args):
     posts = [json.loads(l) for l in Path(args.posts).read_text(encoding="utf-8").splitlines() if l.strip()]
     scorer = make_scorer(args.scorer)
-    print(f"scorer: {scorer.name} ({'TYPESAFE_API_KEY present' if scorer.name == 'jev' else 'offline mock, no key used'})")
+    print(f"scorer: {scorer.name} ({'CLASSIFIER_API_KEY present' if scorer.name == ClassifierScorer.name else 'offline mock, no key used'})")
 
     lines, latencies, tokens = [], [], []
     for p in posts:
@@ -186,7 +204,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--posts", default=str(ROOT / "data" / "hn_posts.jsonl"))
     ap.add_argument("--out", default=str(ROOT / "data" / "text_signals.jsonl"))
-    ap.add_argument("--scorer", choices=["auto", "jev", "mock"], default="auto")
+    ap.add_argument("--scorer", choices=["auto", "classifier", "mock"], default="auto")
     ap.add_argument("--poll-delay-ms", type=int, default=60_000,
                     help="assumed delay between publication and our poller fetching the post")
     ap.add_argument("--stats", default=None, help="optional path for a JSON summary of latency and tokens")

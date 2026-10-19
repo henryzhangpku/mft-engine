@@ -1,1 +1,1 @@
-typesafe-sdk>=0.7
+# The sidecar uses only the Python standard library; the classifier is called over HTTP.

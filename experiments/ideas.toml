@@ -21,7 +21,7 @@ hypothesis = "Baseline. Preregistered 5m vol-normalised momentum, |z| >= 2, unde
 [[variant]]
 name = "v2_reasoning_gated"
 base = "v2"
-hypothesis = "Entries only when the Kalshi hourly ladder gives P(close > spot) on our side of 0.5; opposing Jev-scored HN posts shrink or veto. Fewer bad entries, so less cost; still unlikely to be positive."
+hypothesis = "Entries only when the Kalshi hourly ladder gives P(close > spot) on our side of 0.5; opposing classifier-scored HN posts shrink or veto. Fewer bad entries, so less cost; still unlikely to be positive."
 
 [[variant]]
 name = "v2_gate_every_bar"

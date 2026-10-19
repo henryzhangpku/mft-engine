@@ -5,7 +5,7 @@ one event loop for backtest and live: point-in-time data → features → signal
 → overlays → portfolio and risk → paper execution → a research ledger (the
 pipeline is laid out below). Concretely, it takes live crypto prices (Hyperliquid),
 prediction-market strike ladders (Kalshi, and Polymarket), social posts scored by a
-reasoning classifier (TypeSafe's Jev, on Hacker News) and the positioning of
+fast text classifier (on Hacker News) and the positioning of
 the top wallets on Hyperliquid's public leaderboard, turns them into one
 stream of events, and runs one strategy and one risk layer over that stream.
 The same code runs in replay and live on paper, so research and production
@@ -23,7 +23,7 @@ another fails if anything secret-shaped appears in `data/`, `results/`,
 
 **What it proves, measured on live data:** the engine decides in about
 2 microseconds (p99 47), a live feed frame reaches a decision in about
-0.4 ms, Jev reasons over a post in about 120 ms, and replay reproduces every
+0.4 ms, the classifier reasons over a post in about 120 ms, and replay reproduces every
 decision to the same fingerprint. Kalshi ladders (9,222 minute snapshots),
 Polymarket ladders (9,490) and 259 real posts flow through the same event loop as prices.
 
@@ -64,7 +64,7 @@ idea goes through the ledger before it counts.
                      into one time-ordered stream
         │
  2. FEATURES         1-min bars, 60-min volatility · implied P(close > spot)      bars.rs · prediction.rs
-                     from each ladder · post direction & relevance (Jev)          text.rs · positioning.rs
+                     from each ladder · post direction & relevance (classifier)   text.rs · positioning.rs
                      · crowd long share · funding-rate ranks
         │
  3. SIGNALS (alpha)  momentum z-score, 5-min, vol-normalised    (v1, v2, v3)      strategy.rs
@@ -109,7 +109,7 @@ constraints would be the next layer.
  trades, book tops     hourly "above strike K" ladders   stories + comments
        |                         |                              |
    feed.rs                  kalshi.rs                  sidecar/ (Python)
-   reconnect, gaps          bid/ask mid per strike      Jev: about BTC? about ETH?
+   reconnect, gaps          bid/ask mid per strike      classifier: about BTC? about ETH?
        |                         |                      bullish/bearish/neither?
    bars.rs                  prediction.rs               new or repost?
    trades -> 1m bars        clean ladder -> P(close>K)        |
@@ -164,7 +164,7 @@ reduce exposure:
    probability is above 0.5; a new short only if it is below 0.5.** A
    missing, stale (over 3 minutes) or out-of-range ladder means no entry: the
    gate fails closed. Held positions are not re-gated (see the note below).
-2. **Social caution.** For each Jev-scored post judged relevant to the coin
+2. **Social caution.** For each classifier-scored post judged relevant to the coin
    (relevance at least 0.5) in the last 30 minutes, the probability that
    *opposes* the position, times relevance and novelty, scales the target by
    `1 - strength`, and vetoes it at 0.6. A bullish post never adds to a long.
@@ -226,14 +226,14 @@ Data, all committed under `data/`:
 | `polymarket_ladders.jsonl` | 9,490 one-minute ladder snapshots (BTC 4,584, ETH 4,906) from 10 daily Polymarket events (Oct 2 to 6, BTC and ETH, 11 strikes each), built from the public CLOB price history at 1-minute fidelity; `polymarket_markets.jsonl` lists the 110 markets (question, strike, resolution time, Yes/No token ids); `polymarket_raw/` holds every raw Gamma and CLOB response | real |
 | `kalshi_ladders.jsonl` | 9,222 one-minute ladder snapshots from 80 hourly BTC events and 80 hourly ETH events over the same window, backfilled from Kalshi's public 1-minute candlesticks (bid/ask at each minute's close, 10 strikes either side of spot) | real |
 | `hn_posts.jsonl` | 259 Hacker News items in the window (20 stories, 239 comments) matching bitcoin, ethereum, crypto, stablecoin or coinbase | real |
-| `text_signals.jsonl` | those 259 posts scored by Jev (518 signals, one per coin per post) | real model output |
+| `text_signals.jsonl` | those 259 posts scored by the classifier (518 signals, one per coin per post) | real model output |
 | `tests/fixtures/synthetic_*` | 60 invented posts, mock-scored | synthetic, tests only |
 
 Point in time: a bar is stamped with its close; a Kalshi snapshot with the end
 of its minute; a Polymarket snapshot with the end of the minute its prices
 were printed in (each strike's last price at or before that instant, dropped
 if older than 5 minutes); a post becomes usable at publication plus a 60 s poll delay
-plus the measured Jev latency. Only the post's text is scored; HN points and
+plus the measured classifier latency. Only the post's text is scored; HN points and
 comment counts, which accrue later, are not stored.
 
 Output of `mft-engine backtest` (costs: 4.5 bp taker fee plus 1 bp slippage
@@ -263,7 +263,7 @@ What this says, plainly:
   loss that is $29 smaller. With 267 fills over 3.5 days, that difference is
   well within what noise could produce. It is a reason to collect more data,
   not a finding.
-* **The social feature barely matters here.** Of 259 real posts, Jev judged 11
+* **The social feature barely matters here.** Of 259 real posts, the classifier judged 11
   relevant to BTC (one with bearish probability over 0.5) and 1 relevant to
   ETH. The social gate changed a target 51 times and moved PnL by about 30
   cents either way: $0.34 (v2 against `v2_kalshi_only`) and $0.29
@@ -471,7 +471,7 @@ recorded live, which is what the next part is.
 `mft-engine record` ran for 85 minutes, 2026-10-06 05:12 to 06:38 UTC, with
 every live source on: Hyperliquid trades and book tops (16,991 and 1,896),
 Kalshi ladders every minute (170), top-wallet positioning every 3 minutes (58
-snapshots, BTC and ETH), and the Jev-scored Hacker News feed tailed from the
+snapshots, BTC and ETH), and the classifier-scored Hacker News feed tailed from the
 sidecar (6 signals from 3 posts, none about crypto). It is committed as
 `data/live_session.jsonl` (2.3 MB), with the 90 one-minute REST bars before
 it (`data/live_session_warmup.jsonl`) so momentum is warm at the start.
@@ -755,12 +755,12 @@ neither is positive before costs in its holdout.
 
 `mft-engine paper --duration-secs 600 --text-feed results/live_text_signals.jsonl`
 (strategy v2), started 2026-10-06 04:22:20 UTC, with `sidecar/live_social.py`
-running alongside it against real Jev. All three live sources ran:
+running alongside it against the real classifier. All three live sources ran:
 
 * Hyperliquid websocket: 1,421 trades, 226 book tops, 22 one-minute bars.
 * Kalshi, polled every minute: 20 ladder snapshots (BTC and ETH). A typical
   line: `KXBTCD-26OCT0601 7 strikes, implied median 85598, P(close > spot 85595.0) = 0.509`.
-* Hacker News plus Jev: 2 new posts in the window, scored live (p50 111 ms,
+* Hacker News plus the classifier: 2 new posts in the window, scored live (p50 111 ms,
   530 input tokens per post), 4 `TextSignal` events tailed by the engine.
   Neither post was about crypto (relevance under 0.5), so neither mattered.
 
@@ -792,7 +792,7 @@ too few for a stable p99. Exchange-to-receive was 312 ms at p50; its p99
 (17.8 s) is the batch of recent trades Hyperliquid replays on subscribe.
 
 Every event the live engine saw is in `results/paper_events.jsonl`, and the
-live Jev output in `results/live_text_signals.jsonl`. That run predates the
+live classifier output in `results/live_text_signals.jsonl`. That run predates the
 replay verification below: its log has no warm-up, no arrival stamps on the
 Kalshi and social lines, and no decision log, so a replay of it starts cold.
 Replay it with `--time-key arrival`: by exchange time `backtest` rebuilds
@@ -883,7 +883,7 @@ cargo test
 ./target/release/mft-engine carry oos                # refuses: already run (ledger 17)
 ./target/release/mft-engine fetch-carry --end 2026-10-06T00:00:00Z   # refetch the data (~15 min)
 
-# Live, public data, no keys needed except Jev's.
+# Live, public data, no keys needed except the classifier's.
 ./target/release/mft-engine universe                 # every perp on every dex -> data/universe.json
 ./target/release/mft-engine positioning --coins BTC,ETH,SOL
 ./target/release/mft-engine record --duration-secs 120   # feed + Kalshi + positioning (+ --text-feed)
@@ -896,33 +896,34 @@ cargo test
 The demo is static: `cd docs && python -m http.server`, then open
 `http://localhost:8000`. GitHub Pages serves the same folder.
 
-### Social data and Jev
+### Social data and the classifier
 
-The sidecar is Python, because that is where the Jev SDK is. Use a virtual
-environment (the build machine's global Python hit a TLS `RecursionError`
-inside `truststore` with `typesafe-sdk`):
+The sidecar is Python (standard library only); it calls the classifier over
+HTTP. Use a virtual environment:
 
 ```
 python -m venv .venv
 .venv/Scripts/pip install -r sidecar/requirements.txt     # .venv/bin/pip off Windows
-export TYPESAFE_API_KEY=...                                 # in your shell only
+export CLASSIFIER_URL=...                                   # the classifier endpoint
+export CLASSIFIER_API_KEY=...                               # in your shell only
+export CLASSIFIER_MODEL=...                                 # optional
 
 python sidecar/fetch_hn.py                                  # real HN posts over the bar window
-.venv/Scripts/python sidecar/score_posts.py                 # Jev scores -> data/text_signals.jsonl
+.venv/Scripts/python sidecar/score_posts.py                 # classifier scores -> data/text_signals.jsonl
 .venv/Scripts/python sidecar/live_social.py --minutes 11    # live: poll, score, append; paper tails it
 ```
 
-The SDK reads `TYPESAFE_API_KEY` from the environment; nothing in this
-repository reads, prints or stores it, and every file the sidecar and engine
+`CLASSIFIER_API_KEY` is read from the environment only to send it; nothing in this
+repository prints or stores it, and every file the sidecar and engine
 write is checked for it (and for token-shaped strings) before it is written.
 Without a key, scoring falls back to a deterministic keyword mock labelled
 `mock-keyword-v1`.
 
-One Jev `system_one` call per post asks five typed questions: is it about BTC
+One classifier call per post asks five typed questions: is it about BTC
 (`Noul`), is it about ETH (`Noul`), the implied direction for each over the
 next hour (`Choice`: bullish, bearish, neither), and is it new information
 (`Noul`). Measured on the 259 backfilled posts
-(`sidecar/scoring_stats_jev.json`): **p50 118 ms, p99 230 ms (first call
+(`sidecar/scoring_stats.json`): **p50 118 ms, p99 230 ms (first call
 397 ms), 546 input tokens per post.**
 
 **Reddit** is supported only through Reddit's official OAuth API
@@ -974,7 +975,7 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
 | `src/backtest.rs`, `src/paper.rs`, `src/record.rs`, `src/fetch.rs` | the subcommands (`fetch.rs` also fetches the v4 data); `backtest.rs` also loads a replay by exchange or arrival time |
 | `src/verify.rs` | `verify-replay`: replay a live session log, diff against its decision log |
 | `src/dsr.rs`, `src/trials.rs` | the deflated Sharpe ratio; the ledger's trials, replayed for their returns |
-| `sidecar/` | HN and Reddit fetchers, Jev scorer, live social feed, secret guard |
+| `sidecar/` | HN and Reddit fetchers, classifier scorer, live social feed, secret guard |
 | `docs/` | the static demo (index.html, app.js, style.css) |
 
 ## What is not done
@@ -1006,7 +1007,7 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
 * **Short history.** 3.5 days of 1-minute bars, the most Hyperliquid keeps.
   Kalshi history goes back further; a longer test needs a longer price
   history (recorded with `record`, or another source).
-* **No Jev-versus-plain-LLM comparison** on cost and latency yet.
+* **No classifier-versus-plain-LLM comparison** on cost and latency yet.
 * Gap detection on Hyperliquid is heuristic (no sequence numbers).
 * The fill model ignores queue position, partial fills, funding and impact
   beyond 1 bp. Money is `f64`; production would use integer ticks.
@@ -1019,7 +1020,7 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
   both modes reach it through `event_loop::run`. A test replays the same data
   through the async loop and through a plain loop and requires identical
   decisions, for v1 and v2.
-* **Reasoning features gate, code decides.** Jev and the prediction market
+* **Reasoning features gate, code decides.** The classifier and the prediction market
   supply probabilities; deterministic code turns them into a multiplier that
   can only shrink a position, and a check enforces that.
 * **Fail closed.** Missing or stale prediction-market data means no entry; a

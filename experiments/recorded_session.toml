@@ -7,7 +7,7 @@
 #   data/live_session.jsonl        recorded live: Hyperliquid trades and book
 #                                  tops (bars are built from the trades),
 #                                  Kalshi ladders every 60 s, positioning
-#                                  every 180 s, Jev-scored HN posts
+#                                  every 180 s, classifier-scored HN posts
 #   data/live_session_warmup.jsonl the 90 one-minute REST bars just before
 #                                  the session, so momentum is warm at the
 #                                  start. Nothing else exists in that span,
