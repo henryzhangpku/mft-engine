@@ -1036,6 +1036,14 @@ decision trail (`results/backtest_decisions_v1.jsonl`, `_v2.jsonl`) and the demo
 * **Minimal dependencies:** tokio, tokio-tungstenite, futures-util, serde,
   serde_json, ureq, native-tls, anyhow, clap, sha2, toml.
 
+## Author
+
+**Henry Zhang** — quantitative engineer; fifteen years building research platforms and production trading systems, including eight years at BlackRock and two at PIMCO.
+
+[LinkedIn](https://www.linkedin.com/in/henryzhang99/) · [GitHub](https://github.com/henryzhangpku) · [Substack](https://henryzhang.substack.com) · [officialhenryzhang.com](https://www.officialhenryzhang.com)
+
+More work: [Autonomous Quant Researcher](https://github.com/henryzhangpku/autonomous-quant-researcher) (an LLM proposes, trusted code decides) · [research2prod](https://github.com/henryzhangpku/research2prod) (research code that is already production code) · [GPU price index](https://github.com/henryzhangpku/gpu-price-index) (a daily benchmark built like a settlement index) · [all repositories](https://github.com/henryzhangpku?tab=repositories)
+
 ## License
 
 MIT. See `LICENSE`.
